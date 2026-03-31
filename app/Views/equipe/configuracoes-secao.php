@@ -246,6 +246,7 @@ $settings = $settings ?? [];
               <label>Lista — Parceiros</label>
               <select id="trelloListParceiro" name="list_parceiro"><option value="">Usar padrão</option></select>
             </div>
+            <button type="button" onclick="salvarListasTrello()" class="btn btn-primary" style="margin-top:12px">Salvar Listas</button>
           </div>
         </div>
 
@@ -256,16 +257,6 @@ $settings = $settings ?? [];
         <?php endif; ?>
 
         <script>
-        // Mudar action do form principal para salvar listas
-        (function(){
-          var forms=document.querySelectorAll('form');
-          for(var i=0;i<forms.length;i++){
-            if(forms[i].action.indexOf('configuracoes/trello')!==-1){
-              forms[i].action='/equipe/trello/salvar-lista';
-              break;
-            }
-          }
-        })();
         (function(){
           fetch('/equipe/trello/boards').then(r=>r.json()).then(function(boards){
             document.getElementById('trelloLoading').style.display='none';
@@ -308,6 +299,17 @@ $settings = $settings ?? [];
               s.appendChild(o);
             });
           });
+        }
+        function salvarListasTrello(){
+          var f=document.createElement('form');f.method='POST';f.action='/equipe/trello/salvar-lista';
+          var csrf=document.querySelector('meta[name=csrf-token]');
+          if(csrf){var i=document.createElement('input');i.type='hidden';i.name='_csrf_token';i.value=csrf.content;f.appendChild(i)}
+          var campos={list_id:'trelloListDefault',list_contato:'trelloListContato',list_demanda:'trelloListDemanda',list_parceiro:'trelloListParceiro'};
+          for(var name in campos){
+            var sel=document.getElementById(campos[name]);
+            if(sel&&sel.value){var inp=document.createElement('input');inp.type='hidden';inp.name=name;inp.value=sel.value;f.appendChild(inp)}
+          }
+          document.body.appendChild(f);f.submit();
         }
         </script>
       <?php endif; ?>
