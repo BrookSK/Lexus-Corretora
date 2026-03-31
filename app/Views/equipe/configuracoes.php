@@ -46,4 +46,8 @@ use LEX\Core\{View, I18n, Csrf};
     <div class="card-label"><?php echo View::e(I18n::t('config.legal')); ?></div>
     <div class="card-title"><?php echo View::e(I18n::t('config.legal_desc')); ?></div>
   </a>
+  <a href="/equipe/configuracoes/trello" class="card" style="text-decoration:none;color:inherit">
+    <div class="card-label">Trello</div>
+    <div class="card-title">Integração com Trello para cards automáticos</div>
+  </a>
 </div>

@@ -4,6 +4,7 @@ namespace LEX\App\Controllers;
 
 use LEX\Core\Http\{Requisicao, Resposta};
 use LEX\Core\{View, I18n};
+use LEX\App\Services\Integracoes\TrelloService;
 
 final class ContatoController
 {
@@ -19,7 +20,12 @@ final class ContatoController
 
     public function enviar(Requisicao $req): Resposta
     {
-        // TODO: Validar, salvar e enviar email de contato
+        $dados = $req->todosPost();
+        unset($dados['_csrf_token']);
+
+        // Integração Trello
+        try { TrelloService::cardContato($dados); } catch (\Throwable $e) { /* silenciar */ }
+
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('contato.sucesso')];
         return Resposta::redirecionar('/contato');
     }

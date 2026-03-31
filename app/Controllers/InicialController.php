@@ -4,6 +4,7 @@ namespace LEX\App\Controllers;
 
 use LEX\Core\Http\{Requisicao, Resposta};
 use LEX\Core\{View, I18n};
+use LEX\App\Services\Integracoes\TrelloService;
 
 final class InicialController
 {
@@ -79,7 +80,12 @@ final class InicialController
 
     public function salvarDemanda(Requisicao $req): Resposta
     {
-        // TODO: Validar e salvar demanda pública
+        $dados = $req->todosPost();
+        unset($dados['_csrf_token']);
+
+        // Integração Trello
+        try { TrelloService::cardDemanda($dados); } catch (\Throwable $e) { /* silenciar */ }
+
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('demanda.sucesso')];
         return Resposta::redirecionar('/abrir-demanda');
     }
@@ -96,7 +102,12 @@ final class InicialController
 
     public function salvarParceiro(Requisicao $req): Resposta
     {
-        // TODO: Validar e salvar cadastro de parceiro
+        $dados = $req->todosPost();
+        unset($dados['_csrf_token']);
+
+        // Integração Trello
+        try { TrelloService::cardParceiro($dados); } catch (\Throwable $e) { /* silenciar */ }
+
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('parceiro.sucesso')];
         return Resposta::redirecionar('/seja-parceiro');
     }

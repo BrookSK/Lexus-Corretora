@@ -284,3 +284,10 @@ Roteador::post('/equipe/jobs/{id}/retry', [JobsController::class, 'retry'], $eqM
 use LEX\App\Controllers\Equipe\ContaController as EquipeConta;
 Roteador::get('/equipe/minha-conta', [EquipeConta::class, 'index'], $eqMw);
 Roteador::post('/equipe/minha-conta', [EquipeConta::class, 'salvar'], $eqMw);
+
+// Trello OAuth
+use LEX\App\Controllers\Equipe\TrelloController;
+Roteador::get('/equipe/trello/callback', [TrelloController::class, 'callback'], $eqMw);
+Roteador::get('/equipe/trello/boards', [TrelloController::class, 'boards'], $eqMw);
+Roteador::post('/equipe/trello/salvar-lista', [TrelloController::class, 'salvarLista'], $eqMw);
+Roteador::post('/equipe/trello/desconectar', [TrelloController::class, 'desconectar'], $eqMw);

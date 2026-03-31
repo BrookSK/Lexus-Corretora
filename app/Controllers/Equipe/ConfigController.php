@@ -144,6 +144,9 @@ final class ConfigController
             'seguranca_2fa_obrigatorio' => 'seguranca.2fa_obrigatorio',
             'seguranca_tentativas_login' => 'seguranca.tentativas_login',
             'seguranca_bloqueio_minutos' => 'seguranca.bloqueio_minutos',
+            'trello_api_key' => 'trello.api_key', 'trello_api_token' => 'trello.api_token',
+            'trello_list_id' => 'trello.list_id', 'trello_list_contato' => 'trello.list_contato',
+            'trello_list_demanda' => 'trello.list_demanda', 'trello_list_parceiro' => 'trello.list_parceiro',
         ];
         return $mapa[$chavePost] ?? $chavePost;
     }
@@ -159,6 +162,7 @@ final class ConfigController
             'seguranca' => ['seguranca.2fa_obrigatorio', 'seguranca.tentativas_login', 'seguranca.bloqueio_minutos'],
             'geral' => ['sistema.idioma_padrao', 'sistema.moeda_padrao', 'sistema.timezone'],
             'legal' => ['legal.termos', 'legal.privacidade'],
+            'trello' => ['trello.api_key', 'trello.api_token', 'trello.list_id', 'trello.list_contato', 'trello.list_demanda', 'trello.list_parceiro'],
         ];
         $keys = $map[$secao] ?? [];
         $result = [];
