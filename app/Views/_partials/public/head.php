@@ -36,7 +36,7 @@ $canonical = $canonical ?? SistemaConfig::url() . ($_SERVER['REQUEST_URI'] ?? '/
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 
 <!-- CSS -->
-<link rel="stylesheet" href="/assets/css/lexus.css"/>
+<link rel="stylesheet" href="/assets/css/lexus.css?v=<?php echo time(); ?>"/>
 
 <!-- CSRF Meta -->
 <meta name="csrf-token" content="<?php echo View::e(Csrf::gerar()); ?>"/>

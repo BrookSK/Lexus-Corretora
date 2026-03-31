@@ -1,9 +1,17 @@
 RewriteEngine On
 
-# Redirecionar assets para public/
+# Servir assets estáticos diretamente de public/
+RewriteCond %{REQUEST_URI} ^/assets/
 RewriteRule ^assets/(.*)$ public/assets/$1 [L]
 
-# Redirecionar tudo para front controller
+# Servir robots.txt e favicon diretamente
+RewriteRule ^favicon\.ico$ public/assets/img/favicon.ico [L]
+
+# Se o arquivo existe em public/, servir diretamente
+RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -f
+RewriteRule ^(.*)$ public/$1 [L]
+
+# Front controller
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ public/index.php [QSA,L]
