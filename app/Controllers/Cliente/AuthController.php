@@ -23,10 +23,16 @@ final class AuthController
         $stmt->execute(['e' => $email]);
         $cli = $stmt->fetch();
 
-        if (!$cli || !password_verify($senha, $cli['password'])) {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => I18n::t('auth.login_falha')];
+        // DEBUG TEMPORÁRIO — remover depois
+        if (!$cli) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'DEBUG: Nenhum usuário encontrado com esse email.'];
             return Resposta::redirecionar('/cliente/entrar');
         }
+        if (!password_verify($senha, $cli['password'])) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'DEBUG: Usuário encontrado, mas senha não confere. Hash no banco: ' . substr($cli['password'], 0, 20) . '...'];
+            return Resposta::redirecionar('/cliente/entrar');
+        }
+        // FIM DEBUG
         if (!$cli['is_active']) {
             $_SESSION['flash'] = ['type' => 'error', 'message' => I18n::t('auth.conta_inativa')];
             return Resposta::redirecionar('/cliente/entrar');
