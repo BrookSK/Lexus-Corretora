@@ -50,17 +50,24 @@ final class ConfigController
         $dados = $req->todosPost();
         unset($dados['_csrf_token']);
 
-        // Processar uploads de imagem
-        $uploadFields = ['logo', 'favicon', 'og_image'];
-        foreach ($uploadFields as $field) {
+        // Processar uploads de imagem — mapear campo para chave de settings correta
+        $uploadMap = [
+            'logo'     => 'sistema.logo',
+            'favicon'  => 'sistema.favicon',
+            'og_image' => 'seo.og_image',
+        ];
+        foreach ($uploadMap as $field => $settingKey) {
             $arquivo = $req->arquivo($field);
             if ($arquivo && $arquivo['error'] === UPLOAD_ERR_OK && $arquivo['size'] > 0) {
                 $path = self::processarUpload($arquivo, $field);
                 if ($path) {
-                    Settings::definir("sistema.{$field}", $path);
+                    Settings::definir($settingKey, $path);
                 }
             }
         }
+
+        // Campos de upload não devem ser processados como texto
+        $uploadFields = array_keys($uploadMap);
 
         // Salvar campos de texto (ignorar campos vazios de senha/chave)
         $camposSensiveis = ['smtp.senha', 'stripe.test_secret_key', 'stripe.test_webhook_secret', 'stripe.live_secret_key', 'stripe.live_webhook_secret', 'asaas.sandbox_api_key', 'asaas.sandbox_webhook_token', 'asaas.production_api_key', 'asaas.production_webhook_token'];
