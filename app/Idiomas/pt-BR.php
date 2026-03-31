@@ -485,4 +485,140 @@ return [
     'geral.empresa'            => 'Empresa',
     'geral.score'              => 'Score',
     'geral.detalhe'            => 'Detalhe',
+    'geral.nome'               => 'Nome',
+    'geral.cidade'             => 'Cidade',
+    'geral.estado'             => 'Estado',
+    'geral.pais'               => 'País',
+    'geral.endereco'           => 'Endereço',
+    'geral.whatsapp'           => 'WhatsApp',
+    'geral.documento'          => 'Documento',
+    'geral.bio'                => 'Bio',
+    'geral.criado_em'          => 'Criado em',
+    'geral.atualizado_em'      => 'Atualizado em',
+    'geral.enviado_em'         => 'Enviado em',
+    'geral.respondido_em'      => 'Respondido em',
+    'geral.atualizar'          => 'Atualizar',
+    'geral.selecione'          => 'Selecione...',
+    'geral.timeline'           => 'Timeline',
+    'geral.estatisticas'       => 'Estatísticas',
+
+    // Auth extras
+    'auth.nova_senha'          => 'Nova Senha',
+
+    // Clientes extras
+    'clientes.editar_cliente'  => 'Editar Cliente',
+    'clientes.subtitulo_criar' => 'Cadastrar novo cliente',
+    'clientes.subtitulo_lista' => 'Gerenciar clientes da plataforma',
+
+    // Parceiros extras
+    'parceiros.editar_parceiro'=> 'Editar Parceiro',
+    'parceiros.subtitulo_criar'=> 'Cadastrar novo parceiro',
+    'parceiros.subtitulo_lista'=> 'Gerenciar parceiros e empresas',
+    'parceiros.especialidades' => 'Especialidades',
+    'parceiros.especialidades_placeholder' => 'Ex: Construção residencial, Reforma comercial',
+
+    // Demandas extras
+    'demandas.editar_demanda'  => 'Editar Demanda',
+    'demandas.subtitulo_criar' => 'Cadastrar nova demanda',
+    'demandas.subtitulo_lista' => 'Gerenciar demandas e oportunidades',
+    'demandas.codigo'          => 'Código',
+    'demandas.categoria'       => 'Categoria',
+    'demandas.subcategoria'    => 'Subcategoria',
+    'demandas.fase_atual'      => 'Fase Atual',
+    'demandas.tipo_obra'       => 'Tipo de Obra',
+    'demandas.tipo_contratacao'=> 'Tipo de Contratação',
+    'demandas.prioridade'      => 'Prioridade',
+    'demandas.orcamento_min'   => 'Orçamento Mínimo',
+    'demandas.orcamento_max'   => 'Orçamento Máximo',
+    'demandas.tem_projeto'     => 'Possui Projeto?',
+    'demandas.tem_arquiteto'   => 'Possui Arquiteto?',
+    'demandas.ver_demanda'     => 'Ver Demanda',
+
+    // Propostas extras
+    'propostas.subtitulo_lista'=> 'Gerenciar propostas recebidas',
+    'propostas.detalhe'        => 'Detalhe da Proposta',
+    'propostas.condicoes'      => 'Condições',
+    'propostas.validade'       => 'Validade',
+    'propostas.aprovar'        => 'Aprovar',
+    'propostas.rejeitar'       => 'Rejeitar',
+
+    // Contratos extras
+    'contratos.subtitulo_criar'=> 'Registrar novo contrato',
+    'contratos.subtitulo_lista'=> 'Gerenciar contratos formalizados',
+
+    // Comissões extras
+    'comissoes.subtitulo_lista'=> 'Gerenciar comissões de repasse',
+    'comissoes.detalhe'        => 'Detalhe da Comissão',
+    'comissoes.data_recebimento'=> 'Data de Recebimento',
+
+    // CRM extras
+    'crm.subtitulo_criar'     => 'Cadastrar novo lead',
+    'crm.responsavel'         => 'Responsável',
+    'crm.converter_cliente'   => 'Converter em Cliente',
+    'crm.convertido_para'     => 'Convertido para',
+    'crm.ver_cliente'         => 'Ver Cliente',
+
+    // Distribuição extras
+    'distribuicao.subtitulo'   => 'Selecione parceiros para receber esta oportunidade',
+    'distribuicao.selecionar_parceiros' => 'Selecionar Parceiros',
+    'distribuicao.tipo'        => 'Tipo de Distribuição',
+    'distribuicao.manual'      => 'Manual',
+    'distribuicao.automatica'  => 'Automática',
+    'distribuicao.match'       => 'Match',
+
+    // Mensagens extras
+    'mensagens.subtitulo_lista'=> 'Conversas e atendimento',
+    'mensagens.nova_mensagem'  => 'Nova Mensagem',
+    'mensagens.conversa'       => 'Conversa',
+    'mensagens.assunto'        => 'Assunto',
+    'mensagens.tipo'           => 'Tipo',
+    'mensagens.enviar'         => 'Enviar',
+    'mensagens.placeholder'    => 'Digite sua mensagem...',
+    'mensagens.nenhuma_mensagem'=> 'Nenhuma mensagem ainda.',
+    'mensagens.abrir'          => 'Abrir',
+
+    // Usuários extras
+    'usuarios.subtitulo_lista' => 'Gerenciar usuários do sistema',
+    'usuarios.subtitulo_criar' => 'Cadastrar novo usuário',
+    'usuarios.editar_usuario'  => 'Editar Usuário',
+    'usuarios.papel'           => 'Papel / Role',
+    'usuarios.ultimo_login'    => 'Último Login',
+    'usuarios.deixe_vazio'     => 'Deixe em branco para manter a senha atual.',
+
+    // Logs extras
+    'logs.subtitulo'           => 'Logs do sistema',
+    'logs.tipo_usuario'        => 'Tipo de Usuário',
+
+    // Jobs extras
+    'jobs.tipo'                => 'Tipo',
+    'jobs.tentativas'          => 'Tentativas',
+    'jobs.erro'                => 'Erro',
+    'jobs.agendado'            => 'Agendado para',
+    'jobs.retentar'            => 'Retentar',
+
+    // Config extras
+    'config.nome_empresa'      => 'Nome da Empresa',
+    'config.slogan'            => 'Slogan',
+    'config.logo_url'          => 'URL do Logo',
+    'config.cor_primaria'      => 'Cor Primária',
+    'config.nome_remetente'    => 'Nome do Remetente',
+    'config.email_remetente'   => 'E-mail do Remetente',
+
+    // Relatórios extras
+    'relatorios.demandas'      => 'Demandas',
+    'relatorios.demandas_desc' => 'Demandas por período e status',
+    'relatorios.propostas'     => 'Propostas',
+    'relatorios.propostas_desc'=> 'Propostas recebidas e conversão',
+    'relatorios.contratos'     => 'Contratos',
+    'relatorios.contratos_desc'=> 'Contratos formalizados',
+    'relatorios.comissoes'     => 'Comissões',
+    'relatorios.comissoes_desc'=> 'Comissões por período e parceiro',
+    'relatorios.parceiros'     => 'Parceiros',
+    'relatorios.parceiros_desc'=> 'Desempenho e atividade dos parceiros',
+    'relatorios.clientes'      => 'Clientes',
+    'relatorios.clientes_desc' => 'Clientes ativos e demandas',
+    'relatorios.crm'           => 'CRM',
+    'relatorios.crm_desc'      => 'Leads e conversões',
+    'relatorios.financeiro'    => 'Financeiro',
+    'relatorios.financeiro_desc'=> 'Visão financeira e ticket médio',
 ];
