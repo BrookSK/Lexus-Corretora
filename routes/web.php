@@ -279,3 +279,8 @@ Roteador::get('/equipe/logs/auth', [LogsController::class, 'auth'], $eqMw);
 // Jobs
 Roteador::get('/equipe/jobs', [JobsController::class, 'index'], $eqMw);
 Roteador::post('/equipe/jobs/{id}/retry', [JobsController::class, 'retry'], $eqMw);
+
+// Minha Conta (equipe)
+use LEX\App\Controllers\Equipe\ContaController as EquipeConta;
+Roteador::get('/equipe/minha-conta', [EquipeConta::class, 'index'], $eqMw);
+Roteador::post('/equipe/minha-conta', [EquipeConta::class, 'salvar'], $eqMw);

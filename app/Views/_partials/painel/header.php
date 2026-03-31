@@ -11,7 +11,7 @@ $userName = match($painelTipo) {
 $contaUrl = match($painelTipo) {
     'cliente'  => '/cliente/minha-conta',
     'parceiro' => '/parceiro/minha-conta',
-    default    => '/equipe/configuracoes',
+    default    => '/equipe/minha-conta',
 };
 $logoutUrl = "/{$painelTipo}/sair";
 ?>
