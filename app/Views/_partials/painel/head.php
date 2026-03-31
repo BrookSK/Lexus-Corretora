@@ -11,7 +11,7 @@ $pageTitle = $pageTitle ?? SistemaConfig::nome();
 <title><?php echo View::e($pageTitle); ?> — <?php echo View::e(SistemaConfig::nome()); ?></title>
 <link rel="icon" href="<?php echo View::e(SistemaConfig::favicon()); ?>" type="image/x-icon"/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="/assets/css/painel.css"/>
+<link rel="stylesheet" href="/assets/css/painel.css?v=<?php echo time(); ?>"/>
 <meta name="csrf-token" content="<?php echo View::e(Csrf::gerar()); ?>"/>
 </head>
 <body class="painel-body">
