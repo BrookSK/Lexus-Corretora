@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace LEX\App\Controllers\Equipe;
 
 use LEX\Core\Http\{Requisicao, Resposta};
-use LEX\Core\{View, I18n, Auth, BancoDeDados, AppLogger};
+use LEX\Core\{View, I18n, Auth, BancoDeDados};
 
 final class AuthController
 {
@@ -41,66 +41,12 @@ final class AuthController
 
     public function primeiroAcessoForm(Requisicao $req): Resposta
     {
-        try {
-            $pdo = BancoDeDados::obter();
-            $count = (int)$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
-            if ($count > 0) return Resposta::redirecionar('/equipe/entrar');
-        } catch (\Exception $e) {
-            // Tabela users pode não existir ainda — tudo bem, é primeiro acesso
-        }
-        $html = View::renderizar(__DIR__ . '/../../Views/equipe/auth/primeiro-acesso.php');
-        return Resposta::html($html);
+        return Resposta::redirecionar('/equipe/entrar');
     }
 
     public function primeiroAcesso(Requisicao $req): Resposta
     {
-        $pdo = BancoDeDados::obter();
-
-        // Garantir que as tabelas existem antes de criar o superadmin
-        try {
-            $tabelas = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
-            if (empty($tabelas) || !in_array('users', $tabelas)) {
-                $schema = __DIR__ . '/../../../database/schema.sql';
-                if (file_exists($schema)) {
-                    $sql = file_get_contents($schema);
-                    $pdo->exec($sql);
-                }
-            }
-        } catch (\Exception $e) {
-            AppLogger::erro('Erro ao criar schema no primeiro acesso: ' . $e->getMessage());
-        }
-
-        try {
-            $count = (int)$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
-            if ($count > 0) return Resposta::redirecionar('/equipe/entrar');
-        } catch (\Exception $e) {
-            // Se ainda falhar, algo está errado com o banco
-            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Erro ao acessar o banco de dados. Verifique config/instalacao.php'];
-            return Resposta::redirecionar('/equipe/primeiro-acesso');
-        }
-
-        $nome  = trim($req->post('name', ''));
-        $email = trim($req->post('email', ''));
-        $senha = $req->post('password', '');
-
-        if (empty($nome) || empty($email) || strlen($senha) < 8) {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => I18n::t('erro.validacao')];
-            return Resposta::redirecionar('/equipe/primeiro-acesso');
-        }
-
-        $hash = password_hash($senha, PASSWORD_BCRYPT, ['cost' => 12]);
-        $stmt = $pdo->prepare("INSERT INTO users (name, email, password, is_active, created_at) VALUES (:n, :e, :p, 1, NOW())");
-        $stmt->execute(['n' => $nome, 'e' => $email, 'p' => $hash]);
-        $userId = (int)$pdo->lastInsertId();
-
-        // Atribuir role superadmin
-        $roleId = (int)$pdo->query("SELECT id FROM roles WHERE slug = 'superadmin' LIMIT 1")->fetchColumn();
-        if ($roleId) {
-            $pdo->prepare("INSERT INTO user_roles (user_id, role_id) VALUES (:u, :r)")->execute(['u' => $userId, 'r' => $roleId]);
-        }
-
-        Auth::loginEquipe(['id' => $userId, 'name' => $nome, 'email' => $email, 'role_slug' => 'superadmin']);
-        return Resposta::redirecionar('/equipe/inicializacao');
+        return Resposta::redirecionar('/equipe/entrar');
     }
 
     public function logout(Requisicao $req): Resposta

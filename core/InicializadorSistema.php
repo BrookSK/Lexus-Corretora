@@ -26,12 +26,13 @@ final class InicializadorSistema
 
         // 2. Executar schema.sql se tabelas não existem
         $pdo = BancoDeDados::obter();
-        $tabelas = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
+        $stmtTables = $pdo->query("SHOW TABLES");
+        $tabelas = $stmtTables->fetchAll(\PDO::FETCH_COLUMN);
+        $stmtTables->closeCursor();
         if (empty($tabelas)) {
             $schema = __DIR__ . '/../database/schema.sql';
             if (file_exists($schema)) {
-                $sql = file_get_contents($schema);
-                $pdo->exec($sql);
+                self::executarSqlMulti($pdo, file_get_contents($schema));
                 $resultados[] = 'Schema inicial executado.';
             }
         }
@@ -57,7 +58,9 @@ final class InicializadorSistema
         $dir = __DIR__ . '/../database/migrations';
         if (!is_dir($dir)) return;
 
-        $executadas = $pdo->query("SELECT file_name FROM migrations")->fetchAll(\PDO::FETCH_COLUMN);
+        $stmtExec = $pdo->query("SELECT file_name FROM migrations");
+        $executadas = $stmtExec->fetchAll(\PDO::FETCH_COLUMN);
+        $stmtExec->closeCursor();
         $arquivos = glob($dir . '/*.sql');
         sort($arquivos);
 
@@ -65,17 +68,40 @@ final class InicializadorSistema
             $nome = basename($arquivo);
             if (in_array($nome, $executadas, true)) continue;
             $sql = file_get_contents($arquivo);
-            $pdo->exec($sql);
+            self::executarSqlMulti($pdo, $sql);
             $stmt = $pdo->prepare("INSERT INTO migrations (file_name) VALUES (:f)");
             $stmt->execute(['f' => $nome]);
+            $stmt->closeCursor();
             $resultados[] = "Migration executada: $nome";
+        }
+    }
+
+    private static function executarSqlMulti(\PDO $pdo, string $sql): void
+    {
+        // Separar statements e executar um por um para evitar unbuffered query errors
+        $statements = array_filter(
+            array_map('trim', explode(';', $sql)),
+            fn(string $s) => $s !== '' && !str_starts_with($s, '--')
+        );
+        foreach ($statements as $statement) {
+            if (empty(trim($statement))) continue;
+            try {
+                $pdo->exec($statement);
+            } catch (\PDOException $e) {
+                // Ignorar erros de "already exists" e similares
+                if (!str_contains($e->getMessage(), 'already exists') && !str_contains($e->getMessage(), 'Duplicate')) {
+                    throw $e;
+                }
+            }
         }
     }
 
     private static function seedsIniciais(\PDO $pdo, array &$resultados): void
     {
         // Criar roles padrão se não existem
-        $count = (int)$pdo->query("SELECT COUNT(*) FROM roles")->fetchColumn();
+        $stmt = $pdo->query("SELECT COUNT(*) FROM roles");
+        $count = (int)$stmt->fetchColumn();
+        $stmt->closeCursor();
         if ($count === 0) {
             $roles = [
                 ['superadmin', 'Super Administrador'],
