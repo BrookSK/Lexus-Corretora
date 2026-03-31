@@ -96,15 +96,24 @@ final class Bootstrap
             }
 
             if (Configuracao::obter('app.debug', false)) {
-                echo '<pre>' . htmlspecialchars($e->getMessage() . "\n" . $e->getTraceAsString()) . '</pre>';
-            } else {
-                $html = View::renderizar(__DIR__ . '/../app/Views/erros/erro.php', [
-                    'codigo'   => 500,
-                    'mensagem' => I18n::t('erro.interno'),
-                    'errorId'  => $errorId ?? null,
-                ]);
                 http_response_code(500);
-                echo $html;
+                echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Erro</title><style>body{font-family:monospace;background:#0C0C0A;color:#F5F2ED;padding:40px}pre{white-space:pre-wrap;word-wrap:break-word;background:rgba(255,255,255,.05);padding:20px;border-left:3px solid #B8945A;margin-top:20px}h1{color:#B8945A;font-size:1.2rem}</style></head><body>';
+                echo '<h1>Erro do Sistema</h1>';
+                echo '<pre>' . htmlspecialchars($e->getMessage()) . "\n\n" . htmlspecialchars($e->getTraceAsString()) . '</pre>';
+                echo '</body></html>';
+            } else {
+                try {
+                    $html = View::renderizar(__DIR__ . '/../app/Views/erros/erro.php', [
+                        'codigo'   => 500,
+                        'mensagem' => 'Erro interno do servidor.',
+                        'errorId'  => $errorId ?? null,
+                    ]);
+                    http_response_code(500);
+                    echo $html;
+                } catch (\Throwable $viewErr) {
+                    http_response_code(500);
+                    echo '<!DOCTYPE html><html><body><h1>500 — Erro Interno</h1><p>Ocorreu um erro. Tente novamente.</p></body></html>';
+                }
             }
         });
     }

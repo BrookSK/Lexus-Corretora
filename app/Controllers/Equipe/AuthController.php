@@ -41,9 +41,13 @@ final class AuthController
 
     public function primeiroAcessoForm(Requisicao $req): Resposta
     {
-        $pdo = BancoDeDados::obter();
-        $count = (int)$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
-        if ($count > 0) return Resposta::redirecionar('/equipe/entrar');
+        try {
+            $pdo = BancoDeDados::obter();
+            $count = (int)$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
+            if ($count > 0) return Resposta::redirecionar('/equipe/entrar');
+        } catch (\Exception $e) {
+            // Tabela users pode não existir ainda — tudo bem, é primeiro acesso
+        }
         $html = View::renderizar(__DIR__ . '/../../Views/equipe/auth/primeiro-acesso.php');
         return Resposta::html($html);
     }
@@ -51,8 +55,29 @@ final class AuthController
     public function primeiroAcesso(Requisicao $req): Resposta
     {
         $pdo = BancoDeDados::obter();
-        $count = (int)$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
-        if ($count > 0) return Resposta::redirecionar('/equipe/entrar');
+
+        // Garantir que as tabelas existem antes de criar o superadmin
+        try {
+            $tabelas = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
+            if (empty($tabelas) || !in_array('users', $tabelas)) {
+                $schema = __DIR__ . '/../../../database/schema.sql';
+                if (file_exists($schema)) {
+                    $sql = file_get_contents($schema);
+                    $pdo->exec($sql);
+                }
+            }
+        } catch (\Exception $e) {
+            AppLogger::erro('Erro ao criar schema no primeiro acesso: ' . $e->getMessage());
+        }
+
+        try {
+            $count = (int)$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
+            if ($count > 0) return Resposta::redirecionar('/equipe/entrar');
+        } catch (\Exception $e) {
+            // Se ainda falhar, algo está errado com o banco
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Erro ao acessar o banco de dados. Verifique config/instalacao.php'];
+            return Resposta::redirecionar('/equipe/primeiro-acesso');
+        }
 
         $nome  = trim($req->post('name', ''));
         $email = trim($req->post('email', ''));

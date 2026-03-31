@@ -13,7 +13,13 @@ final class Configuracao
         }
         $arquivo = __DIR__ . '/../config/instalacao.php';
         if (!file_exists($arquivo)) {
-            throw new \RuntimeException('Arquivo de configuração não encontrado: config/instalacao.php');
+            // Retornar config mínima para o sistema funcionar sem instalacao.php
+            self::$config = [
+                'db' => ['host' => 'localhost', 'porta' => 3306, 'nome' => 'lexus_corretora', 'usuario' => 'root', 'senha' => '', 'charset' => 'utf8mb4'],
+                'app' => ['url' => '', 'ambiente' => 'desenvolvimento', 'debug' => true, 'timezone' => 'America/Sao_Paulo', 'chave_app' => 'CONFIGURAR'],
+                'smtp' => ['host' => '', 'porta' => 587, 'usuario' => '', 'senha' => '', 'de_email' => '', 'de_nome' => 'Lexus Corretora'],
+            ];
+            return self::$config;
         }
         self::$config = require $arquivo;
         return self::$config;
