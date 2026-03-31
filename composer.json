@@ -11,7 +11,8 @@
     },
     "autoload": {
         "psr-4": {
-            "LEX\\": "./"
+            "LEX\\Core\\": "core/",
+            "LEX\\App\\": "app/"
         }
     },
     "config": {
