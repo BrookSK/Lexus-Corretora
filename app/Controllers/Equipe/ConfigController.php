@@ -66,9 +66,15 @@ final class ConfigController
         $camposSensiveis = ['smtp.senha', 'stripe.test_secret_key', 'stripe.test_webhook_secret', 'stripe.live_secret_key', 'stripe.live_webhook_secret', 'asaas.sandbox_api_key', 'asaas.sandbox_webhook_token', 'asaas.production_api_key', 'asaas.production_webhook_token'];
         foreach ($dados as $chave => $valor) {
             if (in_array($chave, $uploadFields, true)) continue;
+            // PHP converte pontos em underscores em nomes de campos multipart — reverter
+            $chaveReal = str_replace('_', '.', $chave);
+            // Verificar se a chave original com pontos faz mais sentido
+            // Ex: seo_ga_id -> seo.ga.id (errado) vs seo.ga_id (certo)
+            // Usar mapeamento explícito para evitar ambiguidade
+            $chaveReal = self::mapearChave($chave);
             // Não sobrescrever campos sensíveis se vieram vazios
-            if (in_array($chave, $camposSensiveis, true) && $valor === '') continue;
-            Settings::definir($chave, $valor);
+            if (in_array($chaveReal, $camposSensiveis, true) && $valor === '') continue;
+            Settings::definir($chaveReal, $valor);
         }
 
         AuditService::registrar('equipe', Auth::equipeId(), 'config.secao.' . $secao, 'settings', null);
@@ -97,6 +103,42 @@ final class ConfigController
             return '/assets/uploads/config/' . $nomeArquivo;
         }
         return null;
+    }
+
+    private static function mapearChave(string $chavePost): string
+    {
+        // Mapeamento explícito: PHP converte . em _ nos nomes de campos POST
+        // Precisamos saber quais underscores eram pontos originalmente
+        static $mapa = [
+            'sistema_nome' => 'sistema.nome', 'sistema_slogan' => 'sistema.slogan',
+            'sistema_cor_primaria' => 'sistema.cor_primaria', 'sistema_copyright' => 'sistema.copyright',
+            'sistema_idioma_padrao' => 'sistema.idioma_padrao', 'sistema_moeda_padrao' => 'sistema.moeda_padrao',
+            'sistema_timezone' => 'sistema.timezone',
+            'smtp_host' => 'smtp.host', 'smtp_porta' => 'smtp.porta',
+            'smtp_usuario' => 'smtp.usuario', 'smtp_senha' => 'smtp.senha',
+            'smtp_de_email' => 'smtp.de_email', 'smtp_de_nome' => 'smtp.de_nome',
+            'seo_meta_title' => 'seo.meta_title', 'seo_meta_description' => 'seo.meta_description',
+            'seo_og_image' => 'seo.og_image', 'seo_ga_id' => 'seo.ga_id', 'seo_indexacao' => 'seo.indexacao',
+            'stripe_mode' => 'stripe.mode',
+            'stripe_test_publishable_key' => 'stripe.test_publishable_key',
+            'stripe_test_secret_key' => 'stripe.test_secret_key',
+            'stripe_test_webhook_secret' => 'stripe.test_webhook_secret',
+            'stripe_live_publishable_key' => 'stripe.live_publishable_key',
+            'stripe_live_secret_key' => 'stripe.live_secret_key',
+            'stripe_live_webhook_secret' => 'stripe.live_webhook_secret',
+            'asaas_mode' => 'asaas.mode',
+            'asaas_sandbox_api_key' => 'asaas.sandbox_api_key',
+            'asaas_sandbox_webhook_token' => 'asaas.sandbox_webhook_token',
+            'asaas_production_api_key' => 'asaas.production_api_key',
+            'asaas_production_webhook_token' => 'asaas.production_webhook_token',
+            'legal_termos' => 'legal.termos', 'legal_privacidade' => 'legal.privacidade',
+            'notificacoes_email_ativo' => 'notificacoes.email_ativo',
+            'notificacoes_painel_ativo' => 'notificacoes.painel_ativo',
+            'seguranca_2fa_obrigatorio' => 'seguranca.2fa_obrigatorio',
+            'seguranca_tentativas_login' => 'seguranca.tentativas_login',
+            'seguranca_bloqueio_minutos' => 'seguranca.bloqueio_minutos',
+        ];
+        return $mapa[$chavePost] ?? $chavePost;
     }
 
     private static function obterSettingsSecao(string $secao): array
