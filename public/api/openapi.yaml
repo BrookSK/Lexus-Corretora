@@ -1,0 +1,30 @@
+openapi: 3.0.3
+info:
+  title: Lexus Corretora API
+  version: 1.0.0
+  description: API interna da plataforma Lexus Corretora
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /api/status:
+    get:
+      summary: Status do sistema
+      responses:
+        '200':
+          description: Status com versão
+  /webhooks/stripe:
+    post:
+      summary: Webhook Stripe
+      responses:
+        '200':
+          description: Processado
+  /webhooks/asaas:
+    post:
+      summary: Webhook Asaas
+      responses:
+        '200':
+          description: Processado

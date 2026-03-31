@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Redirecionar assets para public/
+RewriteRule ^assets/(.*)$ public/assets/$1 [L]
+
+# Redirecionar tudo para front controller
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/index.php [QSA,L]
