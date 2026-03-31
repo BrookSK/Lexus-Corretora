@@ -256,8 +256,16 @@ $settings = $settings ?? [];
         <?php endif; ?>
 
         <script>
-        // Mudar action do form para salvar listas via rota específica
-        document.querySelector('form[action*="configuracoes/trello"]').action='/equipe/trello/salvar-lista';
+        // Mudar action do form principal para salvar listas
+        (function(){
+          var forms=document.querySelectorAll('form');
+          for(var i=0;i<forms.length;i++){
+            if(forms[i].action.indexOf('configuracoes/trello')!==-1){
+              forms[i].action='/equipe/trello/salvar-lista';
+              break;
+            }
+          }
+        })();
         (function(){
           fetch('/equipe/trello/boards').then(r=>r.json()).then(function(boards){
             document.getElementById('trelloLoading').style.display='none';
