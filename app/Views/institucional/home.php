@@ -74,40 +74,33 @@ use LEX\Core\{View, I18n};
 
 <!-- VETRIKS -->
 <section class="vetriks" id="vetriks">
-  <div class="vl reveal">
-    <span class="lbl"><?php echo View::e(I18n::t('vetriks.label')); ?></span>
-    <h2 class="disp"><?php echo I18n::t('vetriks.title'); ?></h2>
-    <p class="vdesc"><?php echo View::e(I18n::t('vetriks.desc')); ?></p>
-    <div class="sealbox">
-      <div class="sealico">
-        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.25 3.75 10.15 9 11.35C17.25 21.15 21 16.25 21 11V5L12 1zm-1 14l-4-4 1.41-1.41L11 12.17l6.59-6.58L19 7l-8 8z"/></svg>
+  <div class="vetriks-inner">
+    <div class="vetriks-header reveal">
+      <span class="lbl"><?php echo View::e(I18n::t('vetriks.label')); ?></span>
+      <h2 class="disp"><?php echo I18n::t('vetriks.title'); ?></h2>
+      <p class="vdesc"><?php echo View::e(I18n::t('vetriks.desc')); ?></p>
+      <div class="sealbox">
+        <div class="sealico">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.25 3.75 10.15 9 11.35C17.25 21.15 21 16.25 21 11V5L12 1zm-1 14l-4-4 1.41-1.41L11 12.17l6.59-6.58L19 7l-8 8z"/></svg>
+        </div>
+        <span class="sealtxt"><?php echo View::e(I18n::t('vetriks.seal')); ?></span>
       </div>
-      <span class="sealtxt"><?php echo View::e(I18n::t('vetriks.seal')); ?></span>
     </div>
-  </div>
-  <div class="vr reveal d1">
-    <span class="lbl"><?php echo View::e(I18n::t('vetriks.crit_label')); ?></span>
-    <div class="crit">
-      <div class="crit-item">
-        <div class="cdot"></div>
-        <div>
-          <div class="ctit"><?php echo View::e(I18n::t('vetriks.crit1_title')); ?></div>
-          <p class="cdesc"><?php echo View::e(I18n::t('vetriks.crit1_desc')); ?></p>
-        </div>
+    <div class="vetriks-grid">
+      <div class="vetriks-card reveal">
+        <div class="vc-icon">✦</div>
+        <div class="vc-title"><?php echo View::e(I18n::t('vetriks.crit1_title')); ?></div>
+        <p class="vc-desc"><?php echo View::e(I18n::t('vetriks.crit1_desc')); ?></p>
       </div>
-      <div class="crit-item">
-        <div class="cdot"></div>
-        <div>
-          <div class="ctit"><?php echo View::e(I18n::t('vetriks.crit2_title')); ?></div>
-          <p class="cdesc"><?php echo View::e(I18n::t('vetriks.crit2_desc')); ?></p>
-        </div>
+      <div class="vetriks-card reveal d1">
+        <div class="vc-icon">◈</div>
+        <div class="vc-title"><?php echo View::e(I18n::t('vetriks.crit2_title')); ?></div>
+        <p class="vc-desc"><?php echo View::e(I18n::t('vetriks.crit2_desc')); ?></p>
       </div>
-      <div class="crit-item">
-        <div class="cdot"></div>
-        <div>
-          <div class="ctit"><?php echo View::e(I18n::t('vetriks.crit3_title')); ?></div>
-          <p class="cdesc"><?php echo View::e(I18n::t('vetriks.crit3_desc')); ?></p>
-        </div>
+      <div class="vetriks-card reveal d2">
+        <div class="vc-icon">◉</div>
+        <div class="vc-title"><?php echo View::e(I18n::t('vetriks.crit3_title')); ?></div>
+        <p class="vc-desc"><?php echo View::e(I18n::t('vetriks.crit3_desc')); ?></p>
       </div>
     </div>
   </div>
