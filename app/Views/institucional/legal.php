@@ -6,7 +6,7 @@ use LEX\Core\View;
   <h1 class="disp reveal"><?php echo View::e($titulo); ?></h1>
 </section>
 <section class="inst-section">
-  <div style="max-width:780px;margin:0 auto">
+  <div class="legal-content">
     <?php echo $conteudoHtml; ?>
   </div>
 </section>
