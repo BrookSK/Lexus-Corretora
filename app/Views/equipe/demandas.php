@@ -7,7 +7,7 @@ use LEX\Core\{View, I18n, Csrf};
     <h1 class="section-title"><?php echo View::e(I18n::t('sidebar.demandas')); ?></h1>
     <p class="section-subtitle"><?php echo View::e(I18n::t('demandas.subtitulo_lista')); ?></p>
   </div>
-  <a href="/equipe/demandas/novo" class="btn btn-primary"><?php echo View::e(I18n::t('demandas.nova_demanda')); ?></a>
+  <a href="/equipe/demandas/nova" class="btn btn-primary"><?php echo View::e(I18n::t('demandas.nova_demanda')); ?></a>
 </div>
 
 <div class="card" style="margin-bottom:20px;padding:16px 20px">
