@@ -77,7 +77,7 @@ use LEX\Core\{View, I18n, Csrf};
   <div><h2 class="section-title"><?php echo View::e(I18n::t('distribuicao.selecionar_parceiros')); ?></h2></div>
 </div>
 <div class="card">
-  <form method="POST" action="/equipe/distribuicao/<?php echo (int)($demanda['id'] ?? 0); ?>/enviar">
+  <form method="POST" action="/equipe/distribuicao/<?php echo (int)($demanda['id'] ?? 0); ?>">
     <?php echo Csrf::campo(); ?>
 
     <div class="form-group">

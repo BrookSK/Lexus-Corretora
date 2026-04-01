@@ -238,6 +238,7 @@ Roteador::get('/equipe/crm/novo', [CrmController::class, 'criar'], $eqMw);
 Roteador::post('/equipe/crm/novo', [CrmController::class, 'salvar'], $eqMw);
 Roteador::get('/equipe/crm/{id}', [CrmController::class, 'detalhe'], $eqMw);
 Roteador::post('/equipe/crm/{id}/converter', [CrmController::class, 'converter'], $eqMw);
+Roteador::post('/equipe/crm/{id}/status', [CrmController::class, 'alterarStatus'], $eqMw);
 
 // Tarefas
 Roteador::get('/equipe/tarefas', [TarefasController::class, 'index'], $eqMw);

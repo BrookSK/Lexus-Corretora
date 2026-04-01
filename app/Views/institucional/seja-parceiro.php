@@ -35,21 +35,32 @@ use LEX\Core\{View, I18n, Csrf};
         <div class="form-group"><label>WhatsApp</label><input type="tel" name="whatsapp"/></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Site</label><input type="url" name="website"/></div>
+        <div class="form-group"><label>Site</label><input type="text" name="website" placeholder="www.suaempresa.com.br"/></div>
         <div class="form-group"><label>Instagram</label><input type="text" name="instagram"/></div>
       </div>
 
       <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:32px 0 20px"><?php echo View::e(I18n::t('parceiro.dados_prof')); ?></h3>
       <div class="form-group"><label><?php echo View::e(I18n::t('parceiro.especialidades')); ?></label><input type="text" name="specialties" placeholder="Ex: Construção residencial, Reforma comercial"/></div>
       <div class="form-row">
-        <div class="form-group"><label><?php echo View::e(I18n::t('parceiro.cidades')); ?></label><input type="text" name="cities" placeholder="Ex: São Paulo, Campinas"/></div>
-        <div class="form-group"><label><?php echo View::e(I18n::t('parceiro.tempo_mercado')); ?></label><input type="number" name="years_in_market"/></div>
+        <?php
+        $estadoSelecionado = '';
+        $cidadeSelecionada = '';
+        $obrigatorio = false;
+        include __DIR__ . '/../_partials/campos-estado-cidade.php';
+        ?>
       </div>
+      <div class="form-group"><label><?php echo View::e(I18n::t('parceiro.tempo_mercado')); ?></label><input type="number" name="years_in_market"/></div>
       <div class="form-group"><label>Descrição da Empresa</label><textarea name="description"></textarea></div>
 
       <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:32px 0 20px"><?php echo View::e(I18n::t('parceiro.qualificacao')); ?></h3>
-      <div class="form-group"><label>Portfólio (PDF)</label><input type="file" name="portfolio" accept=".pdf"/></div>
-      <div class="form-group"><label>Documentos</label><input type="file" name="documents[]" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"/></div>
+      <div class="form-group"><label>Portfólio (PDF ou Fotos)</label><input type="file" name="portfolio[]" multiple accept=".pdf,.jpg,.jpeg,.png,.webp"/><small style="font-size:.75rem;color:rgba(12,12,10,.4);display:block;margin-top:4px">Envie 1 PDF ou no mínimo 6 fotos de trabalhos realizados</small></div>
+      <div class="form-group">
+        <label>Certidão de CNPJ ativo</label>
+        <div style="background:rgba(184,148,90,.06);border:1px solid rgba(184,148,90,.15);padding:12px;margin-bottom:8px;font-size:.82rem;line-height:1.5">
+          Para emitir, acesse: <a href="https://solucoes.receita.fazenda.gov.br/servicos/cnpjreva/cnpjreva_solicitacao.asp" target="_blank" rel="noopener" style="color:var(--gold)">Receita Federal</a>. Insira seu CNPJ, faça o download do cartão e anexe abaixo.
+        </div>
+        <input type="file" name="certidao_cnpj" accept=".pdf,.jpg,.jpeg,.png"/>
+      </div>
 
       <div class="form-submit">
         <button type="submit" class="btn-cta"><?php echo View::e(I18n::t('geral.enviar')); ?></button>

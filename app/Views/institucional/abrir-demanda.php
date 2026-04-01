@@ -29,8 +29,12 @@ use LEX\Core\{View, I18n, Csrf};
         <div class="form-group"><label>Empresa (opcional)</label><input type="text" name="company"/></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Cidade</label><input type="text" name="city" required/></div>
-        <div class="form-group"><label>Estado</label><input type="text" name="state" required/></div>
+        <?php
+        $estadoSelecionado = '';
+        $cidadeSelecionada = '';
+        $obrigatorio = true;
+        include __DIR__ . '/../_partials/campos-estado-cidade.php';
+        ?>
       </div>
 
       <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:32px 0 20px"><?php echo View::e(I18n::t('demanda.dados_obra')); ?></h3>
@@ -43,7 +47,7 @@ use LEX\Core\{View, I18n, Csrf};
           <select name="urgency"><option value="baixa">Baixa</option><option value="media" selected>Média</option><option value="alta">Alta</option><option value="critica">Crítica</option></select>
         </div>
       </div>
-      <div class="form-group"><label><?php echo View::e(I18n::t('demanda.localizacao')); ?></label><input type="text" name="address" placeholder="Endereço da obra"/></div>
+      <div class="form-group"><label>Endereço da obra</label><input type="text" name="address" placeholder="Rua, número, bairro"/></div>
       <div class="form-row">
         <div class="form-group"><label><?php echo View::e(I18n::t('demanda.metragem')); ?></label><input type="number" name="area_sqm" step="0.01"/></div>
         <div class="form-group"><label><?php echo View::e(I18n::t('demanda.prazo_desejado')); ?></label><input type="date" name="desired_deadline"/></div>

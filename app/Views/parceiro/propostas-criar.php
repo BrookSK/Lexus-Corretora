@@ -41,8 +41,9 @@ use LEX\Core\{View, I18n, Csrf};
   </div>
 </div>
 
-<form method="POST" action="/parceiro/propostas/criar/<?php echo View::e((string)$demanda['id']); ?>" enctype="multipart/form-data">
+<form method="POST" action="/parceiro/propostas/nova" enctype="multipart/form-data">
   <?php echo Csrf::campo(); ?>
+  <input type="hidden" name="demanda_id" value="<?php echo (int)($demanda['id'] ?? 0); ?>"/>
 
   <!-- Valores -->
   <div class="card" style="margin-bottom:24px;padding:32px">

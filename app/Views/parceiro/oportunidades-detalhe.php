@@ -101,10 +101,12 @@ $urgenciaBadge = [
     <?php if (($oportunidade['status'] ?? '') !== 'proposta_enviada' && ($oportunidade['status'] ?? '') !== 'recusado'): ?>
     <form method="POST" action="/parceiro/oportunidades/<?php echo View::e((string)$oportunidade['id']); ?>/interesse" style="display:inline">
       <?php echo Csrf::campo(); ?>
+      <input type="hidden" name="type" value="aceitar"/>
       <button type="submit" class="btn btn-primary">Tenho Interesse</button>
     </form>
-    <form method="POST" action="/parceiro/oportunidades/<?php echo View::e((string)$oportunidade['id']); ?>/recusar" style="display:inline">
+    <form method="POST" action="/parceiro/oportunidades/<?php echo View::e((string)$oportunidade['id']); ?>/interesse" style="display:inline">
       <?php echo Csrf::campo(); ?>
+      <input type="hidden" name="type" value="recusar"/>
       <button type="submit" class="btn btn-danger">Recusar</button>
     </form>
     <?php endif; ?>

@@ -33,8 +33,9 @@ use LEX\Core\{View, I18n, Csrf};
 
 <!-- Formulário de envio -->
 <div class="card">
-  <form method="POST" action="/equipe/mensagens/<?php echo (int)$conversa['id']; ?>/enviar">
+  <form method="POST" action="/equipe/mensagens/enviar">
     <?php echo Csrf::campo(); ?>
+    <input type="hidden" name="conversa_id" value="<?php echo (int)$conversa['id']; ?>"/>
     <div class="form-group">
       <label><?php echo View::e(I18n::t('mensagens.nova_mensagem')); ?></label>
       <textarea name="body" rows="3" required placeholder="<?php echo View::e(I18n::t('mensagens.placeholder')); ?>"></textarea>

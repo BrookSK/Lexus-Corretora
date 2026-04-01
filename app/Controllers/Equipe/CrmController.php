@@ -60,4 +60,14 @@ final class CrmController
         $_SESSION['flash'] = ['type' => 'success', 'message' => 'Lead convertido em cliente com sucesso.'];
         return Resposta::redirecionar('/equipe/clientes/' . $clienteId);
     }
+
+    public function alterarStatus(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        $status = $req->post('status', '');
+        CRMService::atualizarLead($id, ['status' => $status]);
+        AuditService::registrar('equipe', Auth::equipeId(), 'lead.status', 'leads', $id, ['status' => $status]);
+        $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
+        return Resposta::redirecionar('/equipe/crm/' . $id);
+    }
 }

@@ -14,7 +14,7 @@ use LEX\Core\{View, I18n, Csrf};
   </div>
 </div>
 
-<form method="POST" action="/cliente/minha-conta/salvar">
+<form method="POST" action="/cliente/minha-conta">
   <?php echo Csrf::campo(); ?>
 
   <!-- Dados Pessoais -->
@@ -49,14 +49,12 @@ use LEX\Core\{View, I18n, Csrf};
     </div>
 
     <div class="form-row">
-      <div class="form-group">
-        <label>Cidade</label>
-        <input type="text" name="city" value="<?php echo View::e($cliente['city'] ?? ''); ?>"/>
-      </div>
-      <div class="form-group">
-        <label>Estado</label>
-        <input type="text" name="state" value="<?php echo View::e($cliente['state'] ?? ''); ?>"/>
-      </div>
+      <?php
+      $estadoSelecionado = $cliente['state'] ?? '';
+      $cidadeSelecionada = $cliente['city'] ?? '';
+      $obrigatorio = false;
+      include __DIR__ . '/../_partials/campos-estado-cidade.php';
+      ?>
     </div>
   </div>
 

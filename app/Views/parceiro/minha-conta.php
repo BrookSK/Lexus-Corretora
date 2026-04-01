@@ -14,7 +14,7 @@ use LEX\Core\{View, I18n, Csrf};
   </div>
 </div>
 
-<form method="POST" action="/parceiro/minha-conta/salvar">
+<form method="POST" action="/parceiro/minha-conta">
   <?php echo Csrf::campo(); ?>
 
   <!-- Dados de Acesso -->

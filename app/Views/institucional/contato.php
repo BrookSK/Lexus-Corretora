@@ -26,7 +26,14 @@ use LEX\Core\{View, I18n, Csrf};
       </div>
       <div class="form-row">
         <div class="form-group"><label>E-mail</label><input type="email" name="email" placeholder="seu@email.com"/></div>
-        <div class="form-group"><label>Cidade / Estado</label><input type="text" name="city" placeholder="Ex: São Paulo, SP"/></div>
+      </div>
+      <div class="form-row">
+        <?php
+        $estadoSelecionado = '';
+        $cidadeSelecionada = '';
+        $obrigatorio = false;
+        include __DIR__ . '/../_partials/campos-estado-cidade.php';
+        ?>
       </div>
 
       <h3 class="form-section-title">Sobre a Obra</h3>
@@ -45,7 +52,7 @@ use LEX\Core\{View, I18n, Csrf};
         </div>
         <div class="form-group"><label>Tamanho aproximado (m²)</label><input type="number" name="area_sqm" step="0.01" min="0" placeholder="Ex: 120"/></div>
       </div>
-      <div class="form-group"><label>Endereço da obra</label><input type="text" name="address" placeholder="Rua, número, bairro, cidade"/></div>
+      <div class="form-group"><label>Endereço da obra</label><input type="text" name="address" placeholder="Rua, número, bairro"/></div>
 
       <h3 class="form-section-title">Documentação</h3>
       <div class="form-row">

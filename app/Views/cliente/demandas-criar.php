@@ -14,7 +14,7 @@ use LEX\Core\{View, I18n, Csrf};
   <a href="/cliente/demandas" class="btn btn-secondary"><?php echo View::e(I18n::t('geral.voltar')); ?></a>
 </div>
 
-<form method="POST" action="/cliente/demandas/criar" enctype="multipart/form-data">
+<form method="POST" action="/cliente/demandas/nova" enctype="multipart/form-data">
   <?php echo Csrf::campo(); ?>
 
   <!-- Dados da Obra -->
@@ -65,14 +65,12 @@ use LEX\Core\{View, I18n, Csrf};
     <h2 class="card-title" style="margin-bottom:20px"><?php echo View::e(I18n::t('demanda.localizacao')); ?></h2>
 
     <div class="form-row">
-      <div class="form-group">
-        <label>Cidade *</label>
-        <input type="text" name="city" required/>
-      </div>
-      <div class="form-group">
-        <label>Estado *</label>
-        <input type="text" name="state" required/>
-      </div>
+      <?php
+      $estadoSelecionado = '';
+      $cidadeSelecionada = '';
+      $obrigatorio = true;
+      include __DIR__ . '/../_partials/campos-estado-cidade.php';
+      ?>
     </div>
 
     <div class="form-group">

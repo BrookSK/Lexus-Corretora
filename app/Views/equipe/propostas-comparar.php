@@ -57,8 +57,9 @@ use LEX\Core\{View, I18n, Csrf};
 
     <div style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:8px">
       <a href="/equipe/propostas/<?php echo (int)$p['id']; ?>" class="btn btn-secondary btn-sm"><?php echo View::e(I18n::t('geral.ver')); ?></a>
-      <form method="POST" action="/equipe/propostas/<?php echo (int)$p['id']; ?>/shortlist" style="display:inline">
+      <form method="POST" action="/equipe/propostas/<?php echo (int)$p['id']; ?>/status" style="display:inline">
         <?php echo Csrf::campo(); ?>
+        <input type="hidden" name="status" value="shortlist"/>
         <button type="submit" class="btn btn-primary btn-sm">Shortlist</button>
       </form>
     </div>

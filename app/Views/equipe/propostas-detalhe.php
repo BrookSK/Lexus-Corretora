@@ -75,16 +75,19 @@ $badge = match($proposta['status'] ?? '') {
   <div><h2 class="section-title"><?php echo View::e(I18n::t('geral.acoes')); ?></h2></div>
 </div>
 <div style="display:flex;gap:12px;flex-wrap:wrap">
-  <form method="POST" action="/equipe/propostas/<?php echo (int)$proposta['id']; ?>/shortlist" style="display:inline">
+  <form method="POST" action="/equipe/propostas/<?php echo (int)$proposta['id']; ?>/status" style="display:inline">
     <?php echo Csrf::campo(); ?>
+    <input type="hidden" name="status" value="shortlist"/>
     <button type="submit" class="btn btn-primary btn-sm">Shortlist</button>
   </form>
-  <form method="POST" action="/equipe/propostas/<?php echo (int)$proposta['id']; ?>/aprovar" style="display:inline">
+  <form method="POST" action="/equipe/propostas/<?php echo (int)$proposta['id']; ?>/status" style="display:inline">
     <?php echo Csrf::campo(); ?>
+    <input type="hidden" name="status" value="selecionada"/>
     <button type="submit" class="btn btn-primary btn-sm"><?php echo View::e(I18n::t('propostas.aprovar')); ?></button>
   </form>
-  <form method="POST" action="/equipe/propostas/<?php echo (int)$proposta['id']; ?>/rejeitar" style="display:inline">
+  <form method="POST" action="/equipe/propostas/<?php echo (int)$proposta['id']; ?>/status" style="display:inline">
     <?php echo Csrf::campo(); ?>
+    <input type="hidden" name="status" value="descartada"/>
     <button type="submit" class="btn btn-danger btn-sm"><?php echo View::e(I18n::t('propostas.rejeitar')); ?></button>
   </form>
 </div>

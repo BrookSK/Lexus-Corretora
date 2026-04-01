@@ -52,17 +52,18 @@ use LEX\Core\{View, I18n, Csrf};
         <label><?php echo View::e(I18n::t('geral.documento')); ?></label>
         <input type="text" name="document"/>
       </div>
-      <div class="form-group">
-        <label><?php echo View::e(I18n::t('geral.cidade')); ?></label>
-        <input type="text" name="city"/>
-      </div>
     </div>
 
     <div class="form-row">
-      <div class="form-group">
-        <label><?php echo View::e(I18n::t('geral.estado')); ?></label>
-        <input type="text" name="state"/>
-      </div>
+      <?php
+      $estadoSelecionado = '';
+      $cidadeSelecionada = '';
+      $obrigatorio = false;
+      include __DIR__ . '/../_partials/campos-estado-cidade.php';
+      ?>
+    </div>
+
+    <div class="form-row">
       <div class="form-group">
         <label><?php echo View::e(I18n::t('geral.pais')); ?></label>
         <input type="text" name="country" value="Brasil"/>

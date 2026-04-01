@@ -54,8 +54,9 @@ use LEX\Core\{View, I18n, Csrf};
           <?php else: ?>—<?php endif; ?>
         </td>
         <td>
-          <form method="POST" action="/equipe/tarefas/<?php echo (int)$item['id']; ?>/concluir" style="display:inline">
+          <form method="POST" action="/equipe/tarefas/<?php echo (int)$item['id']; ?>/status" style="display:inline">
             <?php echo Csrf::campo(); ?>
+            <input type="hidden" name="status" value="concluida"/>
             <button type="submit" class="btn btn-secondary btn-sm" <?php echo ($item['status'] ?? '') === 'concluida' ? 'disabled' : ''; ?>><?php echo View::e(I18n::t('tarefas.concluir')); ?></button>
           </form>
         </td>

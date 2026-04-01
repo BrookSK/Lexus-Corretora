@@ -11,7 +11,7 @@ use LEX\Core\{View, I18n, Csrf};
 </div>
 
 <div class="card">
-  <form method="POST" action="/equipe/clientes/<?php echo (int)$cliente['id']; ?>/atualizar">
+  <form method="POST" action="/equipe/clientes/<?php echo (int)$cliente['id']; ?>/editar">
     <?php echo Csrf::campo(); ?>
 
     <div class="form-row">
@@ -48,14 +48,13 @@ use LEX\Core\{View, I18n, Csrf};
     </div>
 
     <div class="form-row">
-      <div class="form-group">
-        <label><?php echo View::e(I18n::t('geral.cidade')); ?></label>
-        <input type="text" name="city" value="<?php echo View::e($cliente['city'] ?? ''); ?>"/>
-      </div>
-      <div class="form-group">
-        <label><?php echo View::e(I18n::t('geral.estado')); ?></label>
-        <input type="text" name="state" value="<?php echo View::e($cliente['state'] ?? ''); ?>"/>
-      </div>
+    <div class="form-row">
+      <?php
+      $estadoSelecionado = $cliente['state'] ?? '';
+      $cidadeSelecionada = $cliente['city'] ?? '';
+      $obrigatorio = false;
+      include __DIR__ . '/../_partials/campos-estado-cidade.php';
+      ?>
     </div>
 
     <div class="form-row">

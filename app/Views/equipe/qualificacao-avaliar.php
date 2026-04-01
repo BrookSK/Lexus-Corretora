@@ -31,7 +31,7 @@ use LEX\Core\{View, I18n, Csrf};
 </div>
 
 <div class="card">
-  <form method="POST" action="/equipe/qualificacao/<?php echo (int)$qualificacao['id']; ?>/salvar">
+  <form method="POST" action="/equipe/qualificacao/<?php echo (int)$parceiro['id']; ?>">
     <?php echo Csrf::campo(); ?>
 
     <!-- Critérios de avaliação -->

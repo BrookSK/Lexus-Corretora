@@ -10,7 +10,7 @@ use LEX\Core\{View, I18n, Csrf};
 </div>
 
 <div class="card">
-  <form method="POST" action="/equipe/permissoes/salvar">
+  <form method="POST" action="/equipe/permissoes">
     <?php echo Csrf::campo(); ?>
 
     <div class="table-wrap" style="border:none">

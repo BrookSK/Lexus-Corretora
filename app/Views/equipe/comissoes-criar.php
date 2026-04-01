@@ -11,7 +11,7 @@ use LEX\Core\{View, I18n, Csrf};
 </div>
 
 <div class="card">
-  <form method="POST" action="/equipe/comissoes">
+  <form method="POST" action="/equipe/comissoes/nova">
     <?php echo Csrf::campo(); ?>
 
     <div class="form-row">
