@@ -151,7 +151,38 @@ final class PropostasService
         $pdo = BancoDeDados::obter();
         $stmt = $pdo->prepare("UPDATE propostas SET status = :status WHERE id = :id");
         $stmt->execute(['id' => $id, 'status' => $status]);
-        return $stmt->rowCount() > 0;
+        $updated = $stmt->rowCount() > 0;
+
+        if ($updated && $status === 'selecionada') {
+            $existing = $pdo->prepare("SELECT id FROM contratos WHERE proposta_id = :pid LIMIT 1");
+            $existing->execute(['pid' => $id]);
+            if (!$existing->fetch()) {
+                $prop = $pdo->prepare(
+                    "SELECT pr.id, pr.demanda_id, pr.parceiro_id, pr.amount, pr.currency_code,
+                            d.cliente_id
+                     FROM propostas pr
+                     JOIN demandas d ON d.id = pr.demanda_id
+                     WHERE pr.id = :id"
+                );
+                $prop->execute(['id' => $id]);
+                $p = $prop->fetch();
+                if ($p) {
+                    $pdo->prepare(
+                        "INSERT INTO contratos (demanda_id, proposta_id, cliente_id, parceiro_id, amount, currency_code, status)
+                         VALUES (:demanda_id, :proposta_id, :cliente_id, :parceiro_id, :amount, :currency_code, 'em_formalizacao')"
+                    )->execute([
+                        'demanda_id'   => $p['demanda_id'],
+                        'proposta_id'  => $p['id'],
+                        'cliente_id'   => $p['cliente_id'],
+                        'parceiro_id'  => $p['parceiro_id'],
+                        'amount'       => $p['amount'],
+                        'currency_code'=> $p['currency_code'] ?? 'BRL',
+                    ]);
+                }
+            }
+        }
+
+        return $updated;
     }
 
     public static function marcarShortlist(int $id, bool $shortlist): bool

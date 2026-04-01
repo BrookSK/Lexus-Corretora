@@ -173,6 +173,7 @@ return [
     'sidebar_par.dashboard'    => 'Dashboard',
     'sidebar_par.oportunidades'=> 'Oportunidades',
     'sidebar_par.propostas'    => 'Minhas Propostas',
+    'sidebar_par.contratos'    => 'Contratos',
     'sidebar_par.comissoes'    => 'Comissões',
     'sidebar_par.perfil'       => 'Meu Perfil',
     'sidebar_par.mensagens'    => 'Mensagens',

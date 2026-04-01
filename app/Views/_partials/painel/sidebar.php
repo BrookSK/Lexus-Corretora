@@ -61,6 +61,7 @@ if ($painelTipo === 'equipe') {
         ['url'=>'/parceiro/dashboard','icon'=>'dashboard','label'=>I18n::t('sidebar_par.dashboard')],
         ['url'=>'/parceiro/oportunidades','icon'=>'assignment','label'=>I18n::t('sidebar_par.oportunidades')],
         ['url'=>'/parceiro/propostas','icon'=>'description','label'=>I18n::t('sidebar_par.propostas')],
+        ['url'=>'/parceiro/contratos','icon'=>'gavel','label'=>I18n::t('sidebar_par.contratos')],
         ['url'=>'/parceiro/comissoes','icon'=>'payments','label'=>I18n::t('sidebar_par.comissoes')],
         ['url'=>'/parceiro/perfil','icon'=>'badge','label'=>I18n::t('sidebar_par.perfil')],
         ['url'=>'/parceiro/mensagens','icon'=>'chat','label'=>I18n::t('sidebar_par.mensagens')],

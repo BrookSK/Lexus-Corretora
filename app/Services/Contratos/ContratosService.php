@@ -64,13 +64,25 @@ final class ContratosService
     {
         $pdo = BancoDeDados::obter();
         $stmt = $pdo->prepare(
-            "SELECT ct.*, d.code AS demanda_code, d.title AS demanda_title,
+            "SELECT ct.*,
+                    d.code AS demanda_code, d.title AS demanda_title,
+                    d.description AS demanda_description, d.category AS demanda_category,
+                    d.city AS demanda_city, d.state AS demanda_state,
+                    d.budget_min AS demanda_budget_min, d.budget_max AS demanda_budget_max,
+                    d.urgency AS demanda_urgency, d.status AS demanda_status,
                     c.name AS cliente_nome, c.email AS cliente_email,
-                    p.name AS parceiro_nome, p.email AS parceiro_email
+                    c.phone AS cliente_phone, c.whatsapp AS cliente_whatsapp,
+                    c.company AS cliente_company, c.document AS cliente_document,
+                    p.name AS parceiro_nome, p.email AS parceiro_email,
+                    p.phone AS parceiro_phone, p.whatsapp AS parceiro_whatsapp,
+                    p.type AS parceiro_type, p.document AS parceiro_document,
+                    pr.description AS proposta_descricao, pr.deadline_days AS proposta_prazo,
+                    pr.conditions AS proposta_condicoes, pr.differentials AS proposta_diferenciais
              FROM contratos ct
              JOIN demandas d ON d.id = ct.demanda_id
              JOIN clientes c ON c.id = ct.cliente_id
              JOIN parceiros p ON p.id = ct.parceiro_id
+             LEFT JOIN propostas pr ON pr.id = ct.proposta_id
              WHERE ct.id = :id"
         );
         $stmt->execute(['id' => $id]);

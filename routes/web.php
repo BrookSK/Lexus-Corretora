@@ -33,6 +33,7 @@ use LEX\App\Controllers\Parceiro\ComissoesController as ParceiroComissoes;
 use LEX\App\Controllers\Parceiro\PerfilController as ParceiroPerfil;
 use LEX\App\Controllers\Parceiro\MensagensController as ParceiroMensagens;
 use LEX\App\Controllers\Parceiro\ContaController as ParceiroConta;
+use LEX\App\Controllers\Parceiro\ContratosController as ParceiroContratos;
 
 // Controllers da equipe
 use LEX\App\Controllers\Equipe\DashboardController as EquipeDashboard;
@@ -156,6 +157,8 @@ Roteador::get('/parceiro/perfil', [ParceiroPerfil::class, 'index'], $parMw);
 Roteador::post('/parceiro/perfil', [ParceiroPerfil::class, 'salvar'], $parMw);
 Roteador::get('/parceiro/mensagens', [ParceiroMensagens::class, 'index'], $parMw);
 Roteador::post('/parceiro/mensagens/enviar', [ParceiroMensagens::class, 'enviar'], $parMw);
+Roteador::get('/parceiro/contratos', [ParceiroContratos::class, 'index'], $parMw);
+Roteador::get('/parceiro/contratos/{id}', [ParceiroContratos::class, 'detalhe'], $parMw);
 Roteador::get('/parceiro/minha-conta', [ParceiroConta::class, 'index'], $parMw);
 Roteador::post('/parceiro/minha-conta', [ParceiroConta::class, 'salvar'], $parMw);
 
