@@ -7,6 +7,7 @@ use LEX\Core\{View, I18n, Auth};
 use LEX\App\Services\Demandas\DemandasService;
 use LEX\App\Services\Propostas\PropostasService;
 use LEX\App\Services\Timeline\TimelineService;
+use LEX\App\Services\Arquivos\ArquivosService;
 
 final class DemandasController
 {
@@ -40,6 +41,18 @@ final class DemandasController
         $dados['status'] = 'novo';
         $id = DemandasService::criar($dados);
         TimelineService::registrar($id, 'demanda_criada', 'Demanda criada pelo cliente', 'cliente', Auth::clienteId());
+
+        // Processar arquivos enviados
+        $filesRaw = $_FILES['files'] ?? [];
+        if (!empty($filesRaw['name'])) {
+            foreach ($filesRaw['name'] as $i => $nome) {
+                $arq = ['name' => $nome, 'type' => $filesRaw['type'][$i], 'tmp_name' => $filesRaw['tmp_name'][$i], 'error' => $filesRaw['error'][$i], 'size' => $filesRaw['size'][$i]];
+                if ($arq['error'] === UPLOAD_ERR_OK) {
+                    try { ArquivosService::upload($arq, 'demanda', $id); } catch (\Throwable $e) { /* silenciar */ }
+                }
+            }
+        }
+
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('demanda.sucesso')];
         return Resposta::redirecionar('/cliente/demandas/' . $id);
     }

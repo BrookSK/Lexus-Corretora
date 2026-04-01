@@ -7,6 +7,7 @@ use LEX\Core\{View, I18n, Auth, BancoDeDados};
 use LEX\App\Services\Integracoes\TrelloService;
 use LEX\App\Services\Demandas\DemandasService;
 use LEX\App\Services\Timeline\TimelineService;
+use LEX\App\Services\Arquivos\ArquivosService;
 
 final class InicialController
 {
@@ -127,6 +128,17 @@ final class InicialController
         $dadosDemanda['status']     = 'novo';
         $demandaId = DemandasService::criar($dadosDemanda);
         TimelineService::registrar($demandaId, 'demanda_criada', 'Demanda criada via formulário público', 'cliente', $clienteId);
+
+        // Processar arquivos enviados
+        $filesRaw = $_FILES['files'] ?? [];
+        if (!empty($filesRaw['name'])) {
+            foreach ($filesRaw['name'] as $i => $nome) {
+                $arq = ['name' => $nome, 'type' => $filesRaw['type'][$i], 'tmp_name' => $filesRaw['tmp_name'][$i], 'error' => $filesRaw['error'][$i], 'size' => $filesRaw['size'][$i]];
+                if ($arq['error'] === UPLOAD_ERR_OK) {
+                    try { ArquivosService::upload($arq, 'demanda', $demandaId); } catch (\Throwable $e) { /* silenciar */ }
+                }
+            }
+        }
 
         // Integração Trello
         try { TrelloService::cardDemanda($dados); } catch (\Throwable $e) { /* silenciar */ }
