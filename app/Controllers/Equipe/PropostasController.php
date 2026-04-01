@@ -12,13 +12,27 @@ final class PropostasController
 {
     public function index(Requisicao $req): Resposta
     {
-        $page = max(1, (int)$req->get('page', '1'));
-        $filtros = array_filter([
-            'status' => $req->get('status'), 'demanda_id' => $req->get('demanda_id'),
-        ]);
-        $resultado = PropostasService::listar($page, 20, $filtros);
+        $filtros = array_filter(['status' => $req->get('status')]);
+        $resultado = PropostasService::listar(1, 500, $filtros);
+
+        // Agrupar por demanda
+        $agrupadas = [];
+        foreach ($resultado['items'] as $item) {
+            $did = $item['demanda_id'];
+            if (!isset($agrupadas[$did])) {
+                $agrupadas[$did] = [
+                    'demanda_id'    => $did,
+                    'demanda_code'  => $item['demanda_code'] ?? ('#' . $did),
+                    'demanda_title' => $item['demanda_title'] ?? '',
+                    'propostas'     => [],
+                ];
+            }
+            $agrupadas[$did]['propostas'][] = $item;
+        }
+        $agrupadas = array_values($agrupadas);
+
         $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/propostas.php', [
-            'items' => $resultado['items'], 'total' => $resultado['total'],
+            'agrupadas' => $agrupadas, 'total' => $resultado['total'],
         ]);
         return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
             'conteudo' => $conteudo, 'painelTipo' => 'equipe',
