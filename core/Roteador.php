@@ -37,7 +37,17 @@ final class Roteador
         // CSRF automático em POST (exceto webhooks)
         if ($metodo === 'POST' && !in_array($caminho, self::$rotasWebhook, true)) {
             if (!Csrf::validarRequisicao()) {
-                Resposta::json(['erro' => 'Token CSRF inválido.'], 403)->enviar();
+                // Se for requisição AJAX, retorna JSON
+                $isAjax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest'
+                       || str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json');
+                if ($isAjax) {
+                    Resposta::json(['erro' => 'Sessão expirada. Recarregue a página.'], 403)->enviar();
+                    return;
+                }
+                // Para formulários normais: redireciona de volta com mensagem
+                $_SESSION['flash'] = ['type' => 'error', 'message' => 'Sessão expirada. Por favor, tente novamente.'];
+                $voltar = $_SERVER['HTTP_REFERER'] ?? '/';
+                Resposta::redirecionar($voltar)->enviar();
                 return;
             }
         }

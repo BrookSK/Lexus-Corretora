@@ -24,12 +24,14 @@
   min-width: 100%;
   width: max-content;
   max-width: 360px;
-  background: var(--bg-card);
+  background: var(--bg-card, #fff);
+  background-color: var(--bg-surface, #ffffff);
   border: 1px solid var(--border-color);
   border-radius: 4px;
   z-index: 9999;
   box-shadow: 0 8px 24px rgba(0,0,0,.35);
   transform: translateZ(0);
+  isolation: isolate;
 }
 .mc-panel.open { display: block; }
 .mc-search {

@@ -9,7 +9,7 @@ use LEX\Core\{View, I18n, Csrf};
 ?>
 <div class="section-header">
   <div>
-    <h1 class="section-title">Enviar Proposta</h1>
+    <h1 class="section-title">Enviar Pré-Orçamento</h1>
     <p class="section-subtitle">Demanda <?php echo View::e($demanda['code']); ?> — <?php echo View::e($demanda['title']); ?></p>
   </div>
   <a href="/parceiro/oportunidades" class="btn btn-secondary"><?php echo View::e(I18n::t('geral.voltar')); ?></a>
@@ -51,8 +51,10 @@ use LEX\Core\{View, I18n, Csrf};
 
     <div class="form-row">
       <div class="form-group">
-        <label>Valor da Proposta *</label>
-        <input type="number" name="amount" step="0.01" min="0" required placeholder="0.00"/>
+        <label>Valor do Pré-Orçamento *</label>
+        <input type="text" id="amount_display" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off" required
+               oninput="mascaraBRL(this,'amount')"/>
+        <input type="hidden" name="amount" id="amount"/>
       </div>
       <div class="form-group">
         <label>Moeda</label>
@@ -108,6 +110,19 @@ use LEX\Core\{View, I18n, Csrf};
 
   <div style="display:flex;gap:12px;justify-content:flex-end">
     <a href="/parceiro/oportunidades" class="btn btn-secondary"><?php echo View::e(I18n::t('geral.cancelar')); ?></a>
-    <button type="submit" class="btn btn-primary"><?php echo View::e(I18n::t('geral.enviar')); ?> Proposta</button>
+    <button type="submit" class="btn btn-primary">Enviar Pré-Orçamento</button>
   </div>
 </form>
+
+<script>
+function mascaraBRL(input, hiddenId) {
+  var digits = input.value.replace(/\D/g, '');
+  if (!digits) { input.value = ''; document.getElementById(hiddenId).value = ''; return; }
+  var cents = parseInt(digits, 10);
+  var reais = (cents / 100).toFixed(2);
+  var parts = reais.split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  input.value = 'R$ ' + parts[0] + ',' + parts[1];
+  document.getElementById(hiddenId).value = (cents / 100).toFixed(2);
+}
+</script>

@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace LEX\App\Services\Demandas;
 
 use LEX\Core\BancoDeDados;
+use LEX\App\Services\Arquivos\ArquivosService;
 use PDO;
 
 final class DemandasService
@@ -110,7 +111,9 @@ final class DemandasService
         );
         $stmt->execute(['id' => $id]);
         $row = $stmt->fetch();
-        return $row ?: null;
+        if (!$row) return null;
+        $row['arquivos'] = ArquivosService::listarPorEntidade('demanda', $id);
+        return $row;
     }
 
     public static function criar(array $dados): int
