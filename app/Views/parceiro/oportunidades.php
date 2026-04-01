@@ -109,7 +109,10 @@ $filtroUrgencia = $_GET['urgencia'] ?? '';
           <td style="white-space:nowrap">
             <a href="/parceiro/oportunidades/<?php echo View::e((string)$o['id']); ?>" class="btn btn-secondary btn-sm"><?php echo View::e(I18n::t('geral.visualizar')); ?></a>
             <?php if (($o['status'] ?? '') === 'enviado' || ($o['status'] ?? '') === 'visualizado'): ?>
-            <a href="/parceiro/oportunidades/<?php echo View::e((string)$o['id']); ?>/interesse" class="btn btn-primary btn-sm">Interesse</a>
+            <form method="POST" action="/parceiro/oportunidades/<?php echo (int)$o['id']; ?>/interesse" style="display:inline">
+              <?php echo Csrf::campo(); ?>
+              <button type="submit" class="btn btn-primary btn-sm">Interesse</button>
+            </form>
             <?php endif; ?>
           </td>
         </tr>
