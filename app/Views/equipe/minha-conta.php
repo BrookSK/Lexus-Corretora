@@ -65,3 +65,16 @@ use LEX\Core\{View, I18n, Csrf, Auth};
     <button type="submit" class="btn btn-primary"><?php echo View::e(I18n::t('geral.salvar')); ?></button>
   </div>
 </form>
+<script>
+(function(){
+  document.querySelector('form[action="/equipe/minha-conta"]').addEventListener('submit', function(e){
+    var p = document.querySelector('[name="new_password"]');
+    var c = document.querySelector('[name="new_password_confirmation"]');
+    if (p.value !== '' && p.value !== c.value) {
+      e.preventDefault();
+      alert('As senhas não coincidem.');
+      c.focus();
+    }
+  });
+})();
+</script>

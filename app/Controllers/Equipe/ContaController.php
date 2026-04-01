@@ -43,10 +43,17 @@ final class ContaController
 
         // Alterar senha se preenchida
         $novaSenha = $req->post('new_password', '');
-        if (!empty($novaSenha) && strlen($novaSenha) >= 8) {
-            $hash = password_hash($novaSenha, PASSWORD_BCRYPT, ['cost' => 12]);
-            $pdo->prepare("UPDATE users SET password = :p WHERE id = :id")
-                ->execute(['p' => $hash, 'id' => $userId]);
+        $confirmaSenha = $req->post('new_password_confirmation', '');
+        if (!empty($novaSenha)) {
+            if ($novaSenha !== $confirmaSenha) {
+                $_SESSION['flash'] = ['type' => 'error', 'message' => I18n::t('erro.senhas_nao_coincidem')];
+                return Resposta::redirecionar('/equipe/minha-conta');
+            }
+            if (strlen($novaSenha) >= 8) {
+                $hash = password_hash($novaSenha, PASSWORD_BCRYPT, ['cost' => 12]);
+                $pdo->prepare("UPDATE users SET password = :p WHERE id = :id")
+                    ->execute(['p' => $hash, 'id' => $userId]);
+            }
         }
 
         // Atualizar sessão

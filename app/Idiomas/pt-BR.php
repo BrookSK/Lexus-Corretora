@@ -231,6 +231,7 @@ return [
     'erro.csrf'                  => 'Token de segurança inválido. Recarregue a página.',
     'erro.rate_limit'            => 'Muitas requisições. Tente novamente em breve.',
     'erro.validacao'             => 'Verifique os campos e tente novamente.',
+    'erro.senhas_nao_coincidem'  => 'As senhas não coincidem.',
 
     // Contato
     'contato.titulo'       => 'Entre em Contato',

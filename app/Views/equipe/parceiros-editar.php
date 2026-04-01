@@ -103,8 +103,32 @@ use LEX\Core\{View, I18n, Csrf};
       </div>
     </div>
 
+    <div class="form-row" style="margin-top:8px">
+      <div class="form-group">
+        <label><?php echo View::e(I18n::t('auth.nova_senha')); ?></label>
+        <input type="password" name="password" id="parceiro_password" autocomplete="new-password" placeholder="Deixe em branco para não alterar"/>
+      </div>
+      <div class="form-group">
+        <label><?php echo View::e(I18n::t('auth.confirmar_senha')); ?></label>
+        <input type="password" id="parceiro_password_confirm" autocomplete="new-password" placeholder="Repita a nova senha"/>
+      </div>
+    </div>
+
     <div style="margin-top:24px">
       <button type="submit" class="btn btn-primary"><?php echo View::e(I18n::t('geral.salvar')); ?></button>
     </div>
   </form>
+<script>
+(function(){
+  document.querySelector('form[action*="/editar"]').addEventListener('submit', function(e){
+    var p = document.getElementById('parceiro_password');
+    var c = document.getElementById('parceiro_password_confirm');
+    if (p.value !== '' && p.value !== c.value) {
+      e.preventDefault();
+      alert('As senhas não coincidem.');
+      c.focus();
+    }
+  });
+})();
+</script>
 </div>
