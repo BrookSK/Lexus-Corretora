@@ -1,6 +1,18 @@
 <?php
 declare(strict_types=1);
 use LEX\Core\{View, I18n, Csrf};
+require __DIR__ . '/../_partials/categorias.php';
+
+$espSelecionadas = [];
+if (!empty($parceiro['specialties'])) {
+    $raw = $parceiro['specialties'];
+    if (is_string($raw)) {
+        $decoded = json_decode($raw, true);
+        $espSelecionadas = is_array($decoded) ? $decoded : array_map('trim', explode(',', $raw));
+    } elseif (is_array($raw)) {
+        $espSelecionadas = $raw;
+    }
+}
 ?>
 <div class="section-header">
   <div>
@@ -77,7 +89,27 @@ use LEX\Core\{View, I18n, Csrf};
 
     <div class="form-group">
       <label><?php echo View::e(I18n::t('parceiros.especialidades')); ?></label>
-      <input type="text" name="specialties" value="<?php echo View::e(is_array($parceiro['specialties'] ?? null) ? implode(', ', $parceiro['specialties']) : ($parceiro['specialties'] ?? '')); ?>"/>
+      <div class="mc-wrap" id="mc-esp">
+        <button type="button" class="mc-toggle" onclick="mcOpen('mc-esp')">
+          <span class="mc-label" id="mc-esp-lbl">
+            <?php echo count($espSelecionadas) ? count($espSelecionadas) . ' selecionada(s)' : 'Selecione especialidades'; ?>
+          </span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="mc-panel" id="mc-esp-panel">
+          <input type="text" class="mc-search" placeholder="Buscar..." oninput="mcFilter('mc-esp',this.value)">
+          <div class="mc-list" id="mc-esp-list">
+            <?php foreach ($CATEGORIAS_NICHO as $cat): ?>
+            <label class="mc-item">
+              <input type="checkbox" name="specialties[]" value="<?php echo View::e($cat); ?>"
+                <?php echo in_array($cat, $espSelecionadas) ? 'checked' : ''; ?>
+                onchange="mcUpdate('mc-esp')">
+              <?php echo View::e($cat); ?>
+            </label>
+            <?php endforeach; ?>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="form-group">
@@ -131,4 +163,5 @@ use LEX\Core\{View, I18n, Csrf};
   });
 })();
 </script>
+<?php require __DIR__ . '/../_partials/mc-dropdown.js.php'; ?>
 </div>

@@ -7,38 +7,8 @@ use LEX\Core\{View, I18n, Csrf};
  * Variáveis: $parceiro (array)
  */
 
-$especialidadesDisponiveis = [
-    'Construção residencial',
-    'Construção comercial',
-    'Reforma residencial',
-    'Reforma comercial',
-    'Reforma industrial',
-    'Interiores',
-    'Paisagismo',
-    'Projeto arquitetônico',
-    'Projeto estrutural',
-    'Projeto elétrico',
-    'Projeto hidráulico',
-    'Pintura',
-    'Alvenaria',
-    'Acabamento',
-    'Impermeabilização',
-    'Telhados e coberturas',
-    'Piscinas',
-    'Demolição',
-    'Terraplanagem',
-    'Instalações elétricas',
-    'Instalações hidráulicas',
-    'Ar condicionado e climatização',
-    'Automação residencial',
-    'Energia solar',
-    'Serralheria',
-    'Marcenaria',
-    'Vidraçaria',
-    'Gesso e drywall',
-    'Pisos e revestimentos',
-    'Esquadrias',
-];
+require __DIR__ . '/../_partials/categorias.php';
+$especialidadesDisponiveis = $CATEGORIAS_NICHO;
 
 $especialidadesSelecionadas = [];
 if (!empty($parceiro['specialties'])) {
@@ -160,12 +130,29 @@ if (!empty($parceiro['service_states'])) {
 
     <div class="form-group">
       <label><?php echo View::e(I18n::t('parceiro.especialidades')); ?></label>
-      <select name="specialties[]" multiple style="min-height:160px">
-        <?php foreach ($especialidadesDisponiveis as $esp): ?>
-        <option value="<?php echo View::e($esp); ?>" <?php echo in_array($esp, $especialidadesSelecionadas) ? 'selected' : ''; ?>><?php echo View::e($esp); ?></option>
-        <?php endforeach; ?>
-      </select>
-      <small style="color:var(--text-muted);font-size:.75rem">Segure Ctrl (ou Cmd) para selecionar múltiplas opções</small>
+      <?php $mcId = 'mc-especialidades'; ?>
+      <?php $mcSel = $especialidadesSelecionadas; ?>
+      <div class="mc-wrap" id="<?php echo $mcId; ?>">
+        <button type="button" class="mc-toggle" onclick="mcOpen('<?php echo $mcId; ?>')">
+          <span class="mc-label" id="<?php echo $mcId; ?>-lbl">
+            <?php echo count($mcSel) ? count($mcSel) . ' selecionada(s)' : 'Selecione especialidades'; ?>
+          </span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="mc-panel" id="<?php echo $mcId; ?>-panel">
+          <input type="text" class="mc-search" placeholder="Buscar..." oninput="mcFilter('<?php echo $mcId; ?>',this.value)">
+          <div class="mc-list" id="<?php echo $mcId; ?>-list">
+            <?php foreach ($especialidadesDisponiveis as $esp): ?>
+            <label class="mc-item">
+              <input type="checkbox" name="specialties[]" value="<?php echo View::e($esp); ?>"
+                <?php echo in_array($esp, $mcSel) ? 'checked' : ''; ?>
+                onchange="mcUpdate('<?php echo $mcId; ?>')">
+              <?php echo View::e($esp); ?>
+            </label>
+            <?php endforeach; ?>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="form-row">
@@ -331,7 +318,94 @@ if (!empty($parceiro['service_states'])) {
   </div>
 </form>
 
+<style>
+.mc-wrap { position: relative; }
+.mc-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-input, var(--bg-card));
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: .85rem;
+  color: var(--text-primary);
+  text-align: left;
+}
+.mc-toggle:hover { border-color: var(--gold); }
+.mc-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0,0,0,.25);
+}
+.mc-panel.open { display: block; }
+.mc-search {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  background: transparent;
+  padding: 8px 12px;
+  font-size: .82rem;
+  color: var(--text-primary);
+  outline: none;
+  box-sizing: border-box;
+}
+.mc-list {
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+.mc-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  font-size: .83rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+.mc-item:hover { background: rgba(184,148,90,.08); }
+.mc-item input[type=checkbox] { accent-color: var(--gold); width: 14px; height: 14px; flex-shrink: 0; }
+.mc-item.hidden { display: none; }
+</style>
+
 <script>
+function mcOpen(id) {
+  var panel = document.getElementById(id + '-panel');
+  var isOpen = panel.classList.contains('open');
+  document.querySelectorAll('.mc-panel.open').forEach(function(p){ p.classList.remove('open'); });
+  if (!isOpen) {
+    panel.classList.add('open');
+    var search = panel.querySelector('.mc-search');
+    if (search) { search.value = ''; mcFilter(id, ''); search.focus(); }
+  }
+}
+function mcUpdate(id) {
+  var checked = document.querySelectorAll('#' + id + ' input[type=checkbox]:checked');
+  var lbl = document.getElementById(id + '-lbl');
+  lbl.textContent = checked.length ? checked.length + ' selecionada(s)' : 'Selecione especialidades';
+}
+function mcFilter(id, q) {
+  q = q.toLowerCase();
+  document.querySelectorAll('#' + id + '-list .mc-item').forEach(function(item) {
+    item.classList.toggle('hidden', q !== '' && item.textContent.toLowerCase().indexOf(q) === -1);
+  });
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.mc-wrap')) {
+    document.querySelectorAll('.mc-panel.open').forEach(function(p){ p.classList.remove('open'); });
+  }
+});
+
 function adicionarCidade() {
   var container = document.getElementById('cidadesContainer');
   var div = document.createElement('div');

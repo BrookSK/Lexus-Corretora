@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 use LEX\Core\{View, I18n, Csrf};
+require __DIR__ . '/../_partials/categorias.php';
 ?>
 <div class="section-header">
   <div>
@@ -76,7 +77,23 @@ use LEX\Core\{View, I18n, Csrf};
 
     <div class="form-group">
       <label><?php echo View::e(I18n::t('parceiros.especialidades')); ?></label>
-      <input type="text" name="specialties" placeholder="<?php echo View::e(I18n::t('parceiros.especialidades_placeholder')); ?>"/>
+      <div class="mc-wrap" id="mc-esp">
+        <button type="button" class="mc-toggle" onclick="mcOpen('mc-esp')">
+          <span class="mc-label" id="mc-esp-lbl">Selecione especialidades</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="mc-panel" id="mc-esp-panel">
+          <input type="text" class="mc-search" placeholder="Buscar..." oninput="mcFilter('mc-esp',this.value)">
+          <div class="mc-list" id="mc-esp-list">
+            <?php foreach ($CATEGORIAS_NICHO as $cat): ?>
+            <label class="mc-item">
+              <input type="checkbox" name="specialties[]" value="<?php echo View::e($cat); ?>" onchange="mcUpdate('mc-esp')">
+              <?php echo View::e($cat); ?>
+            </label>
+            <?php endforeach; ?>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="form-group">
@@ -89,3 +106,5 @@ use LEX\Core\{View, I18n, Csrf};
     </div>
   </form>
 </div>
+
+<?php require __DIR__ . '/../_partials/mc-dropdown.js.php'; ?>

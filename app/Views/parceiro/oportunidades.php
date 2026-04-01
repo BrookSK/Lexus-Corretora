@@ -3,15 +3,37 @@ declare(strict_types=1);
 use LEX\Core\{View, I18n, Csrf};
 
 $catColors = [
-    'Arquitetura'       => ['#1a1a2e','#e94560'],
-    'Interiores'        => ['#0f3460','#e2b04a'],
-    'Construção Civil'  => ['#16213e','#b8945a'],
-    'Marcenaria'        => ['#2d1b00','#c8843a'],
-    'Elétrica'          => ['#0a1628','#f0c040'],
-    'Hidráulica'        => ['#001f3f','#7fdbff'],
-    'Paisagismo'        => ['#1a2e1a','#5cb85c'],
-    'Design'            => ['#1e0a28','#c77dff'],
-    'default'           => ['#141414','#b8945a'],
+    'Construção residencial'          => ['#16213e','#b8945a'],
+    'Construção comercial'            => ['#1a1a2e','#c8843a'],
+    'Reforma residencial'             => ['#1c1c2e','#e2b04a'],
+    'Reforma comercial'               => ['#231a00','#d4a017'],
+    'Reforma industrial'              => ['#1a1a1a','#9e9e9e'],
+    'Interiores'                      => ['#0f3460','#e2b04a'],
+    'Paisagismo'                      => ['#1a2e1a','#5cb85c'],
+    'Projeto arquitetônico'           => ['#1a1a2e','#e94560'],
+    'Projeto estrutural'              => ['#1a1500','#c8a832'],
+    'Projeto elétrico'                => ['#0a1628','#f0c040'],
+    'Projeto hidráulico'              => ['#001f3f','#7fdbff'],
+    'Pintura'                         => ['#1e0a28','#c77dff'],
+    'Alvenaria'                       => ['#1a120a','#b0875a'],
+    'Acabamento'                      => ['#1a1a2e','#e2b04a'],
+    'Impermeabilização'               => ['#001a2e','#4db8ff'],
+    'Telhados e coberturas'           => ['#1a0f0f','#e05c5c'],
+    'Piscinas'                        => ['#001e2e','#00c4e0'],
+    'Demolição'                       => ['#1a0a0a','#e04444'],
+    'Terraplanagem'                   => ['#1a1200','#c8a040'],
+    'Instalações elétricas'           => ['#0a1628','#f0c040'],
+    'Instalações hidráulicas'         => ['#001f3f','#7fdbff'],
+    'Ar condicionado e climatização'  => ['#001e2e','#5bc8e0'],
+    'Automação residencial'           => ['#0a0a28','#7060f0'],
+    'Energia solar'                   => ['#1a1400','#f5c800'],
+    'Serralheria'                     => ['#1a1a1a','#aaaaaa'],
+    'Marcenaria'                      => ['#2d1b00','#c8843a'],
+    'Vidraçaria'                      => ['#001a2e','#80d4ff'],
+    'Gesso e drywall'                 => ['#1e1e1e','#e0d0c0'],
+    'Pisos e revestimentos'           => ['#1a1000','#d4a870'],
+    'Esquadrias'                      => ['#0a1e1a','#3ecfb0'],
+    'default'                         => ['#141414','#b8945a'],
 ];
 $urgenciaLabel = ['baixa'=>'Baixa','media'=>'Média','alta'=>'Alta','critica'=>'Crítica'];
 $statusLabel   = ['enviado'=>'Novo','visualizado'=>'Visualizado','interessado'=>'Interessado','recusado'=>'Recusado','proposta_enviada'=>'Proposta Enviada'];
@@ -91,7 +113,6 @@ foreach ($oportunidades as $o) {
   scroll-snap-align: start;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-top-width: 3px;
   border-radius: 6px;
   overflow: hidden;
   cursor: pointer;
@@ -252,7 +273,7 @@ foreach ($oportunidades as $o) {
         $letra   = mb_strtoupper(mb_substr($o['title'] ?? 'D', 0, 1));
       ?>
       <a href="/parceiro/oportunidades/<?php echo (int)$o['id']; ?>" class="oport-card"
-         style="border-top-color:<?php echo $colors[1]; ?>">
+         style="border-top:3px solid <?php echo $colors[1]; ?>">
 
         <!-- Badges no topo -->
         <div class="oport-card-badges">

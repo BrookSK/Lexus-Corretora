@@ -56,8 +56,14 @@ use LEX\Core\{View, I18n, Csrf};
 
     <div class="form-row">
       <div class="form-group">
+        <?php require __DIR__ . '/../_partials/categorias.php'; ?>
         <label><?php echo View::e(I18n::t('demandas.categoria')); ?></label>
-        <input type="text" name="category" value="<?php echo View::e($demanda['category'] ?? ''); ?>"/>
+        <select name="category">
+          <option value="">— Selecione —</option>
+          <?php foreach ($CATEGORIAS_NICHO as $cat): ?>
+          <option value="<?php echo View::e($cat); ?>" <?php echo ($demanda['category'] ?? '') === $cat ? 'selected' : ''; ?>><?php echo View::e($cat); ?></option>
+          <?php endforeach; ?>
+        </select>
       </div>
       <div class="form-group">
         <label><?php echo View::e(I18n::t('demandas.tipo_obra')); ?></label>
