@@ -52,8 +52,9 @@ final class I18n
         return 'R$ ' . number_format($valorBrl, 2, ',', '.');
     }
 
-    public static function formatarMoeda(float $valor, string $moeda = ''): string
+    public static function formatarMoeda(int|float|string|null $valor, string $moeda = ''): string
     {
+        $valor = (float)($valor ?? 0);
         $m = $moeda ?: self::$moeda;
         if ($m === 'USD') {
             return '$ ' . number_format($valor, 2, '.', ',');
