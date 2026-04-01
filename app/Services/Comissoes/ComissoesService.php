@@ -7,8 +7,20 @@ use PDO;
 
 final class ComissoesService
 {
+    public static function marcarAtrasadas(): void
+    {
+        $pdo = BancoDeDados::obter();
+        $pdo->exec(
+            "UPDATE comissoes
+             SET status = 'atrasada'
+             WHERE expected_date < CURDATE()
+               AND status NOT IN ('recebida', 'confirmada', 'faturada', 'atrasada', 'cancelada')"
+        );
+    }
+
     public static function listar(int $page = 1, int $perPage = 20, array $filtros = []): array
     {
+        self::marcarAtrasadas();
         $pdo = BancoDeDados::obter();
         $where = ['1=1'];
         $params = [];
@@ -67,6 +79,7 @@ final class ComissoesService
 
     public static function listarPorParceiro(int $parceiroId): array
     {
+        self::marcarAtrasadas();
         $pdo = BancoDeDados::obter();
         $stmt = $pdo->prepare(
             "SELECT cm.*, d.code AS demanda_code, d.title AS demanda_title

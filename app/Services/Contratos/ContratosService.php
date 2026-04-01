@@ -168,10 +168,12 @@ final class ContratosService
         $insert = $pdo->prepare(
             "INSERT INTO comissoes
                 (demanda_id, contrato_id, parceiro_id, cliente_id, tipo,
-                 base_amount, commission_pct, commission_amount, currency_code, status)
+                 base_amount, commission_pct, commission_amount, currency_code,
+                 status, expected_date)
              VALUES
                 (:demanda_id, :contrato_id, :parceiro_id, :cliente_id, :tipo,
-                 :base_amount, :commission_pct, :commission_amount, 'BRL', 'prevista')"
+                 :base_amount, :commission_pct, :commission_amount, 'BRL',
+                 'prevista', DATE_ADD(CURDATE(), INTERVAL 30 DAY))"
         );
 
         // 1) Sempre: recebimento da Lexus (parceiro aprovado paga a Lexus)
