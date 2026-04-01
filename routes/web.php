@@ -113,9 +113,9 @@ Roteador::post('/login', [AuthController::class, 'login'], [
 Roteador::get('/sair', [AuthController::class, 'logout']);
 
 // Redirecionamentos das rotas antigas
-Roteador::get('/cliente/entrar',   fn() => Resposta::redirecionar('/login'));
-Roteador::get('/parceiro/entrar',  fn() => Resposta::redirecionar('/login'));
-Roteador::get('/equipe/entrar',    fn() => Resposta::redirecionar('/login'));
+Roteador::get('/cliente/entrar',   [AuthController::class, 'loginForm']);
+Roteador::get('/parceiro/entrar',  [AuthController::class, 'loginForm']);
+Roteador::get('/equipe/entrar',    [AuthController::class, 'loginForm']);
 Roteador::get('/cliente/sair',     [AuthController::class, 'logout']);
 Roteador::get('/parceiro/sair',    [AuthController::class, 'logout']);
 Roteador::get('/equipe/sair',      [AuthController::class, 'logout']);
