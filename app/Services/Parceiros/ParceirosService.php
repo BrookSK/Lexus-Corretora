@@ -115,7 +115,7 @@ final class ParceirosService
         $campos = ['empresa_id', 'name', 'email', 'phone', 'whatsapp', 'document', 'type',
                     'avatar', 'crea_cau', 'specialties', 'service_areas', 'service_cities',
                     'service_states', 'portfolio_url', 'bio', 'availability',
-                    'accepts_referral', 'referral_commission_pct'];
+                    'accepts_referral', 'referral_commission_pct', 'status', 'is_vetriks'];
         $set = [];
         $params = ['id' => $id];
 
