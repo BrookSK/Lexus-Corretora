@@ -43,7 +43,7 @@ $statusBadge = [
         <tr>
           <td><strong><?php echo View::e($p['demanda_code'] ?? '—'); ?></strong></td>
           <td>R$ <?php echo View::e(number_format((float)$p['amount'], 2, ',', '.')); ?></td>
-          <td><?php echo $p['deadline_days'] ? View::e($p['deadline_days']) . ' dias' : '—'; ?></td>
+          <td><?php echo $p['deadline_days'] ? View::e((string)$p['deadline_days']) . ' dias' : '—'; ?></td>
           <td>
             <span class="badge <?php echo $statusBadge[$p['status']] ?? 'badge-gray'; ?>">
               <?php echo View::e(I18n::t('status_prop.' . $p['status']) ?: $p['status']); ?>
