@@ -6,13 +6,15 @@ use LEX\Core\{View, I18n};
 <!-- HERO -->
 <section class="hero">
   <div class="hgrid"></div>
-  <div class="horb"></div>
-  <span class="lbl"><?php echo View::e(I18n::t('hero.label')); ?></span>
-  <h1 class="htitle"><?php echo I18n::t('hero.title'); ?></h1>
-  <p class="hbody"><?php echo View::e(I18n::t('hero.body')); ?></p>
-  <div class="hactions">
-    <a href="/sobre" class="btn-blk"><?php echo View::e(I18n::t('hero.cta_primary')); ?></a>
-    <a href="/como-funciona" class="btn-wht"><?php echo View::e(I18n::t('hero.cta_secondary')); ?></a>
+  <div class="hero-img"><img src="/assets/img/foto_hero.png" alt="Obra de alto padrão"/></div>
+  <div class="hero-content">
+    <span class="lbl"><?php echo View::e(I18n::t('hero.label')); ?></span>
+    <h1 class="htitle"><?php echo I18n::t('hero.title'); ?></h1>
+    <p class="hbody"><?php echo View::e(I18n::t('hero.body')); ?></p>
+    <div class="hactions">
+      <a href="/sobre" class="btn-blk"><?php echo View::e(I18n::t('hero.cta_primary')); ?></a>
+      <a href="/como-funciona" class="btn-wht"><?php echo View::e(I18n::t('hero.cta_secondary')); ?></a>
+    </div>
   </div>
   <div class="hstats">
     <div class="stat"><div class="snum">150+</div><div class="slbl"><?php echo View::e(I18n::t('hero.stat_empresas')); ?></div></div>
