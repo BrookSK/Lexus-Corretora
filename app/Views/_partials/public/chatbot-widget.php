@@ -8,7 +8,7 @@ use LEX\Core\{View, I18n};
   </button>
   <div id="chatbotPanel" class="chatbot-panel" style="display:none">
     <div class="chatbot-header">
-      <span class="chatbot-logo">Lexus</span>
+      <span class="chatbot-logo"><?php echo View::e(\LEX\Core\SistemaConfig::nome()); ?></span>
       <button id="chatbotClose" class="chatbot-close" aria-label="Fechar">&times;</button>
     </div>
     <div id="chatbotBody" class="chatbot-body">

@@ -30,7 +30,8 @@ body{font-family:'Outfit',sans-serif;font-weight:300;overflow-x:hidden;color:var
 /* ── NAV ─────────────────────────────── */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--black);border-bottom:1px solid rgba(184,148,90,.2)}
 .nav-row{display:flex;align-items:center;justify-content:space-between;padding:22px 64px}
-.logo{font-family:'Cormorant Garamond',serif;font-size:1.65rem;font-weight:600;letter-spacing:.1em;color:var(--gold);text-decoration:none}
+.logo{display:flex;align-items:center;text-decoration:none}
+.logo img{height:32px;width:auto}
 .nav-links{display:flex;gap:40px}
 .nav-links a{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,242,237,.5);text-decoration:none;transition:color .25s}
 .nav-links a:hover{color:var(--white)}
@@ -160,7 +161,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--black);bord
 .site-footer{background:var(--black);color:var(--white);border-top:1px solid rgba(184,148,90,.15)}
 .footer-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:48px;padding:72px 64px 56px}
 .footer-brand{display:flex;flex-direction:column;gap:12px}
-.footer-brand .flogo{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--gold);letter-spacing:.1em;text-decoration:none}
+.footer-brand .flogo{display:inline-block;text-decoration:none}
+.footer-brand .flogo img{height:36px;width:auto}
 .footer-tagline{font-size:.82rem;color:rgba(245,242,237,.35);line-height:1.6;max-width:260px}
 .footer-col{display:flex;flex-direction:column;gap:12px}
 .footer-heading{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;color:var(--gold);margin-bottom:4px}
@@ -255,7 +257,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--black);bord
 /* ── MOBILE ≤ 768px ─────────────────── */
 @media(max-width:768px){
   .nav-row{padding:16px 22px}
-  .logo{font-size:1.5rem}
+  .logo img{height:28px}
   .nav-links,.nav-actions{display:none}
   .burger{display:flex}
   .drawer{display:flex}

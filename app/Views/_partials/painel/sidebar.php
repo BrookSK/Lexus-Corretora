@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-use LEX\Core\{View, I18n, Auth};
+use LEX\Core\{View, I18n, Auth, SistemaConfig};
 
 $painelTipo = $painelTipo ?? 'equipe';
 $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
@@ -72,8 +72,9 @@ $logoutUrl = "/{$painelTipo}/sair";
 <aside id="sidebar" class="sidebar">
   <div class="sidebar-header">
     <a href="/<?php echo View::e($painelTipo); ?>/dashboard" class="sidebar-logo">
-      <span class="logo-full">Lexus</span>
-      <span class="logo-mini">L</span>
+      <?php $logoUrl = SistemaConfig::logo(); $faviconUrl = SistemaConfig::favicon(); ?>
+      <img src="<?php echo View::e($logoUrl); ?>" alt="<?php echo View::e(SistemaConfig::nome()); ?>" class="logo-full"/>
+      <img src="<?php echo View::e($faviconUrl); ?>" alt="<?php echo View::e(SistemaConfig::nome()); ?>" class="logo-mini"/>
     </a>
     <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle menu">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>

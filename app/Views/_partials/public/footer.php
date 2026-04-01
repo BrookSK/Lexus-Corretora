@@ -2,11 +2,14 @@
 declare(strict_types=1);
 use LEX\Core\{View, I18n, Csrf, SistemaConfig};
 $idiomaAtual = I18n::idioma();
+$logoUrl = SistemaConfig::logo();
+$nomeEmpresa = SistemaConfig::nome();
+$copyrightText = SistemaConfig::copyright();
 ?>
 <footer class="site-footer">
   <div class="footer-top">
     <div class="footer-brand">
-      <a href="/" class="flogo">Lexus</a>
+      <a href="/" class="flogo"><img src="<?php echo View::e($logoUrl); ?>" alt="<?php echo View::e($nomeEmpresa); ?>" style="height:36px"/></a>
       <p class="footer-tagline">Estruturação Estratégica de Obras</p>
       <!-- Seletor de Idioma -->
       <div class="footer-lang">
@@ -39,7 +42,7 @@ $idiomaAtual = I18n::idioma();
     </div>
   </div>
   <div class="footer-bottom">
-    <div class="fcopy">© <?php echo date('Y'); ?> Lexus Corretora — Estruturação Estratégica de Obras</div>
+    <div class="fcopy"><?php echo View::e($copyrightText); ?></div>
     <div class="footer-nuvem">Uma empresa <a href="https://nuvemlabs.com.br" target="_blank" rel="noopener">Nuvem Labs</a></div>
   </div>
 </footer>
