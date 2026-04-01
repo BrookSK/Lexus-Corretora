@@ -24,10 +24,26 @@ final class DashboardController
         $stmt->execute(['p' => $parceiroId]);
         $comissoesRecebidas = (float)$stmt->fetchColumn();
 
+        $stmt = $pdo->prepare("
+            SELECT od.id, od.status, od.sent_at,
+                   d.code AS demanda_code, d.title, d.city, d.state, d.budget_min, d.budget_max
+            FROM oportunidade_destinatarios od
+            JOIN oportunidade_distribuicoes odi ON odi.id = od.distribuicao_id
+            JOIN demandas d ON d.id = odi.demanda_id
+            WHERE od.parceiro_id = :p
+              AND od.status IN ('enviado','visualizado')
+              AND d.deleted_at IS NULL
+            ORDER BY od.sent_at DESC
+            LIMIT 5
+        ");
+        $stmt->execute(['p' => $parceiroId]);
+        $oportunidadesPendentes = $stmt->fetchAll();
+
         $conteudo = View::renderizar(__DIR__ . '/../../Views/parceiro/dashboard.php', [
-            'oportunidadesRecebidas' => $oportunidadesRecebidas,
-            'propostasEnviadas'      => $propostasEnviadas,
-            'comissoesRecebidas'     => $comissoesRecebidas,
+            'oportunidadesRecebidas'  => $oportunidadesRecebidas,
+            'propostasEnviadas'       => $propostasEnviadas,
+            'comissoesRecebidas'      => $comissoesRecebidas,
+            'oportunidadesPendentes'  => $oportunidadesPendentes,
         ]);
         $html = View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
             'conteudo'   => $conteudo,

@@ -23,3 +23,47 @@ use LEX\Core\{View, I18n, Auth};
     <div class="card-value"><?php echo I18n::formatarMoeda($comissoesRecebidas); ?></div>
   </div>
 </div>
+
+<?php if (!empty($oportunidadesPendentes)): ?>
+<div class="section-header" style="margin-top:32px">
+  <div><h2 class="section-title">Oportunidades Pendentes</h2></div>
+  <a href="/parceiro/oportunidades" class="btn btn-secondary btn-sm">Ver todas</a>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Título</th>
+        <th>Cidade / Estado</th>
+        <th>Orçamento</th>
+        <th>Status</th>
+        <th>Recebido em</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($oportunidadesPendentes as $op): ?>
+      <tr>
+        <td><strong><?php echo View::e($op['demanda_code'] ?? '—'); ?></strong></td>
+        <td><?php echo View::e($op['title'] ?? '—'); ?></td>
+        <td><?php echo View::e(($op['city'] ?? '—') . ' / ' . ($op['state'] ?? '—')); ?></td>
+        <td>
+          <?php if (!empty($op['budget_min']) || !empty($op['budget_max'])): ?>
+            R$ <?php echo number_format((float)($op['budget_min'] ?? 0), 0, ',', '.'); ?>
+            — R$ <?php echo number_format((float)($op['budget_max'] ?? 0), 0, ',', '.'); ?>
+          <?php else: ?>—<?php endif; ?>
+        </td>
+        <td>
+          <span class="badge <?php echo $op['status'] === 'enviado' ? 'badge-gray' : 'badge-blue'; ?>">
+            <?php echo $op['status'] === 'enviado' ? 'Novo' : 'Visualizado'; ?>
+          </span>
+        </td>
+        <td><?php echo View::e(date('d/m/Y H:i', strtotime($op['sent_at']))); ?></td>
+        <td><a href="/parceiro/oportunidades/<?php echo (int)$op['id']; ?>" class="btn btn-primary btn-sm">Ver</a></td>
+      </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+</div>
+<?php endif; ?>
