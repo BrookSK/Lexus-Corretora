@@ -87,10 +87,11 @@ foreach ($oportunidades as $o) {
 .oport-row::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
 /* ── Card ────────────────────────────────────── */
 .oport-card {
-  flex: 0 0 220px;
+  flex: 0 0 200px;
   scroll-snap-align: start;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
+  border-top-width: 3px;
   border-radius: 6px;
   overflow: hidden;
   cursor: pointer;
@@ -101,34 +102,13 @@ foreach ($oportunidades as $o) {
   color: inherit;
 }
 .oport-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.22); transform: translateY(-2px); }
-.oport-card-img {
-  height: 138px;
+.oport-card-badges {
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: relative;
-  flex-shrink: 0;
-}
-.oport-card-img-letter {
-  font-size: 3rem;
-  font-weight: 300;
-  font-family: 'Cormorant Garamond', serif;
-  color: rgba(255,255,255,.85);
-  line-height: 1;
-}
-.oport-card-img-code {
-  position: absolute;
-  bottom: 8px;
-  left: 10px;
-  font-size: .66rem;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,.55);
+  gap: 6px;
+  padding: 10px 12px 0;
 }
 .oport-card-urg {
-  position: absolute;
-  top: 8px;
-  left: 8px;
   font-size: .62rem;
   padding: 2px 7px;
   border-radius: 3px;
@@ -137,9 +117,6 @@ foreach ($oportunidades as $o) {
   letter-spacing: .05em;
 }
 .oport-card-new {
-  position: absolute;
-  top: 8px;
-  right: 8px;
   background: var(--gold);
   color: #000;
   font-size: .6rem;
@@ -148,6 +125,13 @@ foreach ($oportunidades as $o) {
   border-radius: 3px;
   text-transform: uppercase;
   letter-spacing: .06em;
+}
+.oport-card-code {
+  font-size: .64rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-left: auto;
 }
 .oport-card-body { padding: 12px 14px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
 .oport-card-title {
@@ -267,18 +251,16 @@ foreach ($oportunidades as $o) {
         $bmax    = (float)($o['budget_max'] ?? 0);
         $letra   = mb_strtoupper(mb_substr($o['title'] ?? 'D', 0, 1));
       ?>
-      <a href="/parceiro/oportunidades/<?php echo (int)$o['id']; ?>" class="oport-card">
+      <a href="/parceiro/oportunidades/<?php echo (int)$o['id']; ?>" class="oport-card"
+         style="border-top-color:<?php echo $colors[1]; ?>">
 
-        <!-- Imagem / placeholder -->
-        <div class="oport-card-img" style="background:linear-gradient(135deg,<?php echo $colors[0]; ?> 0%,<?php echo $colors[1]; ?> 100%)">
-          <span class="oport-card-img-letter"><?php echo $letra; ?></span>
-          <span class="oport-card-img-code"><?php echo View::e($o['demanda_code'] ?? ''); ?></span>
+        <!-- Badges no topo -->
+        <div class="oport-card-badges">
           <span class="oport-card-urg urg-<?php echo View::e($urgency); ?>">
             <?php echo $urgenciaLabel[$urgency] ?? ucfirst($urgency); ?>
           </span>
-          <?php if ($isNew): ?>
-            <span class="oport-card-new">Novo</span>
-          <?php endif; ?>
+          <?php if ($isNew): ?><span class="oport-card-new">Novo</span><?php endif; ?>
+          <span class="oport-card-code"><?php echo View::e($o['demanda_code'] ?? ''); ?></span>
         </div>
 
         <!-- Corpo -->
@@ -301,10 +283,8 @@ foreach ($oportunidades as $o) {
           </div>
           <?php endif; ?>
 
-          <div class="oport-card-status">
-            <?php
-            $stColors = ['enviado'=>'badge-gray','visualizado'=>'badge-blue','interessado'=>'badge-gold','recusado'=>'badge-red','proposta_enviada'=>'badge-green'];
-            ?>
+          <div class="oport-card-status" style="margin-top:6px">
+            <?php $stColors = ['enviado'=>'badge-gray','visualizado'=>'badge-blue','interessado'=>'badge-gold','recusado'=>'badge-red','proposta_enviada'=>'badge-green']; ?>
             <span class="badge <?php echo $stColors[$status] ?? 'badge-gray'; ?>" style="font-size:.64rem">
               <?php echo $statusLabel[$status] ?? ucfirst($status); ?>
             </span>
