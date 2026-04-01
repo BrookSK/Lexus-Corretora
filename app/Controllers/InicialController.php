@@ -197,6 +197,23 @@ final class InicialController
         ]);
         $parceiroId = (int)$pdo->lastInsertId();
 
+        // Processar portfólio (múltiplos arquivos)
+        $portfolio = $_FILES['portfolio'] ?? [];
+        if (!empty($portfolio['name'])) {
+            foreach ($portfolio['name'] as $i => $nome) {
+                $arq = ['name' => $nome, 'type' => $portfolio['type'][$i], 'tmp_name' => $portfolio['tmp_name'][$i], 'error' => $portfolio['error'][$i], 'size' => $portfolio['size'][$i]];
+                if ($arq['error'] === UPLOAD_ERR_OK) {
+                    try { ArquivosService::upload($arq, 'parceiro', $parceiroId, 'portfolio'); } catch (\Throwable $e) { /* silenciar */ }
+                }
+            }
+        }
+
+        // Processar certidão CNPJ (arquivo único)
+        $certidao = $_FILES['certidao_cnpj'] ?? [];
+        if (!empty($certidao['tmp_name']) && ($certidao['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
+            try { ArquivosService::upload($certidao, 'parceiro', $parceiroId, 'certidao_cnpj'); } catch (\Throwable $e) { /* silenciar */ }
+        }
+
         // Integração Trello
         try { TrelloService::cardParceiro($dados); } catch (\Throwable $e) { /* silenciar */ }
 

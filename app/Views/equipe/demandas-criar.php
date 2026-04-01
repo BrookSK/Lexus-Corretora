@@ -11,7 +11,7 @@ use LEX\Core\{View, I18n, Csrf};
 </div>
 
 <div class="card">
-  <form method="POST" action="/equipe/demandas/nova">
+  <form method="POST" action="/equipe/demandas/nova" enctype="multipart/form-data">
     <?php echo Csrf::campo(); ?>
 
     <div class="form-row">
@@ -163,6 +163,12 @@ use LEX\Core\{View, I18n, Csrf};
     <div class="form-group">
       <label><?php echo View::e(I18n::t('demandas.notas_internas')); ?></label>
       <textarea name="internal_notes" rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label><?php echo View::e(I18n::t('demanda.uploads')); ?></label>
+      <input type="file" name="files[]" multiple accept=".pdf,.jpg,.jpeg,.png,.dwg,.dxf,.doc,.docx,.xls,.xlsx,.zip"/>
+      <small style="color:var(--text-muted);font-size:.75rem">PDF, imagens, DWG, DOC, XLS — máx. 10MB por arquivo</small>
     </div>
 
     <div style="margin-top:24px">

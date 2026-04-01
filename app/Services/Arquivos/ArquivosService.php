@@ -16,7 +16,9 @@ final class ArquivosService
 
         $ext = strtolower(pathinfo($arquivo['name'], PATHINFO_EXTENSION));
         $nomeUnico = sprintf('%s_%d_%s.%s', $entidade, $entidadeId, bin2hex(random_bytes(8)), $ext);
-        $diretorio = rtrim($_SERVER['DOCUMENT_ROOT'] ?? '.', '/') . '/uploads/' . $entidade . '/' . date('Y/m');
+        // Resolve o diretório public/ a partir do local deste arquivo (app/Services/Arquivos/)
+        $publicDir = dirname(__DIR__, 3) . '/public';
+        $diretorio = $publicDir . '/uploads/' . $entidade . '/' . date('Y/m');
 
         if (!is_dir($diretorio)) {
             mkdir($diretorio, 0755, true);
