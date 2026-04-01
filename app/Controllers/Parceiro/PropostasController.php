@@ -7,6 +7,7 @@ use LEX\Core\{View, I18n, Auth};
 use LEX\App\Services\Propostas\PropostasService;
 use LEX\App\Services\Demandas\DemandasService;
 use LEX\App\Services\Timeline\TimelineService;
+use LEX\App\Services\Arquivos\ArquivosService;
 
 final class PropostasController
 {
@@ -44,7 +45,19 @@ final class PropostasController
         if (!empty($dados['demanda_id'])) {
             TimelineService::registrar((int)$dados['demanda_id'], 'proposta_enviada', 'Nova proposta recebida', 'parceiro', Auth::parceiroId());
         }
-        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Proposta enviada com sucesso.'];
+
+        // Processar arquivos da proposta
+        $filesRaw = $_FILES['files'] ?? [];
+        if (!empty($filesRaw['name'])) {
+            foreach ($filesRaw['name'] as $i => $nome) {
+                $arq = ['name' => $nome, 'type' => $filesRaw['type'][$i], 'tmp_name' => $filesRaw['tmp_name'][$i], 'error' => $filesRaw['error'][$i], 'size' => $filesRaw['size'][$i]];
+                if ($arq['error'] === UPLOAD_ERR_OK) {
+                    try { ArquivosService::upload($arq, 'proposta', $id); } catch (\Throwable $e) { /* silenciar */ }
+                }
+            }
+        }
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Pré-orçamento enviado com sucesso.'];
         return Resposta::redirecionar('/parceiro/propostas');
     }
 }

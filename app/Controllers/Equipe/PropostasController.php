@@ -6,6 +6,7 @@ use LEX\Core\Http\{Requisicao, Resposta};
 use LEX\Core\{View, I18n, Auth};
 use LEX\App\Services\Propostas\PropostasService;
 use LEX\App\Services\Audit\AuditService;
+use LEX\App\Services\Arquivos\ArquivosService;
 
 final class PropostasController
 {
@@ -31,6 +32,7 @@ final class PropostasController
         $id = (int)$req->param('id');
         $proposta = PropostasService::obterPorId($id);
         if (!$proposta) return Resposta::redirecionar('/equipe/propostas');
+        $proposta['arquivos'] = ArquivosService::listarPorEntidade('proposta', $id);
         $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/propostas-detalhe.php', ['proposta' => $proposta]);
         return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
             'conteudo' => $conteudo, 'painelTipo' => 'equipe',

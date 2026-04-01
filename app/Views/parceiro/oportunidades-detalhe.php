@@ -28,7 +28,7 @@ $urgenciaBadge = [
   <div class="card">
     <h3 class="card-title">Briefing</h3>
     <table style="width:100%;font-size:.88rem;margin-top:12px">
-      <tr><td style="color:var(--text-muted);padding:6px 0;width:40%"><?php echo View::e(I18n::t('demanda.tipo_obra')); ?></td><td style="padding:6px 0"><?php echo View::e($demanda['work_type'] ?? '—'); ?></td></tr>
+      <tr><td style="color:var(--text-muted);padding:6px 0;width:40%"><?php echo View::e(I18n::t('demanda.tipo_obra')); ?></td><td style="padding:6px 0"><?php echo View::e($demanda['work_type'] ?: ($demanda['category'] ?? '—')); ?></td></tr>
       <tr><td style="color:var(--text-muted);padding:6px 0"><?php echo View::e(I18n::t('demanda.metragem')); ?></td><td style="padding:6px 0"><?php echo $demanda['area_sqm'] ? View::e(number_format((float)$demanda['area_sqm'], 2, ',', '.')) . ' m²' : '—'; ?></td></tr>
       <tr><td style="color:var(--text-muted);padding:6px 0"><?php echo View::e(I18n::t('demanda.tem_projeto')); ?></td><td style="padding:6px 0"><?php echo ($demanda['has_project'] ?? 0) ? View::e(I18n::t('geral.sim')) : View::e(I18n::t('geral.nao')); ?></td></tr>
       <tr><td style="color:var(--text-muted);padding:6px 0"><?php echo View::e(I18n::t('demanda.tem_arquiteto')); ?></td><td style="padding:6px 0"><?php echo ($demanda['has_architect'] ?? 0) ? View::e(I18n::t('geral.sim')) : View::e(I18n::t('geral.nao')); ?></td></tr>

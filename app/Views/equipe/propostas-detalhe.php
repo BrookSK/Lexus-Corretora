@@ -70,6 +70,25 @@ $badge = match($proposta['status'] ?? '') {
 </div>
 <?php endif; ?>
 
+<!-- Anexos da Proposta -->
+<?php if (!empty($proposta['arquivos'])): ?>
+<div class="card" style="margin-bottom:24px">
+  <div class="card-label" style="margin-bottom:12px"><?php echo View::e(I18n::t('demanda.uploads')); ?></div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <?php foreach ($proposta['arquivos'] as $arq): ?>
+    <a href="/<?php echo View::e(ltrim($arq['file_path'], '/')); ?>" target="_blank"
+       style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--gold);text-decoration:none">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <?php echo View::e($arq['name']); ?>
+      <?php if (!empty($arq['file_size'])): ?>
+        <span style="color:var(--text-muted);font-size:.75rem">(<?php echo View::e(number_format($arq['file_size'] / 1024, 0, ',', '.')); ?> KB)</span>
+      <?php endif; ?>
+    </a>
+    <?php endforeach; ?>
+  </div>
+</div>
+<?php endif; ?>
+
 <!-- Ações -->
 <div class="section-header" style="margin-top:32px">
   <div><h2 class="section-title"><?php echo View::e(I18n::t('geral.acoes')); ?></h2></div>

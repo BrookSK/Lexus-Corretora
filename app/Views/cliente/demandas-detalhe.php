@@ -39,7 +39,7 @@ $urgenciaBadge = [
   <div class="card">
     <h3 class="card-title"><?php echo View::e(I18n::t('demanda.dados_obra')); ?></h3>
     <table style="width:100%;font-size:.88rem;margin-top:12px">
-      <tr><td style="color:var(--text-muted);padding:6px 0;width:40%"><?php echo View::e(I18n::t('demanda.tipo_obra')); ?></td><td style="padding:6px 0"><?php echo View::e($demanda['work_type'] ?? '—'); ?></td></tr>
+      <tr><td style="color:var(--text-muted);padding:6px 0;width:40%"><?php echo View::e(I18n::t('demanda.tipo_obra')); ?></td><td style="padding:6px 0"><?php echo View::e($demanda['work_type'] ?: ($demanda['category'] ?? '—')); ?></td></tr>
       <tr><td style="color:var(--text-muted);padding:6px 0"><?php echo View::e(I18n::t('demanda.localizacao')); ?></td><td style="padding:6px 0"><?php echo View::e(($demanda['city'] ?? '') . ', ' . ($demanda['state'] ?? '')); ?></td></tr>
       <?php if (!empty($demanda['address'])): ?>
       <tr><td style="color:var(--text-muted);padding:6px 0">Endereço</td><td style="padding:6px 0"><?php echo View::e($demanda['address']); ?></td></tr>
