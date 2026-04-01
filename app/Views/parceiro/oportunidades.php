@@ -273,7 +273,7 @@ foreach ($oportunidades as $o) {
         $letra   = mb_strtoupper(mb_substr($o['title'] ?? 'D', 0, 1));
       ?>
       <a href="/parceiro/oportunidades/<?php echo (int)$o['id']; ?>" class="oport-card"
-         style="border-top:3px solid <?php echo $colors[1]; ?>">
+         style="border:2px solid <?php echo $colors[1]; ?>;border-top-width:3px">
 
         <!-- Badges no topo -->
         <div class="oport-card-badges">
