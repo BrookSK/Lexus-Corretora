@@ -101,6 +101,15 @@ final class ComissoesService
     {
         $pdo = BancoDeDados::obter();
 
+        foreach (['demanda_id', 'contrato_id', 'parceiro_id', 'cliente_id'] as $fk) {
+            if (array_key_exists($fk, $dados) && $dados[$fk] === '') {
+                $dados[$fk] = null;
+            }
+        }
+        if (array_key_exists('expected_date', $dados) && $dados['expected_date'] === '') {
+            $dados['expected_date'] = null;
+        }
+
         $baseAmount = (float)($dados['base_amount'] ?? 0);
         $commissionPct = (float)($dados['commission_pct'] ?? 0);
         $dados['commission_amount'] = round($baseAmount * $commissionPct / 100, 2);

@@ -81,6 +81,15 @@ final class ContratosService
     public static function criar(array $dados): int
     {
         $pdo = BancoDeDados::obter();
+
+        foreach (['demanda_id', 'proposta_id', 'cliente_id', 'parceiro_id'] as $fk) {
+            if (array_key_exists($fk, $dados) && $dados[$fk] === '') {
+                $dados[$fk] = null;
+            }
+        }
+        if (array_key_exists('formalized_at', $dados) && $dados['formalized_at'] === '') {
+            $dados['formalized_at'] = null;
+        }
         $campos = ['demanda_id', 'proposta_id', 'cliente_id', 'parceiro_id',
                     'amount', 'currency_code', 'status', 'formalized_at',
                     'notes', 'internal_notes'];

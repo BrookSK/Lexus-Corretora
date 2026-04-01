@@ -109,6 +109,22 @@ final class PropostasService
     public static function criar(array $dados): int
     {
         $pdo = BancoDeDados::obter();
+
+        foreach (['demanda_id', 'parceiro_id'] as $fk) {
+            if (array_key_exists($fk, $dados) && $dados[$fk] === '') {
+                $dados[$fk] = null;
+            }
+        }
+        foreach (['deadline_days', 'validity_days', 'internal_score', 'amount'] as $num) {
+            if (array_key_exists($num, $dados) && $dados[$num] === '') {
+                $dados[$num] = null;
+            }
+        }
+        foreach (['deadline_date', 'valid_until'] as $dt) {
+            if (array_key_exists($dt, $dados) && $dados[$dt] === '') {
+                $dados[$dt] = null;
+            }
+        }
         $campos = ['demanda_id', 'parceiro_id', 'amount', 'currency_code', 'deadline_days',
                     'deadline_date', 'description', 'differentials', 'conditions',
                     'validity_days', 'valid_until', 'status', 'internal_score', 'internal_notes'];

@@ -118,6 +118,23 @@ final class DemandasService
         $pdo = BancoDeDados::obter();
         $dados['code'] = self::gerarCodigo();
 
+        // Campos FK: converter string vazia para null
+        foreach (['cliente_id', 'parceiro_originador_id', 'assigned_to'] as $fk) {
+            if (array_key_exists($fk, $dados) && $dados[$fk] === '') {
+                $dados[$fk] = null;
+            }
+        }
+        // Campos numéricos opcionais: converter string vazia para null
+        foreach (['area_sqm', 'budget_min', 'budget_max'] as $num) {
+            if (array_key_exists($num, $dados) && $dados[$num] === '') {
+                $dados[$num] = null;
+            }
+        }
+        // Campos de data: converter string vazia para null
+        if (array_key_exists('desired_deadline', $dados) && $dados['desired_deadline'] === '') {
+            $dados['desired_deadline'] = null;
+        }
+
         $campos = ['code', 'origin', 'cliente_id', 'parceiro_originador_id', 'assigned_to',
                     'title', 'description', 'category', 'subcategory', 'work_type',
                     'city', 'state', 'country', 'address', 'area_sqm', 'current_phase',
@@ -146,6 +163,21 @@ final class DemandasService
     public static function atualizar(int $id, array $dados): bool
     {
         $pdo = BancoDeDados::obter();
+
+        // Campos FK: converter string vazia para null
+        foreach (['cliente_id', 'parceiro_originador_id', 'assigned_to'] as $fk) {
+            if (array_key_exists($fk, $dados) && $dados[$fk] === '') {
+                $dados[$fk] = null;
+            }
+        }
+        foreach (['area_sqm', 'budget_min', 'budget_max'] as $num) {
+            if (array_key_exists($num, $dados) && $dados[$num] === '') {
+                $dados[$num] = null;
+            }
+        }
+        if (array_key_exists('desired_deadline', $dados) && $dados['desired_deadline'] === '') {
+            $dados['desired_deadline'] = null;
+        }
         $campos = ['origin', 'cliente_id', 'parceiro_originador_id', 'assigned_to',
                     'title', 'description', 'category', 'subcategory', 'work_type',
                     'city', 'state', 'country', 'address', 'area_sqm', 'current_phase',
