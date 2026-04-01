@@ -15,6 +15,14 @@ $badge = match($comissao['status'] ?? '') {
   </div>
   <a href="/equipe/comissoes" class="btn btn-secondary"><?php echo View::e(I18n::t('geral.voltar')); ?></a>
 </div>
+<?php
+$tipo = $comissao['tipo'] ?? 'recebimento';
+$tipoBadge = $tipo === 'recebimento' ? 'badge-green' : 'badge-red';
+$tipoLabel = $tipo === 'recebimento' ? 'Recebimento — parceiro aprovado paga Lexus' : 'Pagamento — Lexus repassa ao parceiro de origem';
+?>
+<div class="card" style="margin-bottom:20px;display:flex;align-items:center;gap:12px">
+  <span class="badge <?php echo $tipoBadge; ?>"><?php echo $tipoLabel; ?></span>
+</div>
 
 <div class="cards-grid">
   <div class="card">
@@ -22,7 +30,7 @@ $badge = match($comissao['status'] ?? '') {
     <div class="card-title"><a href="/equipe/demandas/<?php echo (int)$comissao['demanda_id']; ?>"><?php echo View::e($comissao['demanda_code'] ?? '#' . $comissao['demanda_id']); ?></a></div>
   </div>
   <div class="card">
-    <div class="card-label"><?php echo View::e(I18n::t('sidebar.parceiros')); ?></div>
+    <div class="card-label"><?php echo $tipo === 'recebimento' ? 'Parceiro (pagador)' : 'Parceiro de Origem (recebedor)'; ?></div>
     <div class="card-title"><?php echo View::e($comissao['parceiro_nome'] ?? '—'); ?></div>
   </div>
   <div class="card">

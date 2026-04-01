@@ -147,6 +147,8 @@ final class ConfigController
             'trello_api_key' => 'trello.api_key', 'trello_api_token' => 'trello.api_token',
             'trello_list_id' => 'trello.list_id', 'trello_list_contato' => 'trello.list_contato',
             'trello_list_demanda' => 'trello.list_demanda', 'trello_list_parceiro' => 'trello.list_parceiro',
+            'comissao_empresa_pct' => 'comissao.empresa_pct',
+            'comissao_parceiro_origem_pct' => 'comissao.parceiro_origem_pct',
         ];
         return $mapa[$chavePost] ?? $chavePost;
     }
@@ -163,6 +165,7 @@ final class ConfigController
             'geral' => ['sistema.idioma_padrao', 'sistema.moeda_padrao', 'sistema.timezone'],
             'legal' => ['legal.termos', 'legal.privacidade'],
             'trello' => ['trello.api_key', 'trello.api_token', 'trello.list_id', 'trello.list_contato', 'trello.list_demanda', 'trello.list_parceiro'],
+            'comissoes' => ['comissao.empresa_pct', 'comissao.parceiro_origem_pct'],
         ];
         $keys = $map[$secao] ?? [];
         $result = [];

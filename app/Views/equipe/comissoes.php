@@ -15,6 +15,7 @@ use LEX\Core\{View, I18n, Csrf};
     <thead>
       <tr>
         <th>#</th>
+        <th>Tipo</th>
         <th><?php echo View::e(I18n::t('sidebar.demandas')); ?></th>
         <th><?php echo View::e(I18n::t('sidebar.parceiros')); ?></th>
         <th><?php echo View::e(I18n::t('comissoes.valor_base')); ?></th>
@@ -26,12 +27,18 @@ use LEX\Core\{View, I18n, Csrf};
     </thead>
     <tbody>
       <?php if (empty($items)): ?>
-      <tr><td colspan="8"><?php echo View::e(I18n::t('geral.nenhum_registro')); ?></td></tr>
+      <tr><td colspan="9"><?php echo View::e(I18n::t('geral.nenhum_registro')); ?></td></tr>
       <?php else: foreach ($items as $item): ?>
       <tr>
         <td><?php echo (int)$item['id']; ?></td>
+        <td>
+          <?php $tipo = $item['tipo'] ?? 'recebimento'; ?>
+          <span class="badge <?php echo $tipo === 'recebimento' ? 'badge-green' : 'badge-red'; ?>">
+            <?php echo $tipo === 'recebimento' ? 'Recebimento' : 'Pagamento'; ?>
+          </span>
+        </td>
         <td><a href="/equipe/demandas/<?php echo (int)$item['demanda_id']; ?>"><?php echo View::e($item['demanda_code'] ?? '#' . $item['demanda_id']); ?></a></td>
-        <td><?php echo View::e($item['parceiro_nome'] ?? '—'); ?></td>
+        <td><?php echo View::e($item['parceiro_nome'] ?? ($tipo === 'recebimento' ? 'Lexus (empresa)' : '—')); ?></td>
         <td><?php echo I18n::formatarMoeda($item['base_amount']); ?></td>
         <td><?php echo number_format((float)$item['commission_pct'], 2); ?>%</td>
         <td><?php echo I18n::formatarMoeda($item['commission_amount']); ?></td>

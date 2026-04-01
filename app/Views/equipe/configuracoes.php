@@ -50,4 +50,8 @@ use LEX\Core\{View, I18n, Csrf};
     <div class="card-label">Trello</div>
     <div class="card-title">Integração com Trello para cards automáticos</div>
   </a>
+  <a href="/equipe/configuracoes/comissoes" class="card" style="text-decoration:none;color:inherit">
+    <div class="card-label">Comissões</div>
+    <div class="card-title">Percentuais de comissão da empresa e repasse ao parceiro de origem</div>
+  </a>
 </div>

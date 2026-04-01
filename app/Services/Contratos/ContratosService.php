@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace LEX\App\Services\Contratos;
 
-use LEX\Core\BancoDeDados;
+use LEX\Core\{BancoDeDados, Settings};
 use PDO;
 
 final class ContratosService
@@ -135,6 +135,69 @@ final class ContratosService
 
         $stmt = $pdo->prepare("UPDATE contratos SET status = :status{$extra} WHERE id = :id");
         $stmt->execute($params);
-        return $stmt->rowCount() > 0;
+        $updated = $stmt->rowCount() > 0;
+
+        if ($status === 'formalizado') {
+            self::gerarComissoes($id, $pdo);
+        }
+
+        return $updated;
+    }
+
+    private static function gerarComissoes(int $contratoId, \PDO $pdo): void
+    {
+        $existente = $pdo->prepare("SELECT id FROM comissoes WHERE contrato_id = :cid LIMIT 1");
+        $existente->execute(['cid' => $contratoId]);
+        if ($existente->fetch()) return;
+
+        $stmt = $pdo->prepare(
+            "SELECT ct.demanda_id, ct.cliente_id, ct.parceiro_id, ct.amount,
+                    d.origin AS demanda_origin, d.parceiro_originador_id
+             FROM contratos ct
+             JOIN demandas d ON d.id = ct.demanda_id
+             WHERE ct.id = :id"
+        );
+        $stmt->execute(['id' => $contratoId]);
+        $ct = $stmt->fetch();
+        if (!$ct) return;
+
+        $empresaPct        = (float)(Settings::obter('comissao.empresa_pct', 10));
+        $parceiroOrigemPct = (float)(Settings::obter('comissao.parceiro_origem_pct', 5));
+        $amount            = (float)$ct['amount'];
+
+        $insert = $pdo->prepare(
+            "INSERT INTO comissoes
+                (demanda_id, contrato_id, parceiro_id, cliente_id, tipo,
+                 base_amount, commission_pct, commission_amount, currency_code, status)
+             VALUES
+                (:demanda_id, :contrato_id, :parceiro_id, :cliente_id, :tipo,
+                 :base_amount, :commission_pct, :commission_amount, 'BRL', 'prevista')"
+        );
+
+        // 1) Sempre: recebimento da Lexus (parceiro aprovado paga a Lexus)
+        $insert->execute([
+            'demanda_id'        => $ct['demanda_id'],
+            'contrato_id'       => $contratoId,
+            'parceiro_id'       => $ct['parceiro_id'],
+            'cliente_id'        => $ct['cliente_id'],
+            'tipo'              => 'recebimento',
+            'base_amount'       => $amount,
+            'commission_pct'    => $empresaPct,
+            'commission_amount' => round($amount * $empresaPct / 100, 2),
+        ]);
+
+        // 2) Se demanda veio de parceiro: pagamento ao parceiro de origem
+        if ($ct['demanda_origin'] === 'parceiro' && !empty($ct['parceiro_originador_id'])) {
+            $insert->execute([
+                'demanda_id'        => $ct['demanda_id'],
+                'contrato_id'       => $contratoId,
+                'parceiro_id'       => $ct['parceiro_originador_id'],
+                'cliente_id'        => $ct['cliente_id'],
+                'tipo'              => 'pagamento',
+                'base_amount'       => $amount,
+                'commission_pct'    => $parceiroOrigemPct,
+                'commission_amount' => round($amount * $parceiroOrigemPct / 100, 2),
+            ]);
+        }
     }
 }

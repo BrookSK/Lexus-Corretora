@@ -337,6 +337,33 @@ $settings = $settings ?? [];
         <input type="text" name="sistema.timezone" value="<?php echo View::e($settings['sistema.timezone'] ?? 'America/Sao_Paulo'); ?>" placeholder="America/Sao_Paulo"/>
       </div>
 
+    <?php elseif ($secao === 'comissoes'): ?>
+      <div style="background:rgba(184,148,90,.04);border:1px solid rgba(184,148,90,.15);padding:20px;margin-bottom:24px">
+        <p style="font-size:.82rem;color:var(--text-muted);line-height:1.6">
+          Os percentuais abaixo são aplicados automaticamente ao valor do contrato no momento da formalização.<br>
+          <strong>% Empresa:</strong> receita da Lexus sobre todo contrato formalizado (cobrado do cliente).<br>
+          <strong>% Parceiro de Origem:</strong> repasse ao parceiro que submeteu a demanda (pago pela Lexus).
+        </p>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>% Comissão da Empresa</label>
+          <input type="number" step="0.01" min="0" max="100"
+                 name="comissao_empresa_pct"
+                 value="<?php echo View::e((string)($settings['comissao.empresa_pct'] ?? '10')); ?>"
+                 placeholder="10.00"/>
+          <small style="font-size:.75rem;color:var(--text-muted)">Gerado como pendência de recebimento (cliente → Lexus)</small>
+        </div>
+        <div class="form-group">
+          <label>% Comissão do Parceiro de Origem</label>
+          <input type="number" step="0.01" min="0" max="100"
+                 name="comissao_parceiro_origem_pct"
+                 value="<?php echo View::e((string)($settings['comissao.parceiro_origem_pct'] ?? '5')); ?>"
+                 placeholder="5.00"/>
+          <small style="font-size:.75rem;color:var(--text-muted)">Gerado como pendência de pagamento (Lexus → parceiro de origem), apenas quando a demanda foi submetida por um parceiro</small>
+        </div>
+      </div>
+
     <?php else: ?>
       <p style="color:var(--text-muted);font-size:.88rem">Seção "<?php echo View::e($secao); ?>" em desenvolvimento.</p>
     <?php endif; ?>

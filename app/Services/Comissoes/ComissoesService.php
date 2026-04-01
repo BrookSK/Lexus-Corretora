@@ -43,14 +43,14 @@ final class ComissoesService
 
         $stmt = $pdo->prepare(
             "SELECT cm.id, cm.demanda_id, cm.contrato_id, cm.parceiro_id,
-                    cm.base_amount, cm.commission_pct, cm.commission_amount,
+                    cm.tipo, cm.base_amount, cm.commission_pct, cm.commission_amount,
                     cm.currency_code, cm.status, cm.expected_date, cm.received_date,
                     cm.created_at,
                     d.code AS demanda_code, d.title AS demanda_title,
                     p.name AS parceiro_nome
              FROM comissoes cm
              JOIN demandas d ON d.id = cm.demanda_id
-             JOIN parceiros p ON p.id = cm.parceiro_id
+             LEFT JOIN parceiros p ON p.id = cm.parceiro_id
              WHERE {$whereSql}
              ORDER BY cm.created_at DESC
              LIMIT :limit OFFSET :offset"
@@ -72,7 +72,7 @@ final class ComissoesService
             "SELECT cm.*, d.code AS demanda_code, d.title AS demanda_title
              FROM comissoes cm
              JOIN demandas d ON d.id = cm.demanda_id
-             WHERE cm.parceiro_id = :parceiro_id
+             WHERE cm.parceiro_id = :parceiro_id AND cm.tipo = 'pagamento'
              ORDER BY cm.created_at DESC"
         );
         $stmt->execute(['parceiro_id' => $parceiroId]);
@@ -88,7 +88,7 @@ final class ComissoesService
                     c.name AS cliente_nome
              FROM comissoes cm
              JOIN demandas d ON d.id = cm.demanda_id
-             JOIN parceiros p ON p.id = cm.parceiro_id
+             LEFT JOIN parceiros p ON p.id = cm.parceiro_id
              LEFT JOIN clientes c ON c.id = cm.cliente_id
              WHERE cm.id = :id"
         );
