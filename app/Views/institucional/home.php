@@ -13,16 +13,18 @@ use LEX\Core\{View, I18n};
     <span class="lbl"><?php echo View::e(I18n::t('hero.label')); ?></span>
     <h1 class="htitle"><?php echo I18n::t('hero.title'); ?></h1>
     <p class="hbody"><?php echo View::e(I18n::t('hero.body')); ?></p>
-    <div class="hactions">
-      <a href="/sobre" class="btn-blk"><?php echo View::e(I18n::t('hero.cta_primary')); ?></a>
-      <a href="/como-funciona" class="btn-wht"><?php echo View::e(I18n::t('hero.cta_secondary')); ?></a>
+    <div class="hactions-row">
+      <div class="hactions">
+        <a href="/sobre" class="btn-blk"><?php echo View::e(I18n::t('hero.cta_primary')); ?></a>
+        <a href="/como-funciona" class="btn-wht"><?php echo View::e(I18n::t('hero.cta_secondary')); ?></a>
+      </div>
+      <div class="scrollhint"><div class="sline"></div><?php echo View::e(I18n::t('hero.scroll')); ?></div>
     </div>
   </div>
   <div class="hstats">
     <div class="stat"><div class="snum">150+</div><div class="slbl"><?php echo View::e(I18n::t('hero.stat_empresas')); ?></div></div>
     <div class="stat"><div class="snum">300+</div><div class="slbl"><?php echo View::e(I18n::t('hero.stat_prestadores')); ?></div></div>
   </div>
-  <div class="scrollhint"><div class="sline"></div><?php echo View::e(I18n::t('hero.scroll')); ?></div>
 </section>
 
 <!-- SOBRE -->
