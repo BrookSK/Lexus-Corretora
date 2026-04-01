@@ -111,7 +111,7 @@ $urgenciaBadge = [
     </form>
     <?php endif; ?>
     <?php if (($oportunidade['status'] ?? '') === 'interessado'): ?>
-    <a href="/parceiro/propostas/criar/<?php echo View::e((string)($demanda['id'] ?? '')); ?>" class="btn btn-primary">Enviar Proposta</a>
+    <a href="/parceiro/propostas/nova/<?php echo (int)($demanda['id'] ?? 0); ?>" class="btn btn-primary">Enviar Proposta</a>
     <?php endif; ?>
   </div>
 </div>
