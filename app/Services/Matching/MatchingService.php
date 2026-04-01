@@ -31,10 +31,21 @@ final class MatchingService
         ];
         $params = [];
 
+        $geoConditions = [];
+        if (!empty($demanda['city'])) {
+            $geoConditions[] = 'p.id IN (SELECT parceiro_id FROM parceiro_regioes WHERE city = :city)';
+            $geoConditions[] = 'JSON_CONTAINS(p.service_cities, :city_json)';
+            $params['city'] = $demanda['city'];
+            $params['city_json'] = json_encode($demanda['city']);
+        }
         if (!empty($demanda['state'])) {
-            $where[] = '(p.id IN (SELECT parceiro_id FROM parceiro_regioes WHERE state = :state) OR JSON_CONTAINS(p.service_states, :state_json))';
+            $geoConditions[] = 'p.id IN (SELECT parceiro_id FROM parceiro_regioes WHERE state = :state)';
+            $geoConditions[] = 'JSON_CONTAINS(p.service_states, :state_json)';
             $params['state'] = $demanda['state'];
             $params['state_json'] = json_encode($demanda['state']);
+        }
+        if (!empty($geoConditions)) {
+            $where[] = '(' . implode(' OR ', $geoConditions) . ')';
         }
 
         $whereSql = implode(' AND ', $where);

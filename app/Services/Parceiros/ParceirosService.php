@@ -151,6 +151,36 @@ final class ParceirosService
         return $stmt->rowCount() > 0;
     }
 
+    public static function obterRegiao(int $id): array
+    {
+        $pdo = BancoDeDados::obter();
+        $stmt = $pdo->prepare(
+            "SELECT state, city FROM parceiro_regioes WHERE parceiro_id = :id ORDER BY id ASC LIMIT 1"
+        );
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch() ?: ['state' => '', 'city' => ''];
+    }
+
+    public static function salvarRegiao(int $id, string $state, string $city): void
+    {
+        $pdo = BancoDeDados::obter();
+        $existing = $pdo->prepare(
+            "SELECT id FROM parceiro_regioes WHERE parceiro_id = :id ORDER BY id ASC LIMIT 1"
+        );
+        $existing->execute(['id' => $id]);
+        $row = $existing->fetch();
+
+        if ($row) {
+            $pdo->prepare(
+                "UPDATE parceiro_regioes SET state = :state, city = :city WHERE id = :rid"
+            )->execute(['state' => $state, 'city' => $city, 'rid' => $row['id']]);
+        } else {
+            $pdo->prepare(
+                "INSERT INTO parceiro_regioes (parceiro_id, state, city) VALUES (:id, :state, :city)"
+            )->execute(['id' => $id, 'state' => $state, 'city' => $city]);
+        }
+    }
+
     public static function listarPorCriterios(array $criterios): array
     {
         $pdo = BancoDeDados::obter();

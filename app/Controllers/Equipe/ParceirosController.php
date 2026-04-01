@@ -69,6 +69,9 @@ final class ParceirosController
         $id = (int)$req->param('id');
         $parceiro = ParceirosService::obterPorId($id);
         if (!$parceiro) return Resposta::redirecionar('/equipe/parceiros');
+        $regiao = ParceirosService::obterRegiao($id);
+        $parceiro['state'] = $regiao['state'];
+        $parceiro['city']  = $regiao['city'];
         $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/parceiros-editar.php', ['parceiro' => $parceiro]);
         return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
             'conteudo' => $conteudo, 'painelTipo' => 'equipe',
@@ -82,6 +85,12 @@ final class ParceirosController
         $id = (int)$req->param('id');
         $dados = $req->todosPost();
         unset($dados['_csrf_token']);
+        $state = trim($dados['state'] ?? '');
+        $city  = trim($dados['city'] ?? '');
+        unset($dados['state'], $dados['city']);
+        if ($state !== '') {
+            ParceirosService::salvarRegiao($id, $state, $city);
+        }
         ParceirosService::atualizar($id, $dados);
         AuditService::registrar('equipe', Auth::equipeId(), 'parceiro.atualizar', 'parceiros', $id);
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];

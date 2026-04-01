@@ -105,7 +105,7 @@ use LEX\Core\{View, I18n, Csrf};
           <tr><td colspan="6"><?php echo View::e(I18n::t('geral.nenhum_registro')); ?></td></tr>
           <?php else: foreach ($parceiros_disponiveis as $pa): ?>
           <tr>
-            <td><input type="checkbox" name="parceiros[]" value="<?php echo (int)$pa['id']; ?>"/></td>
+            <td><input type="checkbox" name="parceiro_ids[]" value="<?php echo (int)$pa['id']; ?>"/></td>
             <td><?php echo View::e($pa['name']); ?></td>
             <td><?php echo View::e($pa['type']); ?></td>
             <td><?php echo (int)($pa['score'] ?? 0); ?></td>

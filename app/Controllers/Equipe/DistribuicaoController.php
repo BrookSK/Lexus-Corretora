@@ -19,7 +19,7 @@ final class DistribuicaoController
         if (!$demanda) return Resposta::redirecionar('/equipe/demandas');
         $sugestoes = MatchingService::sugerirParceiros($demandaId, 20);
         $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/distribuicao.php', [
-            'demanda' => $demanda, 'sugestoes' => $sugestoes,
+            'demanda' => $demanda, 'sugestoes' => $sugestoes, 'parceiros_disponiveis' => $sugestoes,
         ]);
         return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
             'conteudo' => $conteudo, 'painelTipo' => 'equipe',
