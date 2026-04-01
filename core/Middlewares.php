@@ -10,7 +10,7 @@ final class Middlewares
     {
         return function () {
             if (!Auth::equipeLogada()) {
-                Resposta::redirecionar('/equipe/entrar')->enviar();
+                Resposta::redirecionar('/login')->enviar();
                 exit;
             }
         };
@@ -20,7 +20,7 @@ final class Middlewares
     {
         return function () {
             if (!Auth::clienteLogado()) {
-                Resposta::redirecionar('/cliente/entrar')->enviar();
+                Resposta::redirecionar('/login')->enviar();
                 exit;
             }
         };
@@ -30,7 +30,7 @@ final class Middlewares
     {
         return function () {
             if (!Auth::parceiroLogado()) {
-                Resposta::redirecionar('/parceiro/entrar')->enviar();
+                Resposta::redirecionar('/login')->enviar();
                 exit;
             }
         };

@@ -68,7 +68,7 @@ if ($painelTipo === 'equipe') {
         ['url'=>'/parceiro/minha-conta','icon'=>'person','label'=>I18n::t('sidebar_par.minha_conta')],
     ];
 }
-$logoutUrl = "/{$painelTipo}/sair";
+$logoutUrl = "/sair";
 ?>
 <aside id="sidebar" class="sidebar">
   <div class="sidebar-header">

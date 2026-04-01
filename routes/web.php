@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use LEX\Core\Roteador;
 use LEX\Core\Middlewares;
+use LEX\Core\Http\Resposta;
 
 // Controllers públicos
 use LEX\App\Controllers\InicialController;
@@ -14,6 +15,7 @@ use LEX\App\Controllers\ContatoController;
 use LEX\App\Controllers\CookieConsentController;
 
 // Controllers de autenticação
+use LEX\App\Controllers\AuthController;
 use LEX\App\Controllers\Cliente\AuthController as ClienteAuth;
 use LEX\App\Controllers\Parceiro\AuthController as ParceiroAuth;
 use LEX\App\Controllers\Equipe\AuthController as EquipeAuth;
@@ -101,13 +103,27 @@ Roteador::post('/idioma', [InicialController::class, 'trocarIdioma']);
 Roteador::post('/moeda', [InicialController::class, 'trocarMoeda']);
 
 // ═══════════════════════════════════════════════════════════════
+// LOGIN UNIFICADO
+// ═══════════════════════════════════════════════════════════════
+
+Roteador::get('/login', [AuthController::class, 'loginForm']);
+Roteador::post('/login', [AuthController::class, 'login'], [
+    Middlewares::rateLimitIp('login', 10, 1800),
+]);
+Roteador::get('/sair', [AuthController::class, 'logout']);
+
+// Redirecionamentos das rotas antigas
+Roteador::get('/cliente/entrar',   fn() => Resposta::redirecionar('/login'));
+Roteador::get('/parceiro/entrar',  fn() => Resposta::redirecionar('/login'));
+Roteador::get('/equipe/entrar',    fn() => Resposta::redirecionar('/login'));
+Roteador::get('/cliente/sair',     [AuthController::class, 'logout']);
+Roteador::get('/parceiro/sair',    [AuthController::class, 'logout']);
+Roteador::get('/equipe/sair',      [AuthController::class, 'logout']);
+
+// ═══════════════════════════════════════════════════════════════
 // ROTAS CLIENTE
 // ═══════════════════════════════════════════════════════════════
 
-Roteador::get('/cliente/entrar', [ClienteAuth::class, 'loginForm']);
-Roteador::post('/cliente/entrar', [ClienteAuth::class, 'login'], [
-    Middlewares::rateLimitIp('cli_login', 10, 1800),
-]);
 Roteador::get('/cliente/criar-conta', [ClienteAuth::class, 'registroForm']);
 Roteador::post('/cliente/criar-conta', [ClienteAuth::class, 'registro'], [
     Middlewares::rateLimitIp('cli_registro', 5, 600),
@@ -116,7 +132,6 @@ Roteador::get('/cliente/esqueci-senha', [ClienteAuth::class, 'esqueciSenhaForm']
 Roteador::post('/cliente/esqueci-senha', [ClienteAuth::class, 'esqueciSenha']);
 Roteador::get('/cliente/redefinir-senha/{token}', [ClienteAuth::class, 'redefinirSenhaForm']);
 Roteador::post('/cliente/redefinir-senha', [ClienteAuth::class, 'redefinirSenha']);
-Roteador::get('/cliente/sair', [ClienteAuth::class, 'logout']);
 
 $cliMw = [Middlewares::exigirLoginCliente()];
 Roteador::get('/cliente/dashboard', [ClienteDashboard::class, 'index'], $cliMw);
