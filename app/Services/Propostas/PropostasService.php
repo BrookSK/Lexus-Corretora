@@ -29,11 +29,35 @@ final class PropostasService
             $where[] = 'pr.is_shortlisted = :is_shortlisted';
             $params['is_shortlisted'] = (int)$filtros['is_shortlisted'];
         }
+        if (!empty($filtros['category'])) {
+            $where[] = 'd.category = :category';
+            $params['category'] = $filtros['category'];
+        }
+        if (!empty($filtros['state'])) {
+            $where[] = 'd.state = :state';
+            $params['state'] = $filtros['state'];
+        }
+        if (!empty($filtros['city'])) {
+            $where[] = 'd.city LIKE :city';
+            $params['city'] = '%' . $filtros['city'] . '%';
+        }
+        if (!empty($filtros['date_from'])) {
+            $where[] = 'DATE(pr.created_at) >= :date_from';
+            $params['date_from'] = $filtros['date_from'];
+        }
+        if (!empty($filtros['date_to'])) {
+            $where[] = 'DATE(pr.created_at) <= :date_to';
+            $params['date_to'] = $filtros['date_to'];
+        }
 
         $whereSql = implode(' AND ', $where);
         $offset = ($page - 1) * $perPage;
 
-        $countStmt = $pdo->prepare("SELECT COUNT(*) FROM propostas pr WHERE {$whereSql}");
+        $countStmt = $pdo->prepare(
+            "SELECT COUNT(*) FROM propostas pr
+             JOIN demandas d ON d.id = pr.demanda_id
+             WHERE {$whereSql}"
+        );
         $countStmt->execute($params);
         $total = (int)$countStmt->fetchColumn();
 
@@ -42,10 +66,14 @@ final class PropostasService
                     pr.deadline_days, pr.status, pr.is_shortlisted, pr.is_recommended,
                     pr.internal_score, pr.created_at,
                     d.code AS demanda_code, d.title AS demanda_title,
-                    p.name AS parceiro_nome
+                    d.category AS demanda_category, d.state AS demanda_state,
+                    d.city AS demanda_city,
+                    p.name AS parceiro_nome,
+                    c.name AS cliente_nome
              FROM propostas pr
              JOIN demandas d ON d.id = pr.demanda_id
              JOIN parceiros p ON p.id = pr.parceiro_id
+             LEFT JOIN clientes c ON c.id = d.cliente_id
              WHERE {$whereSql}
              ORDER BY pr.created_at DESC
              LIMIT :limit OFFSET :offset"

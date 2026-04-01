@@ -1,13 +1,65 @@
 <?php
 declare(strict_types=1);
 use LEX\Core\{View, I18n};
+require __DIR__ . '/../_partials/categorias.php';
+$f = $filtros ?? [];
 ?>
 <div class="section-header">
   <div>
     <h1 class="section-title"><?php echo View::e(I18n::t('sidebar.propostas')); ?></h1>
-    <p class="section-subtitle"><?php echo $total; ?> pré-orçamento(s) recebido(s)</p>
+    <p class="section-subtitle"><?php echo (int)$total; ?> pré-orçamento(s) recebido(s)</p>
   </div>
 </div>
+
+<!-- Filtros -->
+<form method="GET" action="/equipe/propostas" class="card" style="margin-bottom:20px;padding:20px">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr auto;gap:12px;align-items:flex-end">
+    <div>
+      <label style="font-size:.75rem;color:var(--text-muted);display:block;margin-bottom:4px">De</label>
+      <input type="date" name="date_from" value="<?php echo View::e($f['date_from'] ?? ''); ?>"
+             style="width:100%;font-size:.83rem"/>
+    </div>
+    <div>
+      <label style="font-size:.75rem;color:var(--text-muted);display:block;margin-bottom:4px">Até</label>
+      <input type="date" name="date_to" value="<?php echo View::e($f['date_to'] ?? ''); ?>"
+             style="width:100%;font-size:.83rem"/>
+    </div>
+    <div>
+      <label style="font-size:.75rem;color:var(--text-muted);display:block;margin-bottom:4px">Categoria</label>
+      <select name="category" style="width:100%;font-size:.83rem">
+        <option value="">Todas</option>
+        <?php foreach ($CATEGORIAS_NICHO as $cat): ?>
+        <option value="<?php echo View::e($cat); ?>" <?php echo ($f['category'] ?? '') === $cat ? 'selected' : ''; ?>>
+          <?php echo View::e($cat); ?>
+        </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div>
+      <label style="font-size:.75rem;color:var(--text-muted);display:block;margin-bottom:4px">Estado (UF)</label>
+      <input type="text" name="state" value="<?php echo View::e($f['state'] ?? ''); ?>"
+             placeholder="Ex: SP" maxlength="2" style="width:100%;font-size:.83rem;text-transform:uppercase"/>
+    </div>
+    <div>
+      <label style="font-size:.75rem;color:var(--text-muted);display:block;margin-bottom:4px">Cidade</label>
+      <input type="text" name="city" value="<?php echo View::e($f['city'] ?? ''); ?>"
+             placeholder="Ex: São Paulo" style="width:100%;font-size:.83rem"/>
+    </div>
+    <div>
+      <label style="font-size:.75rem;color:var(--text-muted);display:block;margin-bottom:4px">Status</label>
+      <select name="status" style="width:100%;font-size:.83rem">
+        <option value="">Todos</option>
+        <?php foreach (['enviada','shortlist','selecionada','descartada'] as $s): ?>
+        <option value="<?php echo $s; ?>" <?php echo ($f['status'] ?? '') === $s ? 'selected' : ''; ?>><?php echo ucfirst($s); ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div style="display:flex;gap:6px">
+      <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+      <a href="/equipe/propostas" class="btn btn-secondary btn-sm">Limpar</a>
+    </div>
+  </div>
+</form>
 
 <?php if (empty($agrupadas)): ?>
 <div class="card" style="padding:32px;text-align:center;color:var(--text-muted)">
@@ -17,23 +69,36 @@ use LEX\Core\{View, I18n};
 
 <?php foreach ($agrupadas as $idx => $grupo): ?>
 <?php $panelId = 'prop-group-' . $idx; ?>
-<div class="card" style="margin-bottom:12px;padding:0;overflow:hidden">
+<div class="card" style="margin-bottom:10px;padding:0;overflow:hidden">
 
   <!-- Cabeçalho da demanda (clicável) -->
   <button type="button" onclick="toggleGroup('<?php echo $panelId; ?>', this)"
     style="width:100%;display:flex;align-items:center;justify-content:space-between;
-           background:none;border:none;padding:18px 24px;cursor:pointer;text-align:left;gap:16px">
+           background:none;border:none;padding:16px 24px;cursor:pointer;text-align:left;gap:16px">
     <div style="display:flex;align-items:center;gap:12px;min-width:0">
-      <span style="font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-                   color:var(--gold);white-space:nowrap">
+      <span style="font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+                   color:var(--gold);white-space:nowrap;flex-shrink:0">
         <?php echo View::e($grupo['demanda_code']); ?>
       </span>
-      <span style="font-size:.93rem;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+      <span style="font-size:.9rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+        <?php echo View::e($grupo['cliente_nome'] ?: '—'); ?>
+        <span style="color:var(--text-muted);font-weight:400"> — </span>
         <?php echo View::e($grupo['demanda_title']); ?>
       </span>
+      <?php if (!empty($grupo['demanda_city']) || !empty($grupo['demanda_state'])): ?>
+      <span style="font-size:.75rem;color:var(--text-muted);white-space:nowrap;flex-shrink:0">
+        <?php echo View::e(trim(($grupo['demanda_city'] ?? '') . ', ' . ($grupo['demanda_state'] ?? ''), ', ')); ?>
+      </span>
+      <?php endif; ?>
+      <?php if (!empty($grupo['demanda_category'])): ?>
+      <span style="font-size:.7rem;background:rgba(184,148,90,.12);color:var(--gold);
+                   border-radius:4px;padding:2px 7px;white-space:nowrap;flex-shrink:0">
+        <?php echo View::e($grupo['demanda_category']); ?>
+      </span>
+      <?php endif; ?>
     </div>
-    <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
-      <span style="background:var(--gold);color:#fff;font-size:.72rem;font-weight:700;
+    <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+      <span style="background:var(--gold);color:#fff;font-size:.7rem;font-weight:700;
                    border-radius:999px;padding:2px 9px;white-space:nowrap">
         <?php echo count($grupo['propostas']); ?> proposta(s)
       </span>

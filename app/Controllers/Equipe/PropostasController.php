@@ -12,7 +12,14 @@ final class PropostasController
 {
     public function index(Requisicao $req): Resposta
     {
-        $filtros = array_filter(['status' => $req->get('status')]);
+        $filtros = array_filter([
+            'status'    => $req->get('status'),
+            'category'  => $req->get('category'),
+            'state'     => $req->get('state'),
+            'city'      => $req->get('city'),
+            'date_from' => $req->get('date_from'),
+            'date_to'   => $req->get('date_to'),
+        ]);
         $resultado = PropostasService::listar(1, 500, $filtros);
 
         // Agrupar por demanda
@@ -21,10 +28,14 @@ final class PropostasController
             $did = $item['demanda_id'];
             if (!isset($agrupadas[$did])) {
                 $agrupadas[$did] = [
-                    'demanda_id'    => $did,
-                    'demanda_code'  => $item['demanda_code'] ?? ('#' . $did),
-                    'demanda_title' => $item['demanda_title'] ?? '',
-                    'propostas'     => [],
+                    'demanda_id'       => $did,
+                    'demanda_code'     => $item['demanda_code'] ?? ('#' . $did),
+                    'demanda_title'    => $item['demanda_title'] ?? '',
+                    'demanda_category' => $item['demanda_category'] ?? '',
+                    'demanda_state'    => $item['demanda_state'] ?? '',
+                    'demanda_city'     => $item['demanda_city'] ?? '',
+                    'cliente_nome'     => $item['cliente_nome'] ?? '',
+                    'propostas'        => [],
                 ];
             }
             $agrupadas[$did]['propostas'][] = $item;
@@ -32,7 +43,7 @@ final class PropostasController
         $agrupadas = array_values($agrupadas);
 
         $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/propostas.php', [
-            'agrupadas' => $agrupadas, 'total' => $resultado['total'],
+            'agrupadas' => $agrupadas, 'total' => $resultado['total'], 'filtros' => $filtros,
         ]);
         return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
             'conteudo' => $conteudo, 'painelTipo' => 'equipe',
