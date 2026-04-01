@@ -26,21 +26,15 @@ use LEX\Core\{View, I18n, Csrf};
       <input type="text" name="title" required placeholder="Ex: Reforma residencial completa"/>
     </div>
 
+    <?php require __DIR__ . '/../_partials/categorias.php'; ?>
     <div class="form-row">
       <div class="form-group">
         <label><?php echo View::e(I18n::t('demanda.tipo_obra')); ?> *</label>
-        <select name="work_type" required>
-          <option value="">Selecione...</option>
-          <option value="construcao">Construção</option>
-          <option value="reforma">Reforma</option>
-          <option value="ampliacao">Ampliação</option>
-          <option value="retrofit">Retrofit</option>
-          <option value="interiores">Interiores</option>
-          <option value="paisagismo">Paisagismo</option>
-          <option value="estrutural">Estrutural</option>
-          <option value="eletrica">Elétrica</option>
-          <option value="hidraulica">Hidráulica</option>
-          <option value="outro">Outro</option>
+        <select name="category" required>
+          <option value="">— Selecione a categoria —</option>
+          <?php foreach ($CATEGORIAS_NICHO as $cat): ?>
+          <option value="<?php echo View::e($cat); ?>"><?php echo View::e($cat); ?></option>
+          <?php endforeach; ?>
         </select>
       </div>
       <div class="form-group">
@@ -91,11 +85,15 @@ use LEX\Core\{View, I18n, Csrf};
     <div class="form-row">
       <div class="form-group">
         <label>Orçamento Mínimo (R$)</label>
-        <input type="number" name="budget_min" step="0.01" min="0" placeholder="0.00"/>
+        <input type="text" id="bmin_display" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"
+               oninput="mascaraBRL(this,'budget_min')"/>
+        <input type="hidden" name="budget_min" id="budget_min"/>
       </div>
       <div class="form-group">
         <label>Orçamento Máximo (R$)</label>
-        <input type="number" name="budget_max" step="0.01" min="0" placeholder="0.00"/>
+        <input type="text" id="bmax_display" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"
+               oninput="mascaraBRL(this,'budget_max')"/>
+        <input type="hidden" name="budget_max" id="budget_max"/>
       </div>
     </div>
 
@@ -153,3 +151,15 @@ use LEX\Core\{View, I18n, Csrf};
     <button type="submit" class="btn btn-primary"><?php echo View::e(I18n::t('geral.enviar')); ?></button>
   </div>
 </form>
+<script>
+function mascaraBRL(input, hiddenId) {
+  var digits = input.value.replace(/\D/g, '');
+  if (!digits) { input.value = ''; document.getElementById(hiddenId).value = ''; return; }
+  var cents = parseInt(digits, 10);
+  var reais = (cents / 100).toFixed(2);
+  var parts = reais.split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  input.value = 'R$ ' + parts[0] + ',' + parts[1];
+  document.getElementById(hiddenId).value = (cents / 100).toFixed(2);
+}
+</script>

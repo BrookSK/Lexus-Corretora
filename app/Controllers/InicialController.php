@@ -118,7 +118,7 @@ final class InicialController
         $clienteId = (int)$pdo->lastInsertId();
 
         $dadosDemanda = array_intersect_key($dados, array_flip([
-            'title','description','work_type','urgency','address',
+            'title','description','category','work_type','urgency','address',
             'area_sqm','desired_deadline','budget_min','budget_max','notes',
             'city','state',
         ]));
@@ -181,7 +181,7 @@ final class InicialController
             'document'    => $dados['document'] ?? null,
             'type'        => $tipo,
             'bio'         => $dados['description'] ?? null,
-            'specialties' => !empty($dados['specialties']) ? json_encode([$dados['specialties']]) : null,
+            'specialties' => !empty($dados['specialties']) ? json_encode((array)$dados['specialties']) : null,
         ]);
         $parceiroId = (int)$pdo->lastInsertId();
 

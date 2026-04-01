@@ -62,7 +62,7 @@ $urgenciaBadge = [
           </td>
           <td><?php echo View::e(date('d/m/Y', strtotime($d['created_at']))); ?></td>
           <td>
-            <a href="/cliente/demandas/<?php echo View::e($d['code']); ?>" class="btn btn-secondary btn-sm"><?php echo View::e(I18n::t('geral.detalhes')); ?></a>
+            <a href="/cliente/demandas/<?php echo (int)$d['id']; ?>" class="btn btn-secondary btn-sm"><?php echo View::e(I18n::t('geral.detalhes')); ?></a>
           </td>
         </tr>
         <?php endforeach; ?>

@@ -44,7 +44,27 @@ use LEX\Core\{View, I18n, Csrf};
       </div>
 
       <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:32px 0 20px"><?php echo View::e(I18n::t('parceiro.dados_prof')); ?></h3>
-      <div class="form-group"><label><?php echo View::e(I18n::t('parceiro.especialidades')); ?></label><input type="text" name="specialties" placeholder="Ex: Construção residencial, Reforma comercial"/></div>
+      <?php require __DIR__ . '/../_partials/categorias.php'; ?>
+      <div class="form-group">
+        <label><?php echo View::e(I18n::t('parceiro.especialidades')); ?></label>
+        <div class="mc-wrap" id="mc-esp-sp">
+          <button type="button" class="mc-toggle" onclick="mcOpen('mc-esp-sp')">
+            <span class="mc-label" id="mc-esp-sp-lbl">Selecione suas especialidades</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="mc-panel" id="mc-esp-sp-panel">
+            <input type="text" class="mc-search" placeholder="Buscar..." oninput="mcFilter('mc-esp-sp',this.value)">
+            <div class="mc-list" id="mc-esp-sp-list">
+              <?php foreach ($CATEGORIAS_NICHO as $cat): ?>
+              <label class="mc-item">
+                <input type="checkbox" name="specialties[]" value="<?php echo View::e($cat); ?>" onchange="mcUpdate('mc-esp-sp')">
+                <?php echo View::e($cat); ?>
+              </label>
+              <?php endforeach; ?>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="form-row">
         <?php
         $estadoSelecionado = '';
@@ -72,6 +92,25 @@ use LEX\Core\{View, I18n, Csrf};
     </form>
   </div>
 </section>
+<style>
+.mc-wrap{position:relative;z-index:1}.mc-wrap.mc-open{z-index:9999;isolation:isolate}
+.mc-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #d0c9b8;border-radius:4px;padding:9px 12px;cursor:pointer;font-size:.85rem;color:#1a1a16;text-align:left}
+.mc-toggle:hover{border-color:#b8945a}
+.mc-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:100%;width:max-content;max-width:360px;background:#fff;border:1px solid #d0c9b8;border-radius:4px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.15);transform:translateZ(0)}
+.mc-panel.open{display:block}
+.mc-search{width:100%;border:none;border-bottom:1px solid #e8e0d4;background:transparent;padding:8px 12px;font-size:.82rem;color:#1a1a16;outline:none;box-sizing:border-box}
+.mc-list{max-height:220px;overflow-y:auto;padding:4px 0}
+.mc-item{display:flex;align-items:center;gap:8px;padding:7px 14px;font-size:.83rem;color:#1a1a16;cursor:pointer;user-select:none}
+.mc-item:hover{background:rgba(184,148,90,.08)}
+.mc-item input[type=checkbox]{accent-color:#b8945a;width:14px;height:14px;flex-shrink:0}
+.mc-item.mc-hidden{display:none}
+</style>
+<script>
+function mcOpen(id){var w=document.getElementById(id),p=document.getElementById(id+'-panel'),o=p.classList.contains('open');document.querySelectorAll('.mc-panel.open').forEach(function(x){x.classList.remove('open')});document.querySelectorAll('.mc-wrap.mc-open').forEach(function(x){x.classList.remove('mc-open')});if(!o){p.classList.add('open');if(w)w.classList.add('mc-open');var s=p.querySelector('.mc-search');if(s){s.value='';mcFilter(id,'');s.focus()}}}
+function mcUpdate(id){var c=document.querySelectorAll('#'+id+' input[type=checkbox]:checked'),l=document.getElementById(id+'-lbl');if(l)l.textContent=c.length?c.length+' selecionada(s)':'Selecione suas especialidades'}
+function mcFilter(id,q){q=(q||'').toLowerCase();document.querySelectorAll('#'+id+'-list .mc-item').forEach(function(i){i.classList.toggle('mc-hidden',q!==''&&i.textContent.toLowerCase().indexOf(q)===-1)})}
+document.addEventListener('click',function(e){if(!e.target.closest('.mc-wrap')){document.querySelectorAll('.mc-panel.open').forEach(function(p){p.classList.remove('open')});document.querySelectorAll('.mc-wrap.mc-open').forEach(function(w){w.classList.remove('mc-open')})}});
+</script>
 <script>
 (function(){
   var f = document.querySelector('form[action="/seja-parceiro"]');
