@@ -38,6 +38,10 @@ use LEX\Core\{View, I18n, Csrf};
         <div class="form-group"><label>Site</label><input type="text" name="website" placeholder="www.suaempresa.com.br"/></div>
         <div class="form-group"><label>Instagram</label><input type="text" name="instagram"/></div>
       </div>
+      <div class="form-row">
+        <div class="form-group"><label>Senha de acesso <small style="font-weight:400;color:rgba(12,12,10,.4)">(mín. 8 caracteres)</small></label><input type="password" name="password" required minlength="8"/></div>
+        <div class="form-group"><label>Confirmar senha</label><input type="password" name="password_confirm" required minlength="8"/></div>
+      </div>
 
       <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:32px 0 20px"><?php echo View::e(I18n::t('parceiro.dados_prof')); ?></h3>
       <div class="form-group"><label><?php echo View::e(I18n::t('parceiro.especialidades')); ?></label><input type="text" name="specialties" placeholder="Ex: Construção residencial, Reforma comercial"/></div>
@@ -68,3 +72,15 @@ use LEX\Core\{View, I18n, Csrf};
     </form>
   </div>
 </section>
+<script>
+(function(){
+  var f = document.querySelector('form[action="/seja-parceiro"]');
+  if(!f) return;
+  f.addEventListener('submit', function(e){
+    var p = f.querySelector('[name="password"]');
+    var c = f.querySelector('[name="password_confirm"]');
+    if(p.value !== c.value){ e.preventDefault(); c.setCustomValidity('As senhas não coincidem.'); c.reportValidity(); }
+    else { c.setCustomValidity(''); }
+  });
+})();
+</script>

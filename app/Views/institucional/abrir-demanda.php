@@ -29,6 +29,10 @@ use LEX\Core\{View, I18n, Csrf};
         <div class="form-group"><label>Empresa (opcional)</label><input type="text" name="company"/></div>
       </div>
       <div class="form-row">
+        <div class="form-group"><label>Senha de acesso <small style="font-weight:400;color:rgba(12,12,10,.4)">(mín. 8 caracteres)</small></label><input type="password" name="password" required minlength="8"/></div>
+        <div class="form-group"><label>Confirmar senha</label><input type="password" name="password_confirm" required minlength="8"/></div>
+      </div>
+      <div class="form-row">
         <?php
         $estadoSelecionado = '';
         $cidadeSelecionada = '';
@@ -68,3 +72,15 @@ use LEX\Core\{View, I18n, Csrf};
     </form>
   </div>
 </section>
+<script>
+(function(){
+  var f = document.querySelector('form[action="/abrir-demanda"]');
+  if(!f) return;
+  f.addEventListener('submit', function(e){
+    var p = f.querySelector('[name="password"]');
+    var c = f.querySelector('[name="password_confirm"]');
+    if(p.value !== c.value){ e.preventDefault(); c.setCustomValidity('As senhas não coincidem.'); c.reportValidity(); }
+    else { c.setCustomValidity(''); }
+  });
+})();
+</script>
