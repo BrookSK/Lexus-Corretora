@@ -8,7 +8,6 @@ use LEX\Core\{View, I18n};
   <div class="hgrid"></div>
   <div class="hero-img"><img src="/assets/img/foto_hero.png" alt="Obra de alto padrão"/></div>
   <div class="hero-geo"></div>
-  <div class="hero-orb"></div>
   <div class="hero-content">
     <span class="lbl"><?php echo View::e(I18n::t('hero.label')); ?></span>
     <h1 class="htitle"><?php echo I18n::t('hero.title'); ?></h1>

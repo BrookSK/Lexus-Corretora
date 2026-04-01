@@ -65,9 +65,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--black);bord
 .hero-geo{position:absolute;right:0;bottom:0;width:220px;height:220px;z-index:2;pointer-events:none;overflow:hidden}
 .hero-geo::before{content:'';position:absolute;right:-60px;bottom:-60px;width:280px;height:280px;background:linear-gradient(135deg,rgba(184,148,90,.35) 0%,rgba(184,148,90,.08) 50%,transparent 70%)}
 .hero-geo::after{content:'';position:absolute;right:20px;bottom:20px;width:120px;height:120px;border:1px solid rgba(184,148,90,.3);transform:rotate(45deg)}
-/* Orb dourado flutuante */
-.hero-orb{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 6px rgba(184,148,90,.12),0 0 0 14px rgba(184,148,90,.06);z-index:2;animation:orb-pulse 5s ease-in-out infinite}
-@keyframes orb-pulse{0%,100%{box-shadow:0 0 0 6px rgba(184,148,90,.12),0 0 0 14px rgba(184,148,90,.06)}50%{box-shadow:0 0 0 10px rgba(184,148,90,.18),0 0 0 22px rgba(184,148,90,.09)}}
 /* Conteúdo */
 .hero-content{position:relative;z-index:2;max-width:680px}
 /* Label com traço antes */
