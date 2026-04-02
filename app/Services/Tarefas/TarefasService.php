@@ -101,6 +101,53 @@ final class TarefasService
         return $stmt->rowCount() > 0;
     }
 
+    public static function obter(int $id): ?array
+    {
+        $pdo = BancoDeDados::obter();
+        $stmt = $pdo->prepare(
+            "SELECT t.*, u.name AS responsavel_nome, uc.name AS criador_nome
+             FROM tarefas t
+             LEFT JOIN users u  ON u.id  = t.assigned_to
+             LEFT JOIN users uc ON uc.id = t.created_by
+             WHERE t.id = :id"
+        );
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
+
+    public static function atualizar(int $id, array $dados): bool
+    {
+        $pdo = BancoDeDados::obter();
+        $campos = ['title', 'description', 'assigned_to', 'related_type', 'related_id',
+                   'priority', 'status', 'due_date'];
+        $sets = [];
+        $params = ['id' => $id];
+        foreach ($campos as $campo) {
+            if (array_key_exists($campo, $dados)) {
+                $sets[] = "`{$campo}` = :{$campo}";
+                $params[$campo] = ($dados[$campo] === '') ? null : $dados[$campo];
+            }
+        }
+        if (empty($sets)) return false;
+        if (isset($dados['status']) && $dados['status'] === 'concluida') {
+            $sets[] = 'completed_at = NOW()';
+        } elseif (isset($dados['status']) && $dados['status'] !== 'concluida') {
+            $sets[] = 'completed_at = NULL';
+        }
+        $stmt = $pdo->prepare('UPDATE tarefas SET ' . implode(', ', $sets) . ' WHERE id = :id');
+        $stmt->execute($params);
+        return $stmt->rowCount() > 0;
+    }
+
+    public static function excluir(int $id): bool
+    {
+        $pdo = BancoDeDados::obter();
+        $stmt = $pdo->prepare('DELETE FROM tarefas WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+        return $stmt->rowCount() > 0;
+    }
+
     public static function listarVencendo(int $dias = 3): array
     {
         $pdo = BancoDeDados::obter();

@@ -11,7 +11,14 @@ final class UsuariosController
     public function index(Requisicao $req): Resposta
     {
         $pdo = BancoDeDados::obter();
-        $stmt = $pdo->query("SELECT u.id, u.name, u.email, u.is_active, u.last_login_at, u.created_at, GROUP_CONCAT(r.name) AS roles FROM users u LEFT JOIN user_roles ur ON ur.user_id = u.id LEFT JOIN roles r ON r.id = ur.role_id WHERE u.deleted_at IS NULL GROUP BY u.id ORDER BY u.created_at DESC");
+        $stmt = $pdo->query(
+            "SELECT u.id, u.name, u.email, u.is_active, u.last_login_at, u.created_at,
+                    (SELECT r.name FROM user_roles ur JOIN roles r ON r.id = ur.role_id
+                     WHERE ur.user_id = u.id LIMIT 1) AS role_name
+             FROM users u
+             WHERE u.deleted_at IS NULL
+             ORDER BY u.created_at DESC"
+        );
         $usuarios = $stmt->fetchAll();
         $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/usuarios.php', ['items' => $usuarios]);
         return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
@@ -24,6 +31,12 @@ final class UsuariosController
     {
         $pdo = BancoDeDados::obter();
         $roles = $pdo->query("SELECT * FROM roles ORDER BY name")->fetchAll();
+        if (empty($roles)) {
+            $defaults = [['superadmin','Super Admin'],['admin','Administrador'],['operador','Operador'],['comercial','Comercial']];
+            $ins = $pdo->prepare("INSERT IGNORE INTO roles (slug, name) VALUES (:s, :n)");
+            foreach ($defaults as [$s, $n]) $ins->execute(['s' => $s, 'n' => $n]);
+            $roles = $pdo->query("SELECT * FROM roles ORDER BY name")->fetchAll();
+        }
         $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/usuarios-criar.php', ['roles' => $roles]);
         return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
             'conteudo' => $conteudo, 'painelTipo' => 'equipe', 'pageTitle' => I18n::t('sidebar.usuarios'),
@@ -34,18 +47,45 @@ final class UsuariosController
     public function salvar(Requisicao $req): Resposta
     {
         $pdo = BancoDeDados::obter();
-        $nome = trim($req->post('name', ''));
-        $email = trim($req->post('email', ''));
-        $senha = $req->post('password', '');
+        $nome   = trim($req->post('name', ''));
+        $email  = trim($req->post('email', ''));
+        $senha  = $req->post('password', '');
         $roleId = (int)$req->post('role_id', '0');
-        $hash = password_hash($senha, PASSWORD_BCRYPT, ['cost' => 12]);
-        $stmt = $pdo->prepare("INSERT INTO users (name, email, password, is_active) VALUES (:n, :e, :p, 1)");
-        $stmt->execute(['n' => $nome, 'e' => $email, 'p' => $hash]);
-        $userId = (int)$pdo->lastInsertId();
-        if ($roleId > 0) {
-            $pdo->prepare("INSERT INTO user_roles (user_id, role_id) VALUES (:u, :r)")->execute(['u' => $userId, 'r' => $roleId]);
+
+        if (empty($nome) || empty($email)) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Nome e e-mail são obrigatórios.'];
+            return Resposta::redirecionar('/equipe/usuarios/novo');
         }
-        AuditService::registrar('equipe', Auth::equipeId(), 'usuario.criar', 'users', $userId);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'E-mail inválido.'];
+            return Resposta::redirecionar('/equipe/usuarios/novo');
+        }
+        if (strlen($senha) < 8) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'A senha deve ter pelo menos 8 caracteres.'];
+            return Resposta::redirecionar('/equipe/usuarios/novo');
+        }
+
+        $hash = password_hash($senha, PASSWORD_BCRYPT, ['cost' => 12]);
+        try {
+            $stmt = $pdo->prepare("INSERT INTO users (name, email, password, is_active) VALUES (:n, :e, :p, 1)");
+            $stmt->execute(['n' => $nome, 'e' => $email, 'p' => $hash]);
+            $userId = (int)$pdo->lastInsertId();
+        } catch (\PDOException $e) {
+            $msg = (str_contains($e->getMessage(), '1062') || str_contains($e->getMessage(), 'Duplicate'))
+                ? 'Este e-mail já está cadastrado.'
+                : 'Erro ao criar usuário. Tente novamente.';
+            $_SESSION['flash'] = ['type' => 'error', 'message' => $msg];
+            return Resposta::redirecionar('/equipe/usuarios/novo');
+        }
+
+        if ($roleId > 0) {
+            try {
+                $pdo->prepare("INSERT IGNORE INTO user_roles (user_id, role_id) VALUES (:u, :r)")->execute(['u' => $userId, 'r' => $roleId]);
+            } catch (\PDOException $e) { /* silenciar — role inválida */ }
+        }
+
+        try { AuditService::registrar('equipe', Auth::equipeId(), 'usuario.criar', 'users', $userId); } catch (\Throwable $e) { /* silenciar */ }
+
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/usuarios');
     }
@@ -79,7 +119,7 @@ final class UsuariosController
             $hash = password_hash($senha, PASSWORD_BCRYPT, ['cost' => 12]);
             $pdo->prepare("UPDATE users SET password = :p WHERE id = :id")->execute(['p' => $hash, 'id' => $id]);
         }
-        AuditService::registrar('equipe', Auth::equipeId(), 'usuario.atualizar', 'users', $id);
+        try { AuditService::registrar('equipe', Auth::equipeId(), 'usuario.atualizar', 'users', $id); } catch (\Throwable $e) { /* silenciar */ }
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/usuarios');
     }

@@ -1,79 +1,98 @@
 <?php
 declare(strict_types=1);
-use LEX\Core\{View, I18n, Csrf};
+use LEX\Core\{View, I18n};
+
+$colunas = [
+    'novo'                  => ['label' => 'Novo',                'accent' => '#3b82f6'],
+    'em_triagem'            => ['label' => 'Em Triagem',          'accent' => '#f59e0b'],
+    'em_estruturacao'       => ['label' => 'Estruturação',        'accent' => '#8b5cf6'],
+    'pronto_repasse'        => ['label' => 'Pronto p/ Repasse',   'accent' => '#06b6d4'],
+    'distribuido'           => ['label' => 'Distribuído',         'accent' => '#0ea5e9'],
+    'aguardando_respostas'  => ['label' => 'Aguard. Respostas',   'accent' => '#f97316'],
+    'recebendo_propostas'   => ['label' => 'Propostas',           'accent' => '#ec4899'],
+    'em_curadoria'          => ['label' => 'Em Curadoria',        'accent' => '#6366f1'],
+    'apresentado_cliente'   => ['label' => 'Apresentado',         'accent' => '#14b8a6'],
+    'em_negociacao'         => ['label' => 'Negociação',          'accent' => '#b8945a'],
+    'contrato_formalizacao' => ['label' => 'Contrato',            'accent' => '#84cc16'],
+    'fechado_ganho'         => ['label' => 'Fechado — Ganho',     'accent' => '#22c55e'],
+    'fechado_perda'         => ['label' => 'Fechado — Perda',     'accent' => '#ef4444'],
+    'pausado'               => ['label' => 'Pausado',             'accent' => '#94a3b8'],
+    'cancelado'             => ['label' => 'Cancelado',           'accent' => '#64748b'],
+];
+
+$urgencyLabel = ['baixa' => 'Baixa', 'media' => 'Média', 'alta' => 'Alta', 'critica' => 'Crítica'];
+$urgencyColor = ['baixa' => '#22c55e', 'media' => '#f59e0b', 'alta' => '#f97316', 'critica' => '#ef4444'];
+
+$kanban = $kanban ?? [];
+$busca  = $busca ?? '';
+$total  = $total ?? 0;
 ?>
 <div class="section-header">
   <div>
     <h1 class="section-title"><?php echo View::e(I18n::t('sidebar.crm')); ?></h1>
-    <p class="section-subtitle"><?php echo View::e(I18n::t('crm.subtitulo_lista')); ?></p>
+    <p class="section-subtitle"><?php echo $total; ?> demanda<?php echo $total !== 1 ? 's' : ''; ?> no pipeline</p>
   </div>
-  <a href="/equipe/crm/novo" class="btn btn-primary"><?php echo View::e(I18n::t('crm.novo_lead')); ?></a>
+  <div style="display:flex;gap:10px;align-items:center">
+    <form method="GET" action="/equipe/crm" style="display:flex;gap:8px;align-items:center">
+      <input type="text" name="busca" value="<?php echo View::e($busca); ?>" placeholder="Buscar demanda..." style="padding:8px 12px;border:1px solid var(--border);background:var(--white);font-size:.82rem;outline:none;width:220px"/>
+      <button type="submit" class="btn btn-secondary btn-sm">Buscar</button>
+      <?php if ($busca !== ''): ?>
+      <a href="/equipe/crm" class="btn btn-secondary btn-sm">Limpar</a>
+      <?php endif; ?>
+    </form>
+    <a href="/equipe/demandas/criar" class="btn btn-primary">+ Nova Demanda</a>
+  </div>
 </div>
 
-<div class="card" style="margin-bottom:20px;padding:16px 20px">
-  <form method="GET" action="/equipe/crm" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
-    <div class="form-group" style="margin:0">
-      <label><?php echo View::e(I18n::t('geral.buscar')); ?></label>
-      <input type="text" name="busca" value="<?php echo View::e($busca ?? ''); ?>" placeholder="<?php echo View::e(I18n::t('geral.buscar')); ?>"/>
+<div class="crm-kanban">
+  <?php foreach ($colunas as $slug => $col):
+    $cards = $kanban[$slug] ?? [];
+    $count = count($cards);
+  ?>
+  <div class="crm-col">
+    <div class="crm-col-head" style="border-top:3px solid <?php echo $col['accent']; ?>">
+      <span class="crm-col-title"><?php echo View::e($col['label']); ?></span>
+      <span class="crm-col-count" style="background:<?php echo $col['accent']; ?>20;color:<?php echo $col['accent']; ?>"><?php echo $count; ?></span>
     </div>
-    <div class="form-group" style="margin:0">
-      <label><?php echo View::e(I18n::t('geral.status')); ?></label>
-      <select name="status">
-        <option value=""><?php echo View::e(I18n::t('geral.todos')); ?></option>
-        <option value="novo" <?php echo ($filtro_status ?? '') === 'novo' ? 'selected' : ''; ?>>Novo</option>
-        <option value="contatado" <?php echo ($filtro_status ?? '') === 'contatado' ? 'selected' : ''; ?>>Contatado</option>
-        <option value="qualificado" <?php echo ($filtro_status ?? '') === 'qualificado' ? 'selected' : ''; ?>>Qualificado</option>
-        <option value="convertido" <?php echo ($filtro_status ?? '') === 'convertido' ? 'selected' : ''; ?>>Convertido</option>
-        <option value="perdido" <?php echo ($filtro_status ?? '') === 'perdido' ? 'selected' : ''; ?>>Perdido</option>
-      </select>
-    </div>
-    <div class="form-group" style="margin:0">
-      <label><?php echo View::e(I18n::t('crm.origem')); ?></label>
-      <input type="text" name="origin" value="<?php echo View::e($filtro_origin ?? ''); ?>" placeholder="<?php echo View::e(I18n::t('crm.origem')); ?>"/>
-    </div>
-    <button type="submit" class="btn btn-secondary btn-sm"><?php echo View::e(I18n::t('geral.filtrar')); ?></button>
-  </form>
-</div>
-
-<div class="table-wrap">
-  <table>
-    <thead>
-      <tr>
-        <th><?php echo View::e(I18n::t('geral.nome')); ?></th>
-        <th><?php echo View::e(I18n::t('auth.email')); ?></th>
-        <th><?php echo View::e(I18n::t('geral.telefone')); ?></th>
-        <th><?php echo View::e(I18n::t('geral.empresa')); ?></th>
-        <th><?php echo View::e(I18n::t('crm.origem')); ?></th>
-        <th><?php echo View::e(I18n::t('geral.status')); ?></th>
-        <th><?php echo View::e(I18n::t('geral.acoes')); ?></th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php if (empty($items)): ?>
-      <tr><td colspan="7"><?php echo View::e(I18n::t('geral.nenhum_registro')); ?></td></tr>
-      <?php else: foreach ($items as $item): ?>
-      <tr>
-        <td><?php echo View::e($item['name']); ?></td>
-        <td><?php echo View::e($item['email'] ?? '—'); ?></td>
-        <td><?php echo View::e($item['phone'] ?? '—'); ?></td>
-        <td><?php echo View::e($item['company'] ?? '—'); ?></td>
-        <td><?php echo View::e($item['origin'] ?? '—'); ?></td>
-        <td>
+    <div class="crm-col-body">
+      <?php if (empty($cards)): ?>
+      <div class="crm-empty">—</div>
+      <?php else: foreach ($cards as $c): ?>
+      <a href="/equipe/demandas/<?php echo (int)$c['id']; ?>" class="crm-card">
+        <div class="crm-card-code"><?php echo View::e($c['code']); ?></div>
+        <div class="crm-card-title"><?php echo View::e($c['title']); ?></div>
+        <?php if (!empty($c['cliente_nome'])): ?>
+        <div class="crm-card-meta">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <?php echo View::e($c['cliente_nome']); ?>
+        </div>
+        <?php endif; ?>
+        <?php if (!empty($c['city'])): ?>
+        <div class="crm-card-meta">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <?php echo View::e($c['city']); ?><?php echo !empty($c['state']) ? ', '.View::e($c['state']) : ''; ?>
+        </div>
+        <?php endif; ?>
+        <?php if (!empty($c['budget_max']) && $c['budget_max'] > 0): ?>
+        <div class="crm-card-budget">
           <?php
-          $badge = match($item['status'] ?? '') {
-              'convertido' => 'badge-green',
-              'perdido' => 'badge-red',
-              'qualificado' => 'badge-gold',
-              default => 'badge-blue',
-          };
+          $cur = $c['currency_code'] ?? 'BRL';
+          $sym = $cur === 'USD' ? 'US$' : ($cur === 'EUR' ? '€' : 'R$');
+          echo $sym . ' ' . number_format((float)$c['budget_max'], 0, ',', '.');
           ?>
-          <span class="badge <?php echo $badge; ?>"><?php echo View::e($item['status']); ?></span>
-        </td>
-        <td>
-          <a href="/equipe/crm/<?php echo (int)$item['id']; ?>" class="btn btn-secondary btn-sm"><?php echo View::e(I18n::t('geral.ver')); ?></a>
-        </td>
-      </tr>
+        </div>
+        <?php endif; ?>
+        <?php if (!empty($c['urgency'])): ?>
+        <div class="crm-card-foot">
+          <span class="crm-urgency" style="color:<?php echo $urgencyColor[$c['urgency']] ?? '#94a3b8'; ?>">
+            ● <?php echo View::e($urgencyLabel[$c['urgency']] ?? $c['urgency']); ?>
+          </span>
+          <span class="crm-card-date"><?php echo date('d/m', strtotime($c['created_at'])); ?></span>
+        </div>
+        <?php endif; ?>
+      </a>
       <?php endforeach; endif; ?>
-    </tbody>
-  </table>
+    </div>
+  </div>
+  <?php endforeach; ?>
 </div>

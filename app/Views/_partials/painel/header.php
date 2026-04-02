@@ -8,6 +8,12 @@ $userName = match($painelTipo) {
     'parceiro' => Auth::parceiroNome(),
     default    => '',
 };
+$userAvatar = match($painelTipo) {
+    'equipe'   => Auth::equipeAvatar(),
+    'cliente'  => Auth::clienteAvatar(),
+    'parceiro' => Auth::parceiroAvatar(),
+    default    => null,
+};
 $contaUrl = match($painelTipo) {
     'cliente'  => '/cliente/minha-conta',
     'parceiro' => '/parceiro/minha-conta',
@@ -37,7 +43,11 @@ $logoutUrl = "/{$painelTipo}/sair";
     <div class="ph-user-wrap">
       <button class="ph-user-btn" id="userMenuBtn" type="button">
         <span class="ph-user-name"><?php echo View::e($userName ?? ''); ?></span>
+        <?php if (!empty($userAvatar)): ?>
+        <div class="ph-avatar ph-avatar-photo" style="background-image:url('/<?php echo View::e(ltrim($userAvatar,'/')); ?>')"></div>
+        <?php else: ?>
         <div class="ph-avatar"><?php echo View::e(mb_substr($userName ?? 'U', 0, 1)); ?></div>
+        <?php endif; ?>
       </button>
       <div class="ph-dropdown" id="userDropdown">
         <a href="<?php echo View::e($contaUrl); ?>" class="ph-dropdown-item">

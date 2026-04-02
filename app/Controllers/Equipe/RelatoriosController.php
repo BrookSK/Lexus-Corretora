@@ -10,7 +10,31 @@ final class RelatoriosController
 {
     public function index(Requisicao $req): Resposta
     {
-        $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/relatorios.php', []);
+        $periodo = $req->get('periodo', '365');
+        $inicio  = $req->get('inicio', '');
+        $fim     = $req->get('fim',    '');
+
+        if ($inicio === '' || $fim === '') {
+            $dias   = in_array($periodo, ['30','90','180','365']) ? (int)$periodo : 365;
+            $inicio = date('Y-m-d', strtotime("-{$dias} days"));
+            $fim    = date('Y-m-d');
+        }
+
+        $meses = $periodo === '30' ? 3 : ($periodo === '90' ? 6 : 12);
+
+        $dados = [
+            'inicio'           => $inicio,
+            'fim'              => $fim,
+            'periodo'          => $periodo,
+            'kpis'             => RelatoriosService::kpis($inicio, $fim),
+            'fat_mensal'       => RelatoriosService::faturamentoMensal($meses),
+            'dem_mensais'      => RelatoriosService::demandasMensais($meses),
+            'dem_status'       => RelatoriosService::demandasPorStatusAgrupado($inicio, $fim),
+            'maiores_parceiros'=> RelatoriosService::maioresParceiros(10, $inicio, $fim),
+            'comissoes_mens'   => RelatoriosService::comissoesMensais($meses),
+        ];
+
+        $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/relatorios.php', $dados);
         return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
             'conteudo' => $conteudo, 'painelTipo' => 'equipe',
             'pageTitle' => I18n::t('sidebar.relatorios'),

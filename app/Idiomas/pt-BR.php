@@ -178,6 +178,7 @@ return [
     'sidebar_par.perfil'       => 'Meu Perfil',
     'sidebar_par.mensagens'    => 'Mensagens',
     'sidebar_par.minha_conta'  => 'Minha Conta',
+    'sidebar_par.repasse'      => 'Indicar Demanda',
 
     // Status Demanda
     'status.novo'                  => 'Novo',

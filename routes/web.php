@@ -36,6 +36,7 @@ use LEX\App\Controllers\Parceiro\PerfilController as ParceiroPerfil;
 use LEX\App\Controllers\Parceiro\MensagensController as ParceiroMensagens;
 use LEX\App\Controllers\Parceiro\ContaController as ParceiroConta;
 use LEX\App\Controllers\Parceiro\ContratosController as ParceiroContratos;
+use LEX\App\Controllers\Parceiro\RepasseController as ParceiroRepasse;
 
 // Controllers da equipe
 use LEX\App\Controllers\Equipe\DashboardController as EquipeDashboard;
@@ -176,6 +177,9 @@ Roteador::get('/parceiro/contratos', [ParceiroContratos::class, 'index'], $parMw
 Roteador::get('/parceiro/contratos/{id}', [ParceiroContratos::class, 'detalhe'], $parMw);
 Roteador::get('/parceiro/minha-conta', [ParceiroConta::class, 'index'], $parMw);
 Roteador::post('/parceiro/minha-conta', [ParceiroConta::class, 'salvar'], $parMw);
+Roteador::get('/parceiro/repasse', [ParceiroRepasse::class, 'index'], $parMw);
+Roteador::get('/parceiro/repasse/nova', [ParceiroRepasse::class, 'criar'], $parMw);
+Roteador::post('/parceiro/repasse/nova', [ParceiroRepasse::class, 'salvar'], $parMw);
 
 // ═══════════════════════════════════════════════════════════════
 // ROTAS EQUIPE / ADMIN
@@ -260,7 +264,12 @@ Roteador::post('/equipe/crm/{id}/status', [CrmController::class, 'alterarStatus'
 
 // Tarefas
 Roteador::get('/equipe/tarefas', [TarefasController::class, 'index'], $eqMw);
+Roteador::get('/equipe/tarefas/criar', [TarefasController::class, 'criar'], $eqMw);
+Roteador::post('/equipe/tarefas/criar', [TarefasController::class, 'salvar'], $eqMw);
 Roteador::post('/equipe/tarefas/nova', [TarefasController::class, 'salvar'], $eqMw);
+Roteador::get('/equipe/tarefas/{id}/editar', [TarefasController::class, 'editar'], $eqMw);
+Roteador::post('/equipe/tarefas/{id}/editar', [TarefasController::class, 'atualizar'], $eqMw);
+Roteador::post('/equipe/tarefas/{id}/excluir', [TarefasController::class, 'excluir'], $eqMw);
 Roteador::post('/equipe/tarefas/{id}/status', [TarefasController::class, 'alterarStatus'], $eqMw);
 
 // Mensagens
