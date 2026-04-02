@@ -18,14 +18,18 @@ final class OportunidadesController
         $filtroCidade    = trim($req->get('cidade', ''));
         $filtroCategoria = trim($req->get('categoria', ''));
         $filtroStatus    = trim($req->get('status', ''));
+        $filtroValorMin  = $req->get('valor_min', '');
+        $filtroValorMax  = $req->get('valor_max', '');
 
         $where  = ['od.parceiro_id = :pid', 'd.deleted_at IS NULL'];
         $params = ['pid' => $parceiroId];
 
-        if ($filtroEstado)    { $where[] = 'd.state = :state';        $params['state']     = $filtroEstado; }
-        if ($filtroCidade)    { $where[] = 'd.city LIKE :city';       $params['city']      = '%' . $filtroCidade . '%'; }
-        if ($filtroCategoria) { $where[] = 'd.category = :categoria'; $params['categoria'] = $filtroCategoria; }
-        if ($filtroStatus)    { $where[] = 'od.status = :status';     $params['status']    = $filtroStatus; }
+        if ($filtroEstado)             { $where[] = 'd.state = :state';           $params['state']     = $filtroEstado; }
+        if ($filtroCidade)             { $where[] = 'd.city LIKE :city';          $params['city']      = '%' . $filtroCidade . '%'; }
+        if ($filtroCategoria)          { $where[] = 'd.category = :categoria';    $params['categoria'] = $filtroCategoria; }
+        if ($filtroStatus)             { $where[] = 'od.status = :status';        $params['status']    = $filtroStatus; }
+        if ($filtroValorMin !== '')    { $where[] = 'd.budget_max >= :valor_min';  $params['valor_min'] = (float)$filtroValorMin; }
+        if ($filtroValorMax !== '')    { $where[] = 'd.budget_min <= :valor_max';  $params['valor_max'] = (float)$filtroValorMax; }
 
         $whereSql = implode(' AND ', $where);
 
@@ -71,6 +75,9 @@ final class OportunidadesController
             'filtroCidade'    => $filtroCidade,
             'filtroCategoria' => $filtroCategoria,
             'filtroStatus'    => $filtroStatus,
+            'filtroValorMin'  => $filtroValorMin,
+            'filtroValorMax'  => $filtroValorMax,
+            'parceiroId'      => $parceiroId,
         ]);
         return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
             'conteudo' => $conteudo, 'painelTipo' => 'parceiro',
