@@ -30,7 +30,7 @@ div.landing-page section.hero {
 <div class="landing-page">
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" id="landing-hero" style="display: grid !important; grid-template-columns: 1fr 1fr !important; min-height: calc(100vh - 64px) !important; padding: 0 !important; background: transparent !important; position: static !important; width: 100% !important; margin: 0 !important;">
   <!-- LEFT: MULTI-STEP FORM -->
   <div class="hero-form-col">
     <!-- top progress -->
@@ -358,9 +358,21 @@ div.landing-page section.hero {
 <script>
 // Força os estilos corretos após o carregamento
 document.addEventListener('DOMContentLoaded', function() {
-  const hero = document.querySelector('.landing-page .hero');
+  const hero = document.getElementById('landing-hero');
   if (hero) {
-    hero.style.cssText = 'display: grid !important; grid-template-columns: 1fr 1fr !important; min-height: calc(100vh - 64px) !important; width: 100% !important; background: transparent !important; padding: 0 !important; position: static !important; flex-direction: row !important; overflow: visible !important;';
+    hero.style.cssText = 'display: grid !important; grid-template-columns: 1fr 1fr !important; min-height: calc(100vh - 64px) !important; width: 100% !important; background: transparent !important; padding: 0 !important; position: static !important; flex-direction: row !important; overflow: visible !important; margin: 0 !important; justify-content: stretch !important; align-items: stretch !important;';
+  }
+  
+  // Força estilos nas colunas também
+  const formCol = document.querySelector('.landing-page .hero-form-col');
+  const headlineCol = document.querySelector('.landing-page .hero-headline-col');
+  
+  if (formCol) {
+    formCol.style.cssText = 'background: #161410 !important; border-right: 1px solid rgba(201,168,76,.1) !important; display: flex !important; flex-direction: column !important; position: relative !important; overflow: hidden !important; min-height: calc(100vh - 64px) !important;';
+  }
+  
+  if (headlineCol) {
+    headlineCol.style.cssText = 'background: #0E0C09 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 80px 72px !important; position: relative !important;';
   }
 });
 </script>
