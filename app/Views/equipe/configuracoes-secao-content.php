@@ -2,6 +2,7 @@
 // Conteúdo das seções de configuração
 // Variável $secao deve estar definida
 // Variável $settings deve estar definida
+use LEX\Core\{View, I18n, Csrf};
 
 if ($secao === 'branding'): ?>
   <div class="form-group">
