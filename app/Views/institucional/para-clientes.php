@@ -10,9 +10,22 @@ $CATEGORIAS_NICHO = [
     'Paisagismo', 'Decoração', 'Design de Interiores'
 ];
 ?>
-<style>body { background: #0E0C09 !important; }</style>
-<div class="landing-page">
 <link rel="stylesheet" href="/assets/css/landing-pages.css"/>
+<style>
+body { background: #0E0C09 !important; }
+.landing-page .hero {
+  all: unset !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  min-height: calc(100vh - 64px) !important;
+  width: 100% !important;
+  background: transparent !important;
+  padding: 0 !important;
+  position: static !important;
+  flex-direction: row !important;
+}
+</style>
+<div class="landing-page">
 
 <!-- HERO -->
 <section class="hero">
@@ -450,10 +463,17 @@ $CATEGORIAS_NICHO = [
       <a href="#hero" class="cta-btn cta-btn-primary">Abrir Demanda</a>
       <a href="/como-funciona" class="cta-btn cta-btn-secondary">Saiba Mais</a>
     </div>
-  </div>
-</section>
-
 </div><!-- .landing-page -->
+
+<script>
+// Força os estilos corretos após o carregamento
+document.addEventListener('DOMContentLoaded', function() {
+  const hero = document.querySelector('.landing-page .hero');
+  if (hero) {
+    hero.style.cssText = 'display: grid !important; grid-template-columns: 1fr 1fr !important; min-height: calc(100vh - 64px) !important; width: 100% !important; background: transparent !important; padding: 0 !important; position: static !important; flex-direction: row !important; overflow: visible !important;';
+  }
+});
+</script>
 
 <script>
 (function(){
