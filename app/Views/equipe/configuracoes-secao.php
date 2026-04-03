@@ -110,10 +110,13 @@ $settings = $settings ?? [];
       btn.textContent = 'Enviando...';
       result.style.display = 'none';
       var csrf = document.querySelector('meta[name=csrf-token]');
+      var formData = new FormData();
+      formData.append('email', email);
+      formData.append('_csrf_token', csrf ? csrf.content : '');
       fetch('/equipe/configuracoes/smtp/testar', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json', 'X-CSRF-Token': csrf ? csrf.content : ''},
-        body: JSON.stringify({email: email, _csrf_token: csrf ? csrf.content : ''})
+        headers: {'Accept': 'application/json'},
+        body: formData
       })
       .then(function(r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -121,8 +124,11 @@ $settings = $settings ?? [];
       })
       .then(function(data) {
         result.style.display = 'block';
+        result.style.background = data.success ? 'rgba(34,197,94,.08)' : 'rgba(239,68,68,.08)';
         result.style.color = data.success ? '#166534' : '#991b1b';
-        result.textContent = data.message;
+        result.style.padding = '10px 14px';
+        result.style.border = data.success ? '1px solid rgba(34,197,94,.2)' : '1px solid rgba(239,68,68,.2)';
+        result.textContent = (data.success ? '✓ ' : '✗ ') + data.message;
       })
       .catch(function(err) {
         result.style.display = 'block';

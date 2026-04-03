@@ -91,9 +91,7 @@ final class ConfigController
 
     public function testarSMTP(Requisicao $req): Resposta
     {
-        // Aceita tanto JSON body quanto POST form
-        $dados = $req->isJson() ? $req->bodyJson() : $req->todosPost();
-        $emailDestino = trim($dados['email'] ?? '');
+        $emailDestino = trim($req->post('email', ''));
 
         if (empty($emailDestino) || !filter_var($emailDestino, FILTER_VALIDATE_EMAIL)) {
             return Resposta::json(['success' => false, 'message' => 'E-mail inválido']);
