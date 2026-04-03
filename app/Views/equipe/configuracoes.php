@@ -63,21 +63,27 @@ $tabs = [
 
 <!-- Conteúdo da aba -->
 <div class="card">
-  <form method="POST" action="/equipe/configuracoes/<?php echo View::e($currentTab); ?>" enctype="multipart/form-data">
-    <?php echo Csrf::campo(); ?>
-
+  <?php if ($currentTab === 'notificacoes'): ?>
     <?php
-    // Incluir o conteúdo da seção específica
     $secao = $currentTab;
-    // Passar as classes como variáveis para o arquivo incluído
     $V = 'LEX\Core\View';
     $I = 'LEX\Core\I18n';
     $C = 'LEX\Core\Csrf';
     include __DIR__ . '/configuracoes-secao-content.php';
     ?>
-
+  <?php else: ?>
+  <form method="POST" action="/equipe/configuracoes/<?php echo View::e($currentTab); ?>" enctype="multipart/form-data">
+    <?php echo Csrf::campo(); ?>
+    <?php
+    $secao = $currentTab;
+    $V = 'LEX\Core\View';
+    $I = 'LEX\Core\I18n';
+    $C = 'LEX\Core\Csrf';
+    include __DIR__ . '/configuracoes-secao-content.php';
+    ?>
     <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border)">
       <button type="submit" class="btn btn-primary"><?php echo View::e(I18n::t('geral.salvar')); ?></button>
     </div>
   </form>
+  <?php endif; ?>
 </div>

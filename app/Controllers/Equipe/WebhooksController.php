@@ -36,7 +36,7 @@ final class WebhooksController
         }
         AuditService::registrar('equipe', Auth::equipeId(), 'webhook.salvar', 'webhook_configs', $id ?: null);
         $_SESSION['flash'] = ['type' => 'success', 'message' => 'Webhook salvo com sucesso.'];
-        return Resposta::redirecionar('/equipe/webhooks');
+        return Resposta::redirecionar('/equipe/configuracoes?tab=notificacoes');
     }
 
     public function excluir(Requisicao $req): Resposta
@@ -45,6 +45,6 @@ final class WebhooksController
         WebhookService::excluir($id);
         AuditService::registrar('equipe', Auth::equipeId(), 'webhook.excluir', 'webhook_configs', $id);
         $_SESSION['flash'] = ['type' => 'success', 'message' => 'Webhook removido.'];
-        return Resposta::redirecionar('/equipe/webhooks');
+        return Resposta::redirecionar('/equipe/configuracoes?tab=notificacoes');
     }
 }
