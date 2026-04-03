@@ -68,6 +68,16 @@ if ($secao === 'branding'): ?>
     </div>
   </div>
 
+  <!-- E-mails dos administradores -->
+  <div style="margin-top:32px;padding-top:32px;border-top:1px solid var(--border)">
+    <h3 style="font-size:.95rem;font-weight:500;margin-bottom:8px;color:var(--gold)">E-mails dos Administradores</h3>
+    <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:16px">Todos os eventos do sistema (novas demandas, propostas, cadastros, erros) serão notificados para estes e-mails. Um por linha.</p>
+    <div class="form-group">
+      <label>E-mails de notificação</label>
+      <textarea name="smtp.admin_emails" rows="4" placeholder="admin@empresa.com&#10;diretor@empresa.com&#10;gerente@empresa.com" style="font-family:monospace;font-size:.85rem"><?php echo $V::e($settings['smtp.admin_emails'] ?? ''); ?></textarea>
+    </div>
+  </div>
+
   <!-- Teste de SMTP -->
   <div style="margin-top:32px;padding-top:32px;border-top:1px solid var(--border)">
     <h3 style="font-size:.95rem;font-weight:500;margin-bottom:16px;color:var(--gold)">Testar Configuração SMTP</h3>

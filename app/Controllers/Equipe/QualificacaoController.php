@@ -68,6 +68,18 @@ final class QualificacaoController
                 );
             } catch (\Throwable $e) { /* silenciar */ }
         }
+
+        // Webhook
+        try {
+            \LEX\App\Services\Webhooks\WebhookService::disparar('qualificacao_resultado', [
+                'parceiro_id'    => $parceiroId,
+                'parceiro_nome'  => $parceiro['name'] ?? '',
+                'parceiro_email' => $parceiro['email'] ?? '',
+                'status'         => $status,
+                'vetriks'        => $vetriks,
+                'parecer'        => $parecer,
+            ]);
+        } catch (\Throwable $e) { /* silenciar */ }
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/parceiros/' . $parceiroId);
     }

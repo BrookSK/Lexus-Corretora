@@ -102,6 +102,20 @@ final class PropostasController
                     );
                 }
             }
+            // Webhook
+            $whEvento = in_array($status, ['selecionada','convertida']) ? 'proposta_selecionada' : (in_array($status, ['descartada','perdida']) ? 'proposta_recusada' : null);
+            if ($whEvento && $proposta) {
+                \LEX\App\Services\Webhooks\WebhookService::disparar($whEvento, [
+                    'proposta_id'    => $id,
+                    'parceiro_id'    => $proposta['parceiro_id'] ?? null,
+                    'parceiro_nome'  => $proposta['parceiro_nome'] ?? '',
+                    'parceiro_email' => $proposta['parceiro_email'] ?? '',
+                    'demanda_codigo' => $proposta['demanda_code'] ?? '',
+                    'demanda_titulo' => $proposta['demanda_title'] ?? '',
+                    'status'         => $status,
+                    'valor'          => $proposta['amount'] ?? '',
+                ]);
+            }
         } catch (\Throwable $e) { /* silenciar */ }
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/propostas/' . $id);

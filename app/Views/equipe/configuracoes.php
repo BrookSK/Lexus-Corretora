@@ -7,7 +7,7 @@ $currentTab = $_GET['tab'] ?? 'branding';
 // Buscar todas as settings necessárias
 $settingsKeys = [
     'sistema.nome', 'sistema.slogan', 'sistema.logo', 'sistema.favicon', 'sistema.cor_primaria', 'sistema.copyright',
-    'smtp.host', 'smtp.porta', 'smtp.usuario', 'smtp.senha', 'smtp.de_email', 'smtp.de_nome',
+    'smtp.host', 'smtp.porta', 'smtp.usuario', 'smtp.senha', 'smtp.de_email', 'smtp.de_nome', 'smtp.admin_emails',
     'seo.meta_title', 'seo.meta_description', 'seo.og_image', 'seo.ga_id', 'seo.indexacao',
     'stripe.mode', 'stripe.test_publishable_key', 'stripe.test_secret_key', 'stripe.test_webhook_secret',
     'stripe.live_publishable_key', 'stripe.live_secret_key', 'stripe.live_webhook_secret',

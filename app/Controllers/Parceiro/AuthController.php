@@ -62,6 +62,7 @@ final class AuthController
         $parceiroId = (int)$pdo->lastInsertId();
 
         try { \LEX\App\Services\Email\EmailService::boasVindasParceiro($email, $nome); } catch (\Throwable $e) { /* silenciar */ }
+        try { \LEX\App\Services\Webhooks\WebhookService::disparar('novo_parceiro', ['parceiro_id'=>$parceiroId,'parceiro_nome'=>$nome,'parceiro_email'=>$email,'parceiro_tipo'=>$tipo]); } catch (\Throwable $e) { /* silenciar */ }
 
         Auth::loginParceiro(['id' => $parceiroId, 'name' => $nome, 'email' => $email]);
         return Resposta::redirecionar('/parceiro/dashboard');

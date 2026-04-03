@@ -81,6 +81,16 @@ final class ContratosController
                             $contrato['parceiro_email'], $contrato['parceiro_nome'] ?? '', $codigo, $valor
                         );
                     }
+                    // Webhook
+                    \LEX\App\Services\Webhooks\WebhookService::disparar('contrato_formalizado', [
+                        'contrato_id'    => $id,
+                        'demanda_codigo' => $codigo,
+                        'cliente_nome'   => $contrato['cliente_nome'] ?? '',
+                        'cliente_email'  => $contrato['cliente_email'] ?? '',
+                        'parceiro_nome'  => $contrato['parceiro_nome'] ?? '',
+                        'parceiro_email' => $contrato['parceiro_email'] ?? '',
+                        'valor'          => $valor,
+                    ]);
                 }
             } catch (\Throwable $e) { /* silenciar */ }
         }

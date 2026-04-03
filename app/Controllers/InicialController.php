@@ -176,6 +176,27 @@ final class InicialController
             \LEX\Core\AppLogger::erro('salvarDemanda email erro: ' . $e->getMessage());
         }
 
+        // Webhook
+        try {
+            $demanda = $demanda ?? \LEX\App\Services\Demandas\DemandasService::obterPorId($demandaId);
+            \LEX\App\Services\Webhooks\WebhookService::disparar('nova_demanda', [
+                'cliente_nome'    => $nomeCliente,
+                'cliente_email'   => $email,
+                'cliente_telefone'=> $dados['phone'] ?? '',
+                'demanda_id'      => $demandaId,
+                'demanda_codigo'  => $demanda['code'] ?? '',
+                'demanda_titulo'  => $demanda['title'] ?? '',
+                'cidade'          => $dados['city'] ?? '',
+                'estado'          => $dados['state'] ?? '',
+            ]);
+            \LEX\App\Services\Webhooks\WebhookService::disparar('novo_cliente', [
+                'cliente_id'      => $clienteId,
+                'cliente_nome'    => $nomeCliente,
+                'cliente_email'   => $email,
+                'cliente_telefone'=> $dados['phone'] ?? '',
+            ]);
+        } catch (\Throwable $e) { /* silenciar */ }
+
         Auth::loginCliente(['id' => $clienteId, 'name' => $nomeCliente, 'email' => $email]);
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('demanda.sucesso')];
         return Resposta::redirecionar('/cliente/dashboard');
@@ -252,6 +273,18 @@ final class InicialController
 
         // E-mail de boas-vindas
         try { \LEX\App\Services\Email\EmailService::boasVindasParceiro($email, $nome); } catch (\Throwable $e) { /* silenciar */ }
+
+        // Webhook
+        try {
+            \LEX\App\Services\Webhooks\WebhookService::disparar('novo_parceiro', [
+                'parceiro_id'      => $parceiroId,
+                'parceiro_nome'    => $nome,
+                'parceiro_email'   => $email,
+                'parceiro_telefone'=> $dados['whatsapp'] ?? '',
+                'parceiro_tipo'    => $tipo,
+                'parceiro_documento'=> $dados['document'] ?? '',
+            ]);
+        } catch (\Throwable $e) { /* silenciar */ }
 
         Auth::loginParceiro(['id' => $parceiroId, 'name' => $nome, 'email' => $email]);
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('parceiro.sucesso')];

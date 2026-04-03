@@ -186,6 +186,7 @@ final class ConfigController
             'smtp_host' => 'smtp.host', 'smtp_porta' => 'smtp.porta',
             'smtp_usuario' => 'smtp.usuario', 'smtp_senha' => 'smtp.senha',
             'smtp_de_email' => 'smtp.de_email', 'smtp_de_nome' => 'smtp.de_nome',
+            'smtp_admin_emails' => 'smtp.admin_emails',
             'seo_meta_title' => 'seo.meta_title', 'seo_meta_description' => 'seo.meta_description',
             'seo_og_image' => 'seo.og_image', 'seo_ga_id' => 'seo.ga_id', 'seo_indexacao' => 'seo.indexacao',
             'stripe_mode' => 'stripe.mode',
@@ -219,7 +220,7 @@ final class ConfigController
     {
         $map = [
             'branding' => ['sistema.nome', 'sistema.slogan', 'sistema.logo', 'sistema.favicon', 'sistema.cor_primaria', 'sistema.copyright'],
-            'smtp' => ['smtp.host', 'smtp.porta', 'smtp.usuario', 'smtp.senha', 'smtp.de_email', 'smtp.de_nome'],
+            'smtp' => ['smtp.host', 'smtp.porta', 'smtp.usuario', 'smtp.senha', 'smtp.de_email', 'smtp.de_nome', 'smtp.admin_emails'],
             'seo' => ['seo.meta_title', 'seo.meta_description', 'seo.og_image', 'seo.ga_id', 'seo.indexacao'],
             'cobranca' => ['stripe.mode', 'stripe.test_publishable_key', 'stripe.test_secret_key', 'stripe.test_webhook_secret', 'stripe.live_publishable_key', 'stripe.live_secret_key', 'stripe.live_webhook_secret', 'asaas.mode', 'asaas.sandbox_api_key', 'asaas.sandbox_webhook_token', 'asaas.production_api_key', 'asaas.production_webhook_token'],
             'notificacoes' => ['notificacoes.email_ativo', 'notificacoes.painel_ativo'],

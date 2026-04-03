@@ -39,6 +39,18 @@ final class ContatoController
             }
         } catch (\Throwable $e) { /* silenciar */ }
 
+        // Webhook
+        try {
+            \LEX\App\Services\Webhooks\WebhookService::disparar('novo_contato', [
+                'nome'     => $dados['name'] ?? '',
+                'email'    => $dados['email'] ?? '',
+                'telefone' => $dados['whatsapp'] ?? ($dados['phone'] ?? ''),
+                'mensagem' => $dados['message'] ?? ($dados['notes'] ?? ''),
+                'cidade'   => $dados['city'] ?? '',
+                'estado'   => $dados['state'] ?? '',
+            ]);
+        } catch (\Throwable $e) { /* silenciar */ }
+
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('contato.sucesso')];
         return Resposta::redirecionar('/contato');
     }
