@@ -3,7 +3,30 @@ declare(strict_types=1);
 use LEX\Core\{View, I18n, Csrf, Settings};
 
 $currentTab = $_GET['tab'] ?? 'branding';
-$settings = Settings::todos();
+
+// Buscar todas as settings necessárias
+$settingsKeys = [
+    'sistema.nome', 'sistema.slogan', 'sistema.logo', 'sistema.favicon', 'sistema.cor_primaria', 'sistema.copyright',
+    'smtp.host', 'smtp.porta', 'smtp.usuario', 'smtp.senha', 'smtp.de_email', 'smtp.de_nome',
+    'seo.meta_title', 'seo.meta_description', 'seo.og_image', 'seo.ga_id', 'seo.indexacao',
+    'stripe.mode', 'stripe.test_publishable_key', 'stripe.test_secret_key', 'stripe.test_webhook_secret',
+    'stripe.live_publishable_key', 'stripe.live_secret_key', 'stripe.live_webhook_secret',
+    'asaas.mode', 'asaas.sandbox_api_key', 'asaas.sandbox_webhook_token',
+    'asaas.production_api_key', 'asaas.production_webhook_token',
+    'notificacoes.email_ativo', 'notificacoes.painel_ativo',
+    'seguranca.2fa_obrigatorio', 'seguranca.tentativas_login', 'seguranca.bloqueio_minutos',
+    'seguranca.senha_min', 'seguranca.sessao_expira',
+    'sistema.idioma_padrao', 'sistema.moeda_padrao', 'sistema.timezone',
+    'legal.termos', 'legal.privacidade',
+    'trello.api_key', 'trello.api_token', 'trello.list_id', 'trello.list_contato',
+    'trello.list_demanda', 'trello.list_parceiro',
+    'comissao.empresa_pct', 'comissao.parceiro_origem_pct',
+];
+
+$settings = [];
+foreach ($settingsKeys as $key) {
+    $settings[$key] = Settings::obter($key, '');
+}
 
 $tabs = [
     'branding' => ['label' => 'Branding', 'icon' => '🎨'],
