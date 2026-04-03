@@ -159,6 +159,8 @@ Roteador::get('/parceiro/criar-conta', [ParceiroAuth::class, 'registroForm']);
 Roteador::post('/parceiro/criar-conta', [ParceiroAuth::class, 'registro']);
 Roteador::get('/parceiro/esqueci-senha', [ParceiroAuth::class, 'esqueciSenhaForm']);
 Roteador::post('/parceiro/esqueci-senha', [ParceiroAuth::class, 'esqueciSenha']);
+Roteador::get('/parceiro/redefinir-senha/{token}', [ParceiroAuth::class, 'redefinirSenhaForm']);
+Roteador::post('/parceiro/redefinir-senha', [ParceiroAuth::class, 'redefinirSenha']);
 Roteador::get('/parceiro/sair', [ParceiroAuth::class, 'logout']);
 
 $parMw = [Middlewares::exigirLoginParceiro()];

@@ -72,8 +72,62 @@ final class AuthController
 
     public function esqueciSenha(Requisicao $req): Resposta
     {
+        $email = trim($req->post('email', ''));
+        if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $pdo = \LEX\Core\BancoDeDados::obter();
+            $stmt = $pdo->prepare("SELECT id, name FROM parceiros WHERE email = :e AND deleted_at IS NULL AND is_active = 1");
+            $stmt->execute(['e' => $email]);
+            $parceiro = $stmt->fetch();
+            if ($parceiro) {
+                $token = bin2hex(random_bytes(32));
+                $expira = date('Y-m-d H:i:s', strtotime('+2 hours'));
+                $pdo->prepare("DELETE FROM password_resets WHERE user_type = 'parceiro' AND email = :e")->execute(['e' => $email]);
+                $pdo->prepare("INSERT INTO password_resets (user_type, email, token, expires_at) VALUES ('parceiro', :e, :t, :ex)")->execute(['e' => $email, 't' => $token, 'ex' => $expira]);
+                $link = (\LEX\Core\SistemaConfig::url()) . '/parceiro/redefinir-senha/' . $token;
+                \LEX\App\Services\Email\EmailService::enviar(
+                    $email,
+                    'Redefinição de senha',
+                    '<p>Olá, ' . htmlspecialchars($parceiro['name']) . '!</p><p>Clique no link abaixo para redefinir sua senha (válido por 2 horas):</p><p><a href="' . $link . '">' . $link . '</a></p><p>Se não solicitou, ignore este e-mail.</p>'
+                );
+            }
+        }
         $_SESSION['flash'] = ['type' => 'info', 'message' => I18n::t('auth.email_enviado')];
         return Resposta::redirecionar('/parceiro/esqueci-senha');
+    }
+
+    public function redefinirSenhaForm(Requisicao $req): Resposta
+    {
+        $html = View::renderizar(__DIR__ . '/../../Views/parceiro/auth/redefinir-senha.php', ['token' => $req->param('token')]);
+        return Resposta::html($html);
+    }
+
+    public function redefinirSenha(Requisicao $req): Resposta
+    {
+        $token = trim($req->post('token', ''));
+        $senha = $req->post('password', '');
+        $confirmacao = $req->post('password_confirmation', '');
+
+        if (empty($token) || empty($senha) || $senha !== $confirmacao || strlen($senha) < 8) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Dados inválidos. Verifique a senha.'];
+            return Resposta::redirecionar('/parceiro/redefinir-senha/' . $token);
+        }
+
+        $pdo = \LEX\Core\BancoDeDados::obter();
+        $stmt = $pdo->prepare("SELECT * FROM password_resets WHERE token = :t AND user_type = 'parceiro' AND expires_at > NOW()");
+        $stmt->execute(['t' => $token]);
+        $reset = $stmt->fetch();
+
+        if (!$reset) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Link inválido ou expirado.'];
+            return Resposta::redirecionar('/parceiro/esqueci-senha');
+        }
+
+        $hash = password_hash($senha, PASSWORD_BCRYPT, ['cost' => 12]);
+        $pdo->prepare("UPDATE parceiros SET password = :p WHERE email = :e")->execute(['p' => $hash, 'e' => $reset['email']]);
+        $pdo->prepare("DELETE FROM password_resets WHERE token = :t")->execute(['t' => $token]);
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('auth.senha_redefinida')];
+        return Resposta::redirecionar('/parceiro/entrar');
     }
 
     public function logout(Requisicao $req): Resposta
