@@ -82,6 +82,69 @@ $settings = $settings ?? [];
         </div>
       </div>
 
+      <div style="margin-top:24px">
+        <button type="submit" class="btn btn-primary"><?php echo View::e(I18n::t('geral.salvar')); ?></button>
+      </div>
+    </form>
+
+    <!-- Teste de SMTP separado do form principal -->
+    <div class="card" style="margin-top:24px;padding:24px">
+      <p style="font-size:.88rem;font-weight:500;margin-bottom:16px">Testar configuração SMTP</p>
+      <div style="display:flex;gap:12px;align-items:flex-end">
+        <div class="form-group" style="margin:0;flex:1">
+          <label>Enviar e-mail de teste para</label>
+          <input type="email" id="smtpTestEmail" placeholder="seu@email.com"/>
+        </div>
+        <button type="button" onclick="testarSMTP()" class="btn btn-secondary" id="smtpTestBtn">Enviar Teste</button>
+      </div>
+      <div id="smtpTestResult" style="margin-top:12px;font-size:.85rem;display:none"></div>
+    </div>
+
+    <script>
+    function testarSMTP() {
+      var email = document.getElementById('smtpTestEmail').value;
+      var btn = document.getElementById('smtpTestBtn');
+      var result = document.getElementById('smtpTestResult');
+      if (!email) { alert('Informe um e-mail de destino.'); return; }
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+      result.style.display = 'none';
+      var csrf = document.querySelector('meta[name=csrf-token]');
+      var formData = new FormData();
+      formData.append('email', email);
+      formData.append('_csrf_token', csrf ? csrf.content : '');
+      fetch('/equipe/configuracoes/smtp/testar', {
+        method: 'POST',
+        headers: {'Accept': 'application/json'},
+        body: formData
+      })
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(data) {
+        result.style.display = 'block';
+        result.style.background = data.success ? 'rgba(34,197,94,.08)' : 'rgba(239,68,68,.08)';
+        result.style.color = data.success ? '#166534' : '#991b1b';
+        result.style.padding = '10px 14px';
+        result.style.border = data.success ? '1px solid rgba(34,197,94,.2)' : '1px solid rgba(239,68,68,.2)';
+        result.textContent = (data.success ? '✓ ' : '✗ ') + data.message;
+      })
+      .catch(function(err) {
+        result.style.display = 'block';
+        result.style.color = '#991b1b';
+        result.textContent = 'Erro na requisição: ' + err.message;
+      })
+      .finally(function() {
+        btn.disabled = false;
+        btn.textContent = 'Enviar Teste';
+      });
+    }
+    </script>
+
+    <!-- Reabre o form para o botão salvar do layout não quebrar -->
+    <form style="display:none">
+
     <?php elseif ($secao === 'seo'): ?>
       <div class="form-group">
         <label>Meta Title</label>

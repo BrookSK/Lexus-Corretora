@@ -91,8 +91,7 @@ final class ConfigController
 
     public function testarSMTP(Requisicao $req): Resposta
     {
-        $dados = json_decode($req->corpo(), true);
-        $emailDestino = $dados['email'] ?? '';
+        $emailDestino = trim($req->post('email', ''));
 
         if (empty($emailDestino) || !filter_var($emailDestino, FILTER_VALIDATE_EMAIL)) {
             return Resposta::json(['success' => false, 'message' => 'E-mail inválido']);
@@ -100,31 +99,24 @@ final class ConfigController
 
         try {
             $host = Settings::obter('smtp.host', '');
-            $porta = Settings::obter('smtp.porta', 587);
             $usuario = Settings::obter('smtp.usuario', '');
-            $senha = Settings::obter('smtp.senha', '');
             $deEmail = Settings::obter('smtp.de_email', '');
-            $deNome = Settings::obter('smtp.de_nome', 'Lexus Corretora');
 
             if (empty($host) || empty($usuario) || empty($deEmail)) {
                 return Resposta::json(['success' => false, 'message' => 'Configurações SMTP incompletas. Configure host, usuário e e-mail remetente.']);
             }
 
-            // Usar o EmailService para enviar
-            $emailService = new \LEX\App\Services\Email\EmailService();
-            $resultado = $emailService->enviar(
+            $resultado = \LEX\App\Services\Email\EmailService::enviar(
                 $emailDestino,
-                'Teste de Configuração SMTP - Lexus',
-                '<h2>Teste de SMTP</h2><p>Este é um e-mail de teste enviado pela Lexus Corretora.</p><p>Se você recebeu esta mensagem, suas configurações SMTP estão funcionando corretamente!</p><p><strong>Data/Hora:</strong> ' . date('d/m/Y H:i:s') . '</p>',
-                'Este é um e-mail de teste enviado pela Lexus Corretora. Se você recebeu esta mensagem, suas configurações SMTP estão funcionando corretamente!'
+                'Teste de Configuração SMTP',
+                '<h2>Teste de SMTP</h2><p>Este é um e-mail de teste.</p><p>Se você recebeu esta mensagem, suas configurações SMTP estão funcionando corretamente!</p><p><strong>Data/Hora:</strong> ' . date('d/m/Y H:i:s') . '</p>'
             );
 
             if ($resultado) {
                 AuditService::registrar('equipe', Auth::equipeId(), 'config.smtp.teste', 'settings', null, ['email' => $emailDestino]);
-                return Resposta::json(['success' => true, 'message' => 'E-mail de teste enviado com sucesso!']);
-            } else {
-                return Resposta::json(['success' => false, 'message' => 'Falha ao enviar e-mail. Verifique as configurações.']);
+                return Resposta::json(['success' => true, 'message' => 'E-mail de teste enviado com sucesso para ' . $emailDestino]);
             }
+            return Resposta::json(['success' => false, 'message' => 'Falha ao enviar. Verifique as configurações e o log do servidor.']);
         } catch (\Exception $e) {
             return Resposta::json(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
         }
