@@ -357,6 +357,21 @@ if (hero) {
   hero.style.paddingRight = '0';
   
   console.log('Hero padding AFTER fix:', window.getComputedStyle(hero).padding);
+  console.log('Hero grid properties:', {
+    gridAutoFlow: window.getComputedStyle(hero).gridAutoFlow,
+    gridTemplateRows: window.getComputedStyle(hero).gridTemplateRows,
+    gridAutoRows: window.getComputedStyle(hero).gridAutoRows
+  });
+  
+  // Força grid properties corretos
+  hero.style.gridAutoFlow = 'column';
+  hero.style.gridTemplateRows = 'none';
+  hero.style.gridAutoRows = 'auto';
+  
+  console.log('Hero grid AFTER fix:', {
+    gridAutoFlow: window.getComputedStyle(hero).gridAutoFlow,
+    gridTemplateRows: window.getComputedStyle(hero).gridTemplateRows
+  });
 }
 
 // Debug das colunas

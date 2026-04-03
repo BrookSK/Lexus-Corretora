@@ -478,11 +478,15 @@ if (hero) {
     gridAutoRows: window.getComputedStyle(hero).gridAutoRows
   });
   
-  // Força grid-auto-flow: column se necessário
-  if (window.getComputedStyle(hero).gridAutoFlow !== 'column') {
-    hero.style.gridAutoFlow = 'column';
-    console.log('Forced gridAutoFlow to column');
-  }
+  // Força grid properties corretos
+  hero.style.gridAutoFlow = 'column';
+  hero.style.gridTemplateRows = 'none';
+  hero.style.gridAutoRows = 'auto';
+  
+  console.log('Hero grid AFTER fix:', {
+    gridAutoFlow: window.getComputedStyle(hero).gridAutoFlow,
+    gridTemplateRows: window.getComputedStyle(hero).gridTemplateRows
+  });
 }
 
 // Debug das colunas
