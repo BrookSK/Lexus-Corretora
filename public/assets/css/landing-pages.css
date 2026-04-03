@@ -122,7 +122,13 @@
 
 /* Dots */
 .step-dots { display: flex; gap: 5px; margin-bottom: 24px; }
-.step-dot { height: 3px; border-radius: 2px; background: rgba(201,168,76,.2); transition: all .4s; }
+.step-dot { 
+  height: 3px; 
+  flex: 1;
+  border-radius: 2px; 
+  background: rgba(201,168,76,.2); 
+  transition: all .4s; 
+}
 .step-dot.active { background: var(--gold); }
 .step-dot.done { background: rgba(201,168,76,.45); }
 
@@ -372,72 +378,205 @@
 
 .section-h2 em { font-style: italic; color: var(--gold); }
 
-/* How */
+/* How It Works Section */
 .how-it-works { background: var(--cream); padding: 92px 0; }
-.how-it-works .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.4rem, 3.5vw, 3.8rem); font-weight: 300; line-height: 1.1; color: var(--dark); margin-bottom: 12px; text-align: center; }
-.how-it-works .section-subtitle { font-size: .95rem; color: #5a5145; text-align: center; margin-bottom: 52px; }
-.how-section { background: var(--cream); }
-.how-section .section-h2 { color: var(--dark); }
-
-.how-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 32px; }
-.how-card { background: #fff; padding: 44px 36px; border: 1px solid rgba(14,12,9,.08); transition: all .25s; }
-.how-card:hover { background: #ede8df; transform: translateY(-4px); box-shadow: 0 8px 24px rgba(14,12,9,.08); }
-.how-card-icon { width: 48px; height: 48px; border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center; margin-bottom: 22px; }
-.how-card-icon svg { width: 22px; height: 22px; stroke: var(--gold); fill: none; stroke-width: 1.5; }
-.how-card-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 400; color: var(--dark); margin-bottom: 10px; }
-.how-card-desc { font-size: .83rem; color: #5a5145; line-height: 1.7; }
-
-.how-grid {
-  display: grid; grid-template-columns: repeat(3,1fr);
-  gap: 1px; background: rgba(14,12,9,.1);
-  margin-top: 52px; border: 1px solid rgba(14,12,9,.08);
+.how-it-works .section-title { 
+  font-family: 'Cormorant Garamond', serif; 
+  font-size: clamp(2.4rem, 3.5vw, 3.8rem); 
+  font-weight: 300; 
+  line-height: 1.1; 
+  color: var(--dark); 
+  margin-bottom: 12px; 
+  text-align: center; 
+}
+.how-it-works .section-subtitle { 
+  font-size: .95rem; 
+  color: #5a5145; 
+  text-align: center; 
+  margin-bottom: 52px; 
 }
 
-.how-card { background: var(--cream); padding: 44px 36px; position: relative; transition: background .25s; }
-.how-card:hover { background: #ede8df; }
+.how-cards { 
+  display: grid; 
+  grid-template-columns: repeat(3,1fr); 
+  gap: 32px; 
+}
 
-.step-num { font-family: 'Cormorant Garamond', serif; font-size: 5rem; font-weight: 300; color: rgba(14,12,9,.07); line-height: 1; position: absolute; top: 20px; right: 24px; }
-.step-icon { width: 38px; height: 38px; border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center; margin-bottom: 22px; }
-.step-icon svg { width: 17px; height: 17px; stroke: var(--gold); fill: none; stroke-width: 1.5; }
-.step-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 400; color: var(--dark); margin-bottom: 10px; }
-.step-desc { font-size: .83rem; color: #5a5145; line-height: 1.7; }
+.how-card { 
+  background: #fff; 
+  padding: 44px 36px; 
+  border: 1px solid rgba(14,12,9,.08); 
+  transition: all .25s; 
+}
 
-/* Benefits */
-.benefits { background: var(--dark3); padding: 92px 0; }
-.benefits .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.4rem, 3.5vw, 3.8rem); font-weight: 300; line-height: 1.1; color: var(--cream); margin-bottom: 52px; text-align: center; }
-.benefits-section { background: var(--dark3); }
+.how-card:hover { 
+  background: #ede8df; 
+  transform: translateY(-4px); 
+  box-shadow: 0 8px 24px rgba(14,12,9,.08); 
+}
 
-.benefits-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 32px; }
-.benefit-card { background: var(--dark2); padding: 44px 44px; border: 1px solid rgba(201,168,76,.08); transition: all .25s; }
-.benefit-card:hover { background: #1a1710; transform: translateY(-4px); border-color: rgba(201,168,76,.2); }
-.benefit-icon { width: 42px; height: 42px; margin-bottom: 18px; }
-.benefit-icon svg { width: 100%; height: 100%; stroke: var(--gold); fill: none; stroke-width: 1.2; }
-.benefit-title { font-family: 'Cormorant Garamond', serif; font-size: 1.28rem; font-weight: 400; color: var(--cream); margin-bottom: 10px; }
-.benefit-desc { font-size: .82rem; color: var(--text-muted); line-height: 1.75; }
+.how-card-icon { 
+  width: 48px; 
+  height: 48px; 
+  border: 1px solid var(--gold); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  margin-bottom: 22px; 
+}
 
-/* CTA */
-.cta-section { background: var(--dark2); border-top: 1px solid rgba(201,168,76,.1); padding: 110px 0; }
-.cta-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.8rem, 4.5vw, 4.2rem); font-weight: 300; line-height: 1.1; color: var(--cream); margin-bottom: 18px; text-align: center; }
-.cta-desc { font-size: .95rem; color: var(--text-muted); text-align: center; margin-bottom: 42px; max-width: 600px; margin-left: auto; margin-right: auto; }
-.cta-buttons { display: flex; gap: 16px; justify-content: center; align-items: center; }
-.cta-btn { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; padding: 15px 36px; transition: all .2s; display: inline-block; }
-.cta-btn-primary { color: var(--dark); background: var(--gold); border: none; }
-.cta-btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
-.cta-btn-secondary { color: var(--text-muted); background: none; border: 1px solid rgba(201,168,76,.25); }
-.cta-btn-secondary:hover { border-color: var(--gold); color: var(--cream); }
+.how-card-icon svg { 
+  width: 22px; 
+  height: 22px; 
+  stroke: var(--gold); 
+  fill: none; 
+  stroke-width: 1.5; 
+}
 
-.cta-inner { padding: 110px var(--ml); display: flex; align-items: flex-end; justify-content: space-between; gap: 56px; }
-.cta-tag { font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
-.cta-tag::before { content: ''; display: block; width: 28px; height: 1px; background: var(--gold); }
-.cta-h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.8rem, 4.5vw, 5rem); font-weight: 300; line-height: 1; color: var(--cream); }
-.cta-h2 em { font-style: italic; color: var(--gold); }
-.cta-actions { display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+.how-card-title { 
+  font-family: 'Cormorant Garamond', serif; 
+  font-size: 1.4rem; 
+  font-weight: 400; 
+  color: var(--dark); 
+  margin-bottom: 10px; 
+}
 
-.btn-cta-primary { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--dark); background: var(--gold); border: none; cursor: pointer; padding: 15px 36px; transition: background .2s, transform .15s; white-space: nowrap; }
-.btn-cta-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+.how-card-desc { 
+  font-size: .83rem; 
+  color: #5a5145; 
+  line-height: 1.7; 
+}
 
-.btn-cta-ghost { font-family: 'DM Sans', sans-serif; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); background: none; border: 1px solid rgba(201,168,76,.25); cursor: pointer; padding: 13px 36px; transition: border-color .2s, color .2s; white-space: nowrap; }
-.btn-cta-ghost:hover { border-color: var(--gold); color: var(--cream); }
+/* Benefits Section */
+.benefits { 
+  background: var(--dark3); 
+  padding: 92px 0; 
+}
+
+.benefits .section-title { 
+  font-family: 'Cormorant Garamond', serif; 
+  font-size: clamp(2.4rem, 3.5vw, 3.8rem); 
+  font-weight: 300; 
+  line-height: 1.1; 
+  color: var(--cream); 
+  margin-bottom: 52px; 
+  text-align: center; 
+}
+
+.benefits-grid { 
+  display: grid; 
+  grid-template-columns: repeat(2,1fr); 
+  gap: 32px; 
+}
+
+.benefit-card { 
+  background: var(--dark2); 
+  padding: 44px; 
+  border: 1px solid rgba(201,168,76,.08); 
+  transition: all .25s; 
+}
+
+.benefit-card:hover { 
+  background: #1a1710; 
+  transform: translateY(-4px); 
+  border-color: rgba(201,168,76,.2); 
+}
+
+.benefit-icon { 
+  width: 42px; 
+  height: 42px; 
+  margin-bottom: 18px; 
+}
+
+.benefit-icon svg { 
+  width: 100%; 
+  height: 100%; 
+  stroke: var(--gold); 
+  fill: none; 
+  stroke-width: 1.2; 
+}
+
+.benefit-title { 
+  font-family: 'Cormorant Garamond', serif; 
+  font-size: 1.28rem; 
+  font-weight: 400; 
+  color: var(--cream); 
+  margin-bottom: 10px; 
+}
+
+.benefit-desc { 
+  font-size: .82rem; 
+  color: var(--text-muted); 
+  line-height: 1.75; 
+}
+
+/* CTA Section */
+.cta-section { 
+  background: var(--dark2); 
+  border-top: 1px solid rgba(201,168,76,.1); 
+  padding: 110px 0; 
+}
+
+.cta-title { 
+  font-family: 'Cormorant Garamond', serif; 
+  font-size: clamp(2.8rem, 4.5vw, 4.2rem); 
+  font-weight: 300; 
+  line-height: 1.1; 
+  color: var(--cream); 
+  margin-bottom: 18px; 
+  text-align: center; 
+}
+
+.cta-desc { 
+  font-size: .95rem; 
+  color: var(--text-muted); 
+  text-align: center; 
+  margin-bottom: 42px; 
+  max-width: 600px; 
+  margin-left: auto; 
+  margin-right: auto; 
+}
+
+.cta-buttons { 
+  display: flex; 
+  gap: 16px; 
+  justify-content: center; 
+  align-items: center; 
+}
+
+.cta-btn { 
+  font-family: 'DM Sans', sans-serif; 
+  font-size: .72rem; 
+  font-weight: 500; 
+  letter-spacing: .14em; 
+  text-transform: uppercase; 
+  text-decoration: none; 
+  padding: 15px 36px; 
+  transition: all .2s; 
+  display: inline-block; 
+}
+
+.cta-btn-primary { 
+  color: var(--dark); 
+  background: var(--gold); 
+  border: none; 
+}
+
+.cta-btn-primary:hover { 
+  background: var(--gold-light); 
+  transform: translateY(-2px); 
+}
+
+.cta-btn-secondary { 
+  color: var(--text-muted); 
+  background: none; 
+  border: 1px solid rgba(201,168,76,.25); 
+}
+
+.cta-btn-secondary:hover { 
+  border-color: var(--gold); 
+  color: var(--cream); 
+}
 
 /* Removido: Footer e Cookie styles - usando os do sistema */
 
