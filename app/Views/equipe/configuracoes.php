@@ -1,6 +1,23 @@
 <?php
 declare(strict_types=1);
-use LEX\Core\{View, I18n, Csrf};
+use LEX\Core\{View, I18n, Csrf, Settings};
+
+$currentTab = $_GET['tab'] ?? 'branding';
+$settings = Settings::todos();
+
+$tabs = [
+    'branding' => ['label' => 'Branding', 'icon' => '🎨'],
+    'smtp' => ['label' => 'SMTP / E-mail', 'icon' => '📧'],
+    'seo' => ['label' => 'SEO', 'icon' => '🔍'],
+    'cobranca' => ['label' => 'Cobrança', 'icon' => '💳'],
+    'notificacoes' => ['label' => 'Notificações', 'icon' => '🔔'],
+    'integracao' => ['label' => 'Integrações', 'icon' => '🔗'],
+    'trello' => ['label' => 'Trello', 'icon' => '📋'],
+    'comissoes' => ['label' => 'Comissões', 'icon' => '💰'],
+    'seguranca' => ['label' => 'Segurança', 'icon' => '🔒'],
+    'geral' => ['label' => 'Geral', 'icon' => '⚙️'],
+    'legal' => ['label' => 'Legal', 'icon' => '📄'],
+];
 ?>
 <div class="section-header">
   <div>
@@ -9,49 +26,31 @@ use LEX\Core\{View, I18n, Csrf};
   </div>
 </div>
 
-<div class="cards-grid">
-  <a href="/equipe/configuracoes/branding" class="card" style="text-decoration:none;color:inherit">
-    <div class="card-label">Branding</div>
-    <div class="card-title"><?php echo View::e(I18n::t('config.branding_desc')); ?></div>
-  </a>
-  <a href="/equipe/configuracoes/smtp" class="card" style="text-decoration:none;color:inherit">
-    <div class="card-label">SMTP / E-mail</div>
-    <div class="card-title"><?php echo View::e(I18n::t('config.smtp_desc')); ?></div>
-  </a>
-  <a href="/equipe/configuracoes/seo" class="card" style="text-decoration:none;color:inherit">
-    <div class="card-label">SEO</div>
-    <div class="card-title"><?php echo View::e(I18n::t('config.seo_desc')); ?></div>
-  </a>
-  <a href="/equipe/configuracoes/cobranca" class="card" style="text-decoration:none;color:inherit">
-    <div class="card-label"><?php echo View::e(I18n::t('config.cobranca')); ?></div>
-    <div class="card-title"><?php echo View::e(I18n::t('config.cobranca_desc')); ?></div>
-  </a>
-  <a href="/equipe/configuracoes/notificacoes" class="card" style="text-decoration:none;color:inherit">
-    <div class="card-label"><?php echo View::e(I18n::t('config.notificacoes')); ?></div>
-    <div class="card-title"><?php echo View::e(I18n::t('config.notificacoes_desc')); ?></div>
-  </a>
-  <a href="/equipe/configuracoes/integracao" class="card" style="text-decoration:none;color:inherit">
-    <div class="card-label"><?php echo View::e(I18n::t('config.integracao')); ?></div>
-    <div class="card-title"><?php echo View::e(I18n::t('config.integracao_desc')); ?></div>
-  </a>
-  <a href="/equipe/configuracoes/seguranca" class="card" style="text-decoration:none;color:inherit">
-    <div class="card-label"><?php echo View::e(I18n::t('config.seguranca')); ?></div>
-    <div class="card-title"><?php echo View::e(I18n::t('config.seguranca_desc')); ?></div>
-  </a>
-  <a href="/equipe/configuracoes/geral" class="card" style="text-decoration:none;color:inherit">
-    <div class="card-label"><?php echo View::e(I18n::t('config.geral')); ?></div>
-    <div class="card-title"><?php echo View::e(I18n::t('config.geral_desc')); ?></div>
-  </a>
-  <a href="/equipe/configuracoes/legal" class="card" style="text-decoration:none;color:inherit">
-    <div class="card-label"><?php echo View::e(I18n::t('config.legal')); ?></div>
-    <div class="card-title"><?php echo View::e(I18n::t('config.legal_desc')); ?></div>
-  </a>
-  <a href="/equipe/configuracoes/trello" class="card" style="text-decoration:none;color:inherit">
-    <div class="card-label">Trello</div>
-    <div class="card-title">Integração com Trello para cards automáticos</div>
-  </a>
-  <a href="/equipe/configuracoes/comissoes" class="card" style="text-decoration:none;color:inherit">
-    <div class="card-label">Comissões</div>
-    <div class="card-title">Percentuais de comissão da empresa e repasse ao parceiro de origem</div>
-  </a>
+<!-- Tabs -->
+<div class="tabs-container" style="margin-bottom:24px">
+  <div class="tabs" style="overflow-x:auto;white-space:nowrap">
+    <?php foreach ($tabs as $slug => $tab): ?>
+    <a href="/equipe/configuracoes?tab=<?php echo $slug; ?>" class="tab-item<?php echo $currentTab === $slug ? ' active' : ''; ?>">
+      <span style="margin-right:6px"><?php echo $tab['icon']; ?></span>
+      <?php echo View::e($tab['label']); ?>
+    </a>
+    <?php endforeach; ?>
+  </div>
+</div>
+
+<!-- Conteúdo da aba -->
+<div class="card">
+  <form method="POST" action="/equipe/configuracoes/<?php echo View::e($currentTab); ?>" enctype="multipart/form-data">
+    <?php echo Csrf::campo(); ?>
+
+    <?php
+    // Incluir o conteúdo da seção específica
+    $secao = $currentTab;
+    include __DIR__ . '/configuracoes-secao-content.php';
+    ?>
+
+    <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border)">
+      <button type="submit" class="btn btn-primary"><?php echo View::e(I18n::t('geral.salvar')); ?></button>
+    </div>
+  </form>
 </div>
