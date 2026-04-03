@@ -33,21 +33,15 @@ final class InicialController
 
     public function paraClientes(Requisicao $req): Resposta
     {
-        $conteudo = View::renderizar(__DIR__ . '/../Views/institucional/para-clientes.php');
-        $html = View::renderizar(__DIR__ . '/../Views/_layouts/public.php', [
-            'conteudo'  => $conteudo,
-            'pageTitle' => I18n::t('pagina.para_clientes') . ' — Lexus',
-        ]);
+        // Renderizar diretamente sem layout (página standalone)
+        $html = View::renderizar(__DIR__ . '/../Views/institucional/para-clientes.php');
         return Resposta::html($html);
     }
 
     public function paraParceiros(Requisicao $req): Resposta
     {
-        $conteudo = View::renderizar(__DIR__ . '/../Views/institucional/para-parceiros.php');
-        $html = View::renderizar(__DIR__ . '/../Views/_layouts/public.php', [
-            'conteudo'  => $conteudo,
-            'pageTitle' => I18n::t('pagina.para_parceiros') . ' — Lexus',
-        ]);
+        // Renderizar diretamente sem layout (página standalone)
+        $html = View::renderizar(__DIR__ . '/../Views/institucional/para-parceiros.php');
         return Resposta::html($html);
     }
 
