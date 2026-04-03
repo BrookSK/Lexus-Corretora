@@ -13,7 +13,7 @@ $CATEGORIAS_NICHO = [
 <link rel="stylesheet" href="/assets/css/landing-pages.css"/>
 <style>
 body { background: #0E0C09 !important; }
-.landing-page .hero {
+div.landing-page section.hero {
   all: unset !important;
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
@@ -21,8 +21,11 @@ body { background: #0E0C09 !important; }
   width: 100% !important;
   background: transparent !important;
   padding: 0 !important;
+  margin: 0 !important;
   position: static !important;
   flex-direction: row !important;
+  justify-content: stretch !important;
+  align-items: stretch !important;
 }
 </style>
 <div class="landing-page">
@@ -463,6 +466,9 @@ body { background: #0E0C09 !important; }
       <a href="#hero" class="cta-btn cta-btn-primary">Abrir Demanda</a>
       <a href="/como-funciona" class="cta-btn cta-btn-secondary">Saiba Mais</a>
     </div>
+  </div>
+</section>
+
 </div><!-- .landing-page -->
 
 <script>
