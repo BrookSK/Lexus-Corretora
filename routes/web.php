@@ -58,6 +58,7 @@ use LEX\App\Controllers\Equipe\LogsController;
 use LEX\App\Controllers\Equipe\JobsController;
 use LEX\App\Controllers\Equipe\MensagensController as EquipeMensagens;
 use LEX\App\Controllers\Equipe\InicializacaoController;
+use LEX\App\Controllers\Equipe\NotificacoesController;
 
 // ═══════════════════════════════════════════════════════════════
 // ROTAS PÚBLICAS
@@ -289,7 +290,6 @@ Roteador::get('/equipe/configuracoes/{secao}', [ConfigController::class, 'secao'
 Roteador::post('/equipe/configuracoes/{secao}', [ConfigController::class, 'salvarSecao'], $eqMw);
 
 // Notificações
-use LEX\App\Controllers\Equipe\NotificacoesController;
 Roteador::get('/equipe/notificacoes', [NotificacoesController::class, 'index'], $eqMw);
 Roteador::get('/equipe/notificacoes/{id}/editar', [NotificacoesController::class, 'editar'], $eqMw);
 Roteador::post('/equipe/notificacoes/{id}/editar', [NotificacoesController::class, 'atualizar'], $eqMw);
