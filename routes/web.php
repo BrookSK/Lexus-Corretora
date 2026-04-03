@@ -313,6 +313,7 @@ Roteador::get('/equipe/logs', [LogsController::class, 'index'], $eqMw);
 Roteador::get('/equipe/logs/erros', [LogsController::class, 'erros'], $eqMw);
 Roteador::get('/equipe/logs/auditoria', [LogsController::class, 'auditoria'], $eqMw);
 Roteador::get('/equipe/logs/auth', [LogsController::class, 'auth'], $eqMw);
+Roteador::get('/equipe/logs/app', [LogsController::class, 'app'], $eqMw);
 
 // Jobs
 Roteador::get('/equipe/jobs', [JobsController::class, 'index'], $eqMw);
