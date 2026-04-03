@@ -34,9 +34,9 @@ final class InicialController
     public function paraClientes(Requisicao $req): Resposta
     {
         $conteudo = View::renderizar(__DIR__ . '/../Views/institucional/para-clientes.php');
-        $html = View::renderizar(__DIR__ . '/../Views/_layouts/public.php', [
+        $html = View::renderizar(__DIR__ . '/../Views/_layouts/landing.php', [
             'conteudo'  => $conteudo,
-            'pageTitle' => I18n::t('pagina.para_clientes') . ' — Lexus',
+            'pageTitle' => 'Para Clientes — Lexus',
         ]);
         return Resposta::html($html);
     }
@@ -44,9 +44,9 @@ final class InicialController
     public function paraParceiros(Requisicao $req): Resposta
     {
         $conteudo = View::renderizar(__DIR__ . '/../Views/institucional/para-parceiros.php');
-        $html = View::renderizar(__DIR__ . '/../Views/_layouts/public.php', [
+        $html = View::renderizar(__DIR__ . '/../Views/_layouts/landing.php', [
             'conteudo'  => $conteudo,
-            'pageTitle' => I18n::t('pagina.para_parceiros') . ' — Lexus',
+            'pageTitle' => 'Para Parceiros — Lexus',
         ]);
         return Resposta::html($html);
     }

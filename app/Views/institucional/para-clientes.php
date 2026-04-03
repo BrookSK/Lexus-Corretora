@@ -2,7 +2,6 @@
 declare(strict_types=1);
 use LEX\Core\{View, I18n, Csrf};
 
-// Incluir categorias para o formulário
 $CATEGORIAS_NICHO = [
     'Construção Civil', 'Reforma Residencial', 'Reforma Comercial',
     'Arquitetura', 'Engenharia', 'Elétrica', 'Hidráulica',
@@ -10,28 +9,9 @@ $CATEGORIAS_NICHO = [
     'Paisagismo', 'Decoração', 'Design de Interiores'
 ];
 ?>
-<link rel="stylesheet" href="/assets/css/landing-pages.css"/>
-<style>
-body { background: #0E0C09 !important; }
-div.landing-page section.hero {
-  all: unset !important;
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  min-height: calc(100vh - 64px) !important;
-  width: 100% !important;
-  background: transparent !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  position: static !important;
-  flex-direction: row !important;
-  justify-content: stretch !important;
-  align-items: stretch !important;
-}
-</style>
-<div class="landing-page">
 
 <!-- HERO -->
-<section class="hero" id="landing-hero" style="display: grid !important; grid-template-columns: 1fr 1fr !important; min-height: calc(100vh - 64px) !important; padding: 0 !important; background: transparent !important; position: static !important; width: 100% !important; margin: 0 !important;">
+<section class="hero" id="landing-hero">
   <!-- LEFT: MULTI-STEP FORM -->
   <div class="hero-form-col">
     <!-- top progress -->
@@ -468,30 +448,6 @@ div.landing-page section.hero {
     </div>
   </div>
 </section>
-
-</div><!-- .landing-page -->
-
-<script>
-// Força os estilos corretos após o carregamento
-document.addEventListener('DOMContentLoaded', function() {
-  const hero = document.getElementById('landing-hero');
-  if (hero) {
-    hero.style.cssText = 'display: grid !important; grid-template-columns: 1fr 1fr !important; min-height: calc(100vh - 64px) !important; width: 100% !important; background: transparent !important; padding: 0 !important; position: static !important; flex-direction: row !important; overflow: visible !important; margin: 0 !important; justify-content: stretch !important; align-items: stretch !important;';
-  }
-  
-  // Força estilos nas colunas também
-  const formCol = document.querySelector('.landing-page .hero-form-col');
-  const headlineCol = document.querySelector('.landing-page .hero-headline-col');
-  
-  if (formCol) {
-    formCol.style.cssText = 'background: #161410 !important; border-right: 1px solid rgba(201,168,76,.1) !important; display: flex !important; flex-direction: column !important; position: relative !important; overflow: hidden !important; min-height: calc(100vh - 64px) !important;';
-  }
-  
-  if (headlineCol) {
-    headlineCol.style.cssText = 'background: #0E0C09 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 80px 72px !important; position: relative !important;';
-  }
-});
-</script>
 
 <script>
 (function(){
