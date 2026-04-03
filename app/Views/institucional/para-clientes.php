@@ -630,7 +630,14 @@ $CATEGORIAS_NICHO = [
       document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
     });
   });
-  
+
+  // Antes de submeter: remover required de todos os slides (validação já foi feita pelo JS)
+  document.getElementById('demandaForm').addEventListener('submit', function() {
+    slides.forEach(slide => {
+      slide.querySelectorAll('[required]').forEach(el => el.removeAttribute('required'));
+    });
+  });
+
   updateUI();
 })();
 </script>

@@ -93,7 +93,8 @@ final class InicialController
 
         if (empty($nome) || empty($email) || strlen($senha) < 8 || empty($titulo)) {
             $_SESSION['flash'] = ['type' => 'error', 'message' => I18n::t('erro.validacao')];
-            return Resposta::redirecionar('/abrir-demanda');
+            $voltar = str_contains($_SERVER['HTTP_REFERER'] ?? '', 'para-clientes') ? '/para-clientes' : '/abrir-demanda';
+            return Resposta::redirecionar($voltar);
         }
 
         $pdo = BancoDeDados::obter();
@@ -102,7 +103,8 @@ final class InicialController
         $exists->execute(['e' => $email]);
         if ($exists->fetch()) {
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'E-mail já cadastrado. Acesse sua conta para abrir uma demanda.'];
-            return Resposta::redirecionar('/abrir-demanda');
+            $voltar = str_contains($_SERVER['HTTP_REFERER'] ?? '', 'para-clientes') ? '/para-clientes' : '/abrir-demanda';
+            return Resposta::redirecionar($voltar);
         }
 
         $hash = password_hash($senha, PASSWORD_BCRYPT, ['cost' => 12]);
