@@ -72,62 +72,18 @@ if ($secao === 'branding'): ?>
   <div style="margin-top:32px;padding-top:32px;border-top:1px solid var(--border)">
     <h3 style="font-size:.95rem;font-weight:500;margin-bottom:16px;color:var(--gold)">Testar Configuração SMTP</h3>
     <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:16px">Envie um e-mail de teste para verificar se as configurações estão corretas.</p>
-    <div class="form-group">
-      <label>E-mail de destino para teste</label>
-      <input type="email" id="smtpTestEmail" placeholder="seu@email.com" style="max-width:400px"/>
+    <div style="display:flex;gap:12px;align-items:flex-end">
+      <div class="form-group" style="margin:0;flex:1;max-width:400px">
+        <label>E-mail de destino para teste</label>
+        <input type="email" name="email_teste" placeholder="seu@email.com"/>
+      </div>
+      <button type="submit" name="_smtp_test" value="1" class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        Enviar E-mail de Teste
+      </button>
     </div>
-    <button type="button" onclick="testarSMTP()" class="btn btn-secondary" id="btnTestarSMTP">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px">
-        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-      </svg>
-      Enviar E-mail de Teste
-    </button>
     <div id="smtpTestResult" style="margin-top:12px;display:none"></div>
   </div>
-
-  <script>
-  function testarSMTP() {
-    const email = document.getElementById('smtpTestEmail').value;
-    const btn = document.getElementById('btnTestarSMTP');
-    const result = document.getElementById('smtpTestResult');
-    
-    if (!email || !email.includes('@')) {
-      result.style.display = 'block';
-      result.innerHTML = '<div style="padding:12px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#dc2626;font-size:.82rem">Por favor, insira um e-mail válido.</div>';
-      return;
-    }
-    
-    btn.disabled = true;
-    btn.textContent = 'Enviando...';
-    result.style.display = 'none';
-    
-    fetch('/equipe/configuracoes/smtp/testar', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': document.querySelector('meta[name=csrf-token]')?.content || ''
-      },
-      body: JSON.stringify({ email: email })
-    })
-    .then(r => r.json())
-    .then(data => {
-      result.style.display = 'block';
-      if (data.success) {
-        result.innerHTML = '<div style="padding:12px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:#166534;font-size:.82rem"><strong>✓ Sucesso!</strong> E-mail de teste enviado para ' + email + '. Verifique sua caixa de entrada.</div>';
-      } else {
-        result.innerHTML = '<div style="padding:12px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#dc2626;font-size:.82rem"><strong>✗ Erro:</strong> ' + (data.message || 'Falha ao enviar e-mail de teste.') + '</div>';
-      }
-    })
-    .catch(err => {
-      result.style.display = 'block';
-      result.innerHTML = '<div style="padding:12px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#dc2626;font-size:.82rem"><strong>✗ Erro:</strong> ' + err.message + '</div>';
-    })
-    .finally(() => {
-      btn.disabled = false;
-      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Enviar E-mail de Teste';
-    });
-  }
-  </script>
 
 <?php elseif ($secao === 'seo'): ?>
   <div class="form-group">
