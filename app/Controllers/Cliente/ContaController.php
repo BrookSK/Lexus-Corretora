@@ -11,6 +11,10 @@ final class ContaController
     public function index(Requisicao $req): Resposta
     {
         $cliente = ClientesService::obterPorId(Auth::clienteId());
+        // Sincronizar sessão com banco (corrige nome desatualizado na sessão)
+        if ($cliente && !empty($cliente['name'])) {
+            $_SESSION['cliente_nome'] = $cliente['name'];
+        }
         $conteudo = View::renderizar(__DIR__ . '/../../Views/cliente/minha-conta.php', ['cliente' => $cliente]);
         return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
             'conteudo' => $conteudo, 'painelTipo' => 'cliente',

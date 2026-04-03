@@ -11,6 +11,14 @@ final class DashboardController
     {
         $clienteId = Auth::clienteId();
         $pdo = BancoDeDados::obter();
+
+        // Sincronizar nome da sessão com o banco
+        $clienteRow = $pdo->prepare("SELECT name FROM clientes WHERE id = :id");
+        $clienteRow->execute(['id' => $clienteId]);
+        $clienteData = $clienteRow->fetch();
+        if ($clienteData && !empty($clienteData['name'])) {
+            $_SESSION['cliente_nome'] = $clienteData['name'];
+        }
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM demandas WHERE cliente_id = :c");
         $stmt->execute(['c' => $clienteId]);
         $totalDemandas = (int)$stmt->fetchColumn();
