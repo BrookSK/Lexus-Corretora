@@ -50,6 +50,35 @@ final class ConfigController
         $dados = $req->todosPost();
         unset($dados['_csrf_token']);
 
+        // Detectar teste SMTP
+        if (!empty($dados['_smtp_test'])) {
+            $emailDestino = trim($dados['email_teste'] ?? '');
+            if (empty($emailDestino) || !filter_var($emailDestino, FILTER_VALIDATE_EMAIL)) {
+                $_SESSION['flash'] = ['type' => 'error', 'message' => 'E-mail de destino inválido.'];
+                return Resposta::redirecionar('/equipe/configuracoes/smtp');
+            }
+            $host = Settings::obter('smtp.host', '');
+            $usuario = Settings::obter('smtp.usuario', '');
+            $deEmail = Settings::obter('smtp.de_email', '');
+            if (empty($host) || empty($usuario) || empty($deEmail)) {
+                $_SESSION['flash'] = ['type' => 'error', 'message' => 'Configurações SMTP incompletas.'];
+                return Resposta::redirecionar('/equipe/configuracoes/smtp');
+            }
+            try {
+                $ok = \LEX\App\Services\Email\EmailService::enviar(
+                    $emailDestino,
+                    'Teste de Configuração SMTP',
+                    '<h2>Teste de SMTP</h2><p>Configurações funcionando corretamente!</p><p><strong>Data/Hora:</strong> ' . date('d/m/Y H:i:s') . '</p>'
+                );
+                $_SESSION['flash'] = $ok
+                    ? ['type' => 'success', 'message' => 'E-mail de teste enviado para ' . $emailDestino]
+                    : ['type' => 'error', 'message' => 'Falha ao enviar. Verifique as configurações e o log do servidor.'];
+            } catch (\Exception $e) {
+                $_SESSION['flash'] = ['type' => 'error', 'message' => 'Erro: ' . $e->getMessage()];
+            }
+            return Resposta::redirecionar('/equipe/configuracoes/smtp');
+        }
+
         // Processar uploads de imagem — mapear campo para chave de settings correta
         $uploadMap = [
             'logo'     => 'sistema.logo',
