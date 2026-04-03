@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace LEX\App\Services\Email;
 
 use LEX\Core\ConfiguracoesSistema;
+use LEX\Core\SistemaConfig;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
@@ -44,8 +45,8 @@ final class EmailService
     /** Confirmação de nova demanda criada (para o cliente) */
     public static function novaDemanda(string $para, string $nomeCliente, string $codigoDemanda, string $tituloDemanda): bool
     {
-        $nome = ConfiguracoesSistema::nome();
-        $url  = ConfiguracoesSistema::url();
+        $nome = SistemaConfig::nome();
+        $url  = SistemaConfig::url();
         return self::enviar($para, "Sua demanda foi recebida — {$codigoDemanda}", "
             <p>Olá, <strong>{$nomeCliente}</strong>!</p>
             <p>Recebemos sua demanda <strong>{$codigoDemanda} — {$tituloDemanda}</strong>.</p>
@@ -58,8 +59,8 @@ final class EmailService
     /** Notificação de nova oportunidade distribuída (para o parceiro) */
     public static function novaOportunidade(string $para, string $nomeParceiro, string $codigoDemanda, string $tituloDemanda, string $cidade, string $estado): bool
     {
-        $nome = ConfiguracoesSistema::nome();
-        $url  = ConfiguracoesSistema::url();
+        $nome = SistemaConfig::nome();
+        $url  = SistemaConfig::url();
         return self::enviar($para, "Nova oportunidade disponível — {$codigoDemanda}", "
             <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
             <p>Uma nova oportunidade compatível com seu perfil está disponível:</p>
@@ -76,8 +77,8 @@ final class EmailService
     /** Notificação de proposta recebida (para o cliente) */
     public static function novaPropostaCliente(string $para, string $nomeCliente, string $codigoDemanda, string $nomeParceiro): bool
     {
-        $nome = ConfiguracoesSistema::nome();
-        $url  = ConfiguracoesSistema::url();
+        $nome = SistemaConfig::nome();
+        $url  = SistemaConfig::url();
         return self::enviar($para, "Nova proposta recebida — {$codigoDemanda}", "
             <p>Olá, <strong>{$nomeCliente}</strong>!</p>
             <p>O parceiro <strong>{$nomeParceiro}</strong> enviou uma proposta para sua demanda <strong>{$codigoDemanda}</strong>.</p>
@@ -89,8 +90,8 @@ final class EmailService
     /** Notificação de proposta selecionada (para o parceiro) */
     public static function propostaSelecionada(string $para, string $nomeParceiro, string $codigoDemanda): bool
     {
-        $nome = ConfiguracoesSistema::nome();
-        $url  = ConfiguracoesSistema::url();
+        $nome = SistemaConfig::nome();
+        $url  = SistemaConfig::url();
         return self::enviar($para, "Sua proposta foi selecionada — {$codigoDemanda}", "
             <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
             <p>Parabéns! Sua proposta para a demanda <strong>{$codigoDemanda}</strong> foi selecionada.</p>
@@ -103,7 +104,7 @@ final class EmailService
     /** Notificação de proposta recusada (para o parceiro) */
     public static function propostaRecusada(string $para, string $nomeParceiro, string $codigoDemanda): bool
     {
-        $nome = ConfiguracoesSistema::nome();
+        $nome = SistemaConfig::nome();
         return self::enviar($para, "Atualização sobre sua proposta — {$codigoDemanda}", "
             <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
             <p>Informamos que sua proposta para a demanda <strong>{$codigoDemanda}</strong> não foi selecionada desta vez.</p>
@@ -115,8 +116,8 @@ final class EmailService
     /** Notificação de contrato formalizado (para cliente e parceiro) */
     public static function contratoFormalizado(string $para, string $nomeDestinatario, string $codigoDemanda, string $valor): bool
     {
-        $nome = ConfiguracoesSistema::nome();
-        $url  = ConfiguracoesSistema::url();
+        $nome = SistemaConfig::nome();
+        $url  = SistemaConfig::url();
         return self::enviar($para, "Contrato formalizado — {$codigoDemanda}", "
             <p>Olá, <strong>{$nomeDestinatario}</strong>!</p>
             <p>O contrato referente à demanda <strong>{$codigoDemanda}</strong> foi formalizado.</p>
@@ -129,8 +130,8 @@ final class EmailService
     /** Resultado de qualificação (para o parceiro) */
     public static function resultadoQualificacao(string $para, string $nomeParceiro, string $status, string $parecer = ''): bool
     {
-        $nome = ConfiguracoesSistema::nome();
-        $url  = ConfiguracoesSistema::url();
+        $nome = SistemaConfig::nome();
+        $url  = SistemaConfig::url();
         $aprovado = in_array($status, ['aprovado', 'vetriks_ativo'], true);
         $titulo = $aprovado ? 'Qualificação aprovada' : 'Resultado da qualificação';
         $msg = $aprovado
@@ -149,8 +150,8 @@ final class EmailService
     /** Boas-vindas ao novo parceiro cadastrado */
     public static function boasVindasParceiro(string $para, string $nomeParceiro): bool
     {
-        $nome = ConfiguracoesSistema::nome();
-        $url  = ConfiguracoesSistema::url();
+        $nome = SistemaConfig::nome();
+        $url  = SistemaConfig::url();
         return self::enviar($para, "Bem-vindo à {$nome}!", "
             <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
             <p>Seu cadastro foi recebido com sucesso. Nossa equipe irá analisar seu perfil e em breve você receberá o resultado da qualificação.</p>
@@ -162,7 +163,7 @@ final class EmailService
     /** Notificação interna de novo contato recebido (para a equipe) */
     public static function novoContatoEquipe(string $paraEquipe, string $nomeRemetente, string $emailRemetente, string $mensagem): bool
     {
-        $nome = ConfiguracoesSistema::nome();
+        $nome = SistemaConfig::nome();
         return self::enviar($paraEquipe, "Novo contato recebido — {$nome}", "
             <p><strong>Nome:</strong> {$nomeRemetente}</p>
             <p><strong>E-mail:</strong> {$emailRemetente}</p>
@@ -175,7 +176,7 @@ final class EmailService
 
     private static function wrapHtml(string $titulo, string $corpo): string
     {
-        $nome = ConfiguracoesSistema::nome();
+        $nome = SistemaConfig::nome();
         $gold = '#B8945A';
         return "<!DOCTYPE html><html><head><meta charset='UTF-8'/></head><body style='font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:0'>
             <div style='max-width:600px;margin:32px auto;background:#fff;border-radius:4px;overflow:hidden'>
