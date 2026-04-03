@@ -86,19 +86,20 @@ final class InicialController
         $dados = $req->todosPost();
         unset($dados['_csrf_token']);
 
-        $nome   = trim($dados['name'] ?? '');
+        $nomeCliente = trim($dados['name'] ?? '');
         $email  = trim($dados['email'] ?? '');
         $senha  = $dados['password'] ?? '';
         $titulo = trim($dados['title'] ?? '');
+        $nome   = $nomeCliente; // alias para compatibilidade
 
         // Log para debug
         \LEX\Core\AppLogger::info('salvarDemanda recebido', [
-            'nome' => $nome, 'email' => $email, 'titulo' => $titulo,
+            'nome' => $nomeCliente, 'email' => $email, 'titulo' => $titulo,
             'senha_len' => strlen($senha), 'ip' => $req->ip(),
         ]);
 
-        if (empty($nome) || empty($email) || strlen($senha) < 8 || empty($titulo)) {
-            \LEX\Core\AppLogger::info('salvarDemanda validacao falhou', ['nome'=>$nome,'email'=>$email,'titulo'=>$titulo,'senha_len'=>strlen($senha)]);
+        if (empty($nomeCliente) || empty($email) || strlen($senha) < 8 || empty($titulo)) {
+            \LEX\Core\AppLogger::info('salvarDemanda validacao falhou', ['nome'=>$nomeCliente,'email'=>$email,'titulo'=>$titulo,'senha_len'=>strlen($senha)]);
             $_SESSION['flash'] = ['type' => 'error', 'message' => I18n::t('erro.validacao')];
             $voltar = str_contains($_SERVER['HTTP_REFERER'] ?? '', 'para-clientes') ? '/para-clientes' : '/abrir-demanda';
             return Resposta::redirecionar($voltar);
@@ -118,7 +119,7 @@ final class InicialController
         $hash = password_hash($senha, PASSWORD_BCRYPT, ['cost' => 12]);
         $stmt = $pdo->prepare("INSERT INTO clientes (name, email, password, phone, company, city, state, is_active, created_at) VALUES (:n, :e, :p, :phone, :company, :city, :state, 1, NOW())");
         $stmt->execute([
-            'n'       => $nome,
+            'n'       => $nomeCliente,
             'e'       => $email,
             'p'       => $hash,
             'phone'   => $dados['phone'] ?? null,
@@ -168,14 +169,14 @@ final class InicialController
         try {
             $demanda = \LEX\App\Services\Demandas\DemandasService::obterPorId($demandaId);
             if ($demanda) {
-                $emailOk = \LEX\App\Services\Email\EmailService::novaDemanda($email, $nome, $demanda['code'] ?? '', $demanda['title'] ?? '');
+                $emailOk = \LEX\App\Services\Email\EmailService::novaDemanda($email, $nomeCliente, $demanda['code'] ?? '', $demanda['title'] ?? '');
                 \LEX\Core\AppLogger::info('salvarDemanda email enviado', ['para'=>$email,'ok'=>$emailOk]);
             }
         } catch (\Throwable $e) {
             \LEX\Core\AppLogger::erro('salvarDemanda email erro: ' . $e->getMessage());
         }
 
-        Auth::loginCliente(['id' => $clienteId, 'name' => $nome, 'email' => $email]);
+        Auth::loginCliente(['id' => $clienteId, 'name' => $nomeCliente, 'email' => $email]);
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('demanda.sucesso')];
         return Resposta::redirecionar('/cliente/dashboard');
     }
