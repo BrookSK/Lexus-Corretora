@@ -12,74 +12,6 @@ $CATEGORIAS_NICHO = [
 
 <!-- HERO -->
 <section class="hero" id="landing-hero">
-<script>
-// Debug imediato
-console.log('=== LANDING PAGE DEBUG ===');
-const hero = document.getElementById('landing-hero');
-console.log('Hero element:', hero);
-if (hero) {
-  console.log('Hero computed styles BEFORE:', {
-    display: window.getComputedStyle(hero).display,
-    gridTemplateColumns: window.getComputedStyle(hero).gridTemplateColumns,
-    flexDirection: window.getComputedStyle(hero).flexDirection,
-    minHeight: window.getComputedStyle(hero).minHeight,
-    padding: window.getComputedStyle(hero).padding,
-    position: window.getComputedStyle(hero).position
-  });
-  
-  // Força estilos
-  hero.style.cssText = 'display: grid !important; grid-template-columns: 1fr 1fr !important; min-height: calc(100vh - 64px) !important; width: 100% !important; background: transparent !important; padding: 0 !important; position: static !important; margin: 0 !important;';
-  
-  console.log('Hero computed styles AFTER:', {
-    display: window.getComputedStyle(hero).display,
-    gridTemplateColumns: window.getComputedStyle(hero).gridTemplateColumns,
-    flexDirection: window.getComputedStyle(hero).flexDirection,
-    minHeight: window.getComputedStyle(hero).minHeight,
-    padding: window.getComputedStyle(hero).padding,
-    position: window.getComputedStyle(hero).position
-  });
-  
-  // Verifica todas as classes CSS aplicadas
-  const allRules = [];
-  for (let sheet of document.styleSheets) {
-    try {
-      for (let rule of sheet.cssRules || sheet.rules) {
-        if (rule.selectorText && rule.selectorText.includes('hero')) {
-          allRules.push({
-            selector: rule.selectorText,
-            display: rule.style.display,
-            gridTemplateColumns: rule.style.gridTemplateColumns,
-            flexDirection: rule.style.flexDirection
-          });
-        }
-      }
-    } catch(e) {
-      console.log('Cannot read stylesheet:', sheet.href);
-    }
-  }
-  console.log('All CSS rules with "hero":', allRules);
-}
-
-// Debug das colunas
-const formCol = document.querySelector('.hero-form-col');
-const headlineCol = document.querySelector('.hero-headline-col');
-console.log('Form column:', formCol);
-console.log('Headline column:', headlineCol);
-
-if (formCol) {
-  console.log('Form col computed:', {
-    display: window.getComputedStyle(formCol).display,
-    background: window.getComputedStyle(formCol).background
-  });
-}
-
-if (headlineCol) {
-  console.log('Headline col computed:', {
-    display: window.getComputedStyle(headlineCol).display,
-    background: window.getComputedStyle(headlineCol).background
-  });
-}
-</script>
   <!-- LEFT: MULTI-STEP FORM -->
   <div class="hero-form-col">
     <!-- top progress -->
@@ -516,6 +448,54 @@ if (headlineCol) {
     </div>
   </div>
 </section>
+
+<script>
+// Debug após HTML completo
+console.log('=== LANDING PAGE DEBUG (AFTER HTML) ===');
+const hero = document.getElementById('landing-hero');
+console.log('Hero element:', hero);
+
+if (hero) {
+  console.log('Hero computed styles:', {
+    display: window.getComputedStyle(hero).display,
+    gridTemplateColumns: window.getComputedStyle(hero).gridTemplateColumns,
+    flexDirection: window.getComputedStyle(hero).flexDirection,
+    minHeight: window.getComputedStyle(hero).minHeight,
+    padding: window.getComputedStyle(hero).padding
+  });
+}
+
+// Debug das colunas
+const formCol = document.querySelector('#landing-hero .hero-form-col');
+const headlineCol = document.querySelector('#landing-hero .hero-headline-col');
+console.log('Form column:', formCol);
+console.log('Headline column:', headlineCol);
+
+if (formCol) {
+  console.log('Form col computed:', {
+    display: window.getComputedStyle(formCol).display,
+    flexDirection: window.getComputedStyle(formCol).flexDirection,
+    background: window.getComputedStyle(formCol).backgroundColor
+  });
+  
+  // Força estilos
+  formCol.style.cssText = 'background: #161410 !important; border-right: 1px solid rgba(201,168,76,.1) !important; display: flex !important; flex-direction: column !important; position: relative !important; overflow: hidden !important; min-height: calc(100vh - 64px) !important;';
+  console.log('Form col AFTER force:', window.getComputedStyle(formCol).display);
+}
+
+if (headlineCol) {
+  console.log('Headline col computed:', {
+    display: window.getComputedStyle(headlineCol).display,
+    background: window.getComputedStyle(headlineCol).backgroundColor
+  });
+  
+  // Força estilos
+  headlineCol.style.cssText = 'background: #0E0C09 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 80px 72px !important; position: relative !important;';
+  console.log('Headline col AFTER force:', window.getComputedStyle(headlineCol).display);
+}
+
+console.log('=== END DEBUG ===');
+</script>
 
 <script>
 (function(){
