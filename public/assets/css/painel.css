@@ -11,10 +11,10 @@
 body.painel-body{font-family:'Outfit',sans-serif;font-weight:400;background:var(--bg);color:var(--text);overflow-x:hidden}
 
 /* ── LAYOUT ─────────────────────────── */
-.painel-wrapper{display:flex;min-height:100vh}
-.painel-main{flex:1;margin-left:var(--sidebar-w);display:flex;flex-direction:column;transition:margin-left .3s}
+.painel-wrapper{display:flex;min-height:100vh;overflow:hidden}
+.painel-main{flex:1;margin-left:var(--sidebar-w);display:flex;flex-direction:column;transition:margin-left .3s;min-width:0}
 .sidebar.collapsed~.painel-main{margin-left:var(--sidebar-collapsed)}
-.painel-content{flex:1;padding:32px 40px;overflow:visible}
+.painel-content{flex:1;padding:32px 40px;overflow-x:auto;overflow-y:auto}
 
 /* ── SIDEBAR ────────────────────────── */
 .sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--black);color:var(--white);display:flex;flex-direction:column;z-index:100;transition:width .3s;overflow:hidden}
@@ -137,7 +137,7 @@ body.painel-body{font-family:'Outfit',sans-serif;font-weight:400;background:var(
 .auth-footer a{color:var(--gold);text-decoration:none}
 
 /* ── CRM KANBAN ─────────────────────── */
-.crm-kanban{display:flex;gap:12px;overflow-x:auto;overflow-y:visible;padding-bottom:16px;align-items:flex-start;min-height:calc(100vh - 220px);width:100%;min-width:min-content}
+.crm-kanban{display:inline-flex;gap:12px;padding-bottom:16px;align-items:flex-start;min-height:calc(100vh - 220px);width:auto;min-width:100%}
 .crm-kanban::-webkit-scrollbar{height:10px}
 .crm-kanban::-webkit-scrollbar-track{background:rgba(0,0,0,.05);border-radius:5px}
 .crm-kanban::-webkit-scrollbar-thumb{background:var(--gold);border-radius:5px}
