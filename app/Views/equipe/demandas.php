@@ -17,8 +17,11 @@ $currentTab = $_GET['tab'] ?? 'todas';
     <a href="/equipe/demandas?tab=todas" class="tab-item<?php echo $currentTab === 'todas' ? ' active' : ''; ?>">
       Todas as Demandas
     </a>
+    <a href="/equipe/demandas?tab=clientes" class="tab-item<?php echo $currentTab === 'clientes' ? ' active' : ''; ?>">
+      Clientes
+    </a>
     <a href="/equipe/demandas?tab=repasse" class="tab-item<?php echo $currentTab === 'repasse' ? ' active' : ''; ?>">
-      Repasse
+      Repasses
       <?php if (!empty($repassesPendentes) && $repassesPendentes > 0): ?>
         <span class="badge-notification"><?php echo $repassesPendentes; ?></span>
       <?php endif; ?>
@@ -28,6 +31,11 @@ $currentTab = $_GET['tab'] ?? 'todas';
 
 <?php if ($currentTab === 'repasse'): ?>
   <?php include __DIR__ . '/demandas-repasse.php'; ?>
+  <?php return; ?>
+<?php endif; ?>
+
+<?php if ($currentTab === 'clientes'): ?>
+  <?php include __DIR__ . '/demandas-clientes.php'; ?>
   <?php return; ?>
 <?php endif; ?>
 

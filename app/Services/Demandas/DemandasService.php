@@ -324,4 +324,51 @@ final class DemandasService
         );
         return (int)$stmt->fetchColumn();
     }
+
+    public static function listarClientes(int $page = 1, int $perPage = 20, array $filtros = []): array
+    {
+        $pdo = BancoDeDados::obter();
+        $where = ['d.deleted_at IS NULL', 'd.origin = "cliente"'];
+        $params = [];
+
+        if (!empty($filtros['busca'])) {
+            $where[] = '(d.title LIKE :busca OR d.code LIKE :busca2)';
+            $params['busca'] = '%' . $filtros['busca'] . '%';
+            $params['busca2'] = '%' . $filtros['busca'] . '%';
+        }
+        if (!empty($filtros['status'])) {
+            $where[] = 'd.status = :status';
+            $params['status'] = $filtros['status'];
+        }
+        if (!empty($filtros['urgency'])) {
+            $where[] = 'd.urgency = :urgency';
+            $params['urgency'] = $filtros['urgency'];
+        }
+
+        $whereSql = implode(' AND ', $where);
+        $offset = ($page - 1) * $perPage;
+
+        $countStmt = $pdo->prepare("SELECT COUNT(*) FROM demandas d WHERE {$whereSql}");
+        $countStmt->execute($params);
+        $total = (int)$countStmt->fetchColumn();
+
+        $stmt = $pdo->prepare(
+            "SELECT d.id, d.code, d.title, d.status, d.urgency, d.category, d.city, d.state,
+                    d.budget_min, d.budget_max, d.created_at, d.cliente_id,
+                    c.name AS cliente_nome, c.email AS cliente_email
+             FROM demandas d
+             LEFT JOIN clientes c ON c.id = d.cliente_id
+             WHERE {$whereSql}
+             ORDER BY d.created_at DESC
+             LIMIT :limit OFFSET :offset"
+        );
+        foreach ($params as $k => $v) {
+            $stmt->bindValue($k, $v);
+        }
+        $stmt->bindValue('limit', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return ['items' => $stmt->fetchAll(), 'total' => $total];
+    }
 }

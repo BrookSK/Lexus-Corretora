@@ -24,6 +24,8 @@ final class DemandasController
         
         if ($tab === 'repasse') {
             $resultado = DemandasService::listarRepasses($page, 20, $filtros);
+        } elseif ($tab === 'clientes') {
+            $resultado = DemandasService::listarClientes($page, 20, $filtros);
         } else {
             $resultado = DemandasService::listar($page, 20, $filtros);
         }
