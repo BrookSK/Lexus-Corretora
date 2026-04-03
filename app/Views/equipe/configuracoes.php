@@ -69,8 +69,10 @@ $tabs = [
     <?php
     // Incluir o conteúdo da seção específica
     $secao = $currentTab;
-    // Debug temporário
-    // echo "<!-- DEBUG: secao = " . htmlspecialchars($secao) . " -->";
+    // Passar as classes como variáveis para o arquivo incluído
+    $V = 'LEX\Core\View';
+    $I = 'LEX\Core\I18n';
+    $C = 'LEX\Core\Csrf';
     include __DIR__ . '/configuracoes-secao-content.php';
     ?>
 

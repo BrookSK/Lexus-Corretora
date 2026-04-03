@@ -1,20 +1,21 @@
 <?php
 // Conteúdo das seções de configuração
-// Variáveis disponíveis: $secao, $settings, $V (View), $I (I18n), $C (Csrf)
+// Variável $secao deve estar definida
+// Variável $settings deve estar definida
 
 if ($secao === 'branding'): ?>
   <div class="form-group">
-    <label><?php echo $V::e($I::t('config.nome_empresa')); ?></label>
-    <input type="text" name="sistema.nome" value="<?php echo $V::e($settings['sistema.nome'] ?? ''); ?>"/>
+    <label><?php echo \LEX\Core\$V::e(\LEX\Core\$I::t('config.nome_empresa')); ?></label>
+    <input type="text" name="sistema.nome" value="<?php echo \LEX\Core\$V::e($settings['sistema.nome'] ?? ''); ?>"/>
   </div>
   <div class="form-group">
-    <label><?php echo $V::e($I::t('config.slogan')); ?></label>
-    <input type="text" name="sistema.slogan" value="<?php echo $V::e($settings['sistema.slogan'] ?? ''); ?>"/>
+    <label><?php echo \LEX\Core\$V::e(\LEX\Core\$I::t('config.slogan')); ?></label>
+    <input type="text" name="sistema.slogan" value="<?php echo \LEX\Core\$V::e($settings['sistema.slogan'] ?? ''); ?>"/>
   </div>
   <div class="form-group">
     <label>Logo</label>
     <?php if (!empty($settings['sistema.logo'])): ?>
-      <div style="margin-bottom:10px"><img src="<?php echo $V::e($settings['sistema.logo']); ?>" alt="Logo" style="max-height:60px;background:#0C0C0A;padding:8px 16px"></div>
+      <div style="margin-bottom:10px"><img src="<?php echo \LEX\Core\$V::e($settings['sistema.logo']); ?>" alt="Logo" style="max-height:60px;background:#0C0C0A;padding:8px 16px"></div>
     <?php endif; ?>
     <input type="file" name="logo" accept="image/*"/>
     <small style="font-size:.75rem;color:var(--text-muted)">PNG, SVG, JPG — máx. 5MB</small>
@@ -22,18 +23,18 @@ if ($secao === 'branding'): ?>
   <div class="form-group">
     <label>Favicon</label>
     <?php if (!empty($settings['sistema.favicon'])): ?>
-      <div style="margin-bottom:10px"><img src="<?php echo $V::e($settings['sistema.favicon']); ?>" alt="Favicon" style="max-height:32px"></div>
+      <div style="margin-bottom:10px"><img src="<?php echo \LEX\Core\$V::e($settings['sistema.favicon']); ?>" alt="Favicon" style="max-height:32px"></div>
     <?php endif; ?>
     <input type="file" name="favicon" accept="image/*,.ico"/>
     <small style="font-size:.75rem;color:var(--text-muted)">ICO, PNG — máx. 5MB</small>
   </div>
   <div class="form-group">
-    <label><?php echo $V::e($I::t('config.cor_primaria')); ?></label>
-    <input type="color" name="sistema.cor_primaria" value="<?php echo $V::e($settings['sistema.cor_primaria'] ?? '#B8945A'); ?>" style="width:80px;height:40px;padding:2px;cursor:pointer"/>
+    <label><?php echo \LEX\Core\$V::e(\LEX\Core\$I::t('config.cor_primaria')); ?></label>
+    <input type="color" name="sistema.cor_primaria" value="<?php echo \LEX\Core\$V::e($settings['sistema.cor_primaria'] ?? '#B8945A'); ?>" style="width:80px;height:40px;padding:2px;cursor:pointer"/>
   </div>
   <div class="form-group">
     <label>Copyright</label>
-    <input type="text" name="sistema.copyright" value="<?php echo $V::e($settings['sistema.copyright'] ?? ''); ?>"/>
+    <input type="text" name="sistema.copyright" value="<?php echo \LEX\Core\$V::e($settings['sistema.copyright'] ?? ''); ?>"/>
   </div>
 
 <?php elseif ($secao === 'smtp'): ?>
@@ -173,7 +174,155 @@ if ($secao === 'branding'): ?>
   </div>
 
 <?php elseif ($secao === 'trello'): ?>
-  <p style="color:var(--text-muted);font-size:.88rem">Integração com Trello. Configure em <a href="/equipe/configuracoes/trello" style="color:var(--gold)">Configurações > Trello</a> (rota antiga).</p>
+  <?php
+  $trelloToken = $settings['trello.api_token'] ?? '';
+  $trelloKey = $settings['trello.api_key'] ?? '';
+  $trelloConectado = !empty($trelloToken) && !empty($trelloKey);
+  $listId = $settings['trello.list_id'] ?? '';
+  $baseUrl = ($_SERVER['REQUEST_SCHEME'] ?? 'https') . '://' . ($_SERVER['HTTP_HOST'] ?? '');
+  ?>
+
+  <?php if (!$trelloConectado): ?>
+    <!-- Passo 1: API Key -->
+    <div style="background:rgba(184,148,90,.04);border:1px solid rgba(184,148,90,.15);padding:24px;margin-bottom:24px">
+      <p style="font-size:.92rem;font-weight:500;margin-bottom:12px">Passo 1: API Key</p>
+      <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:16px">
+        Acesse o link abaixo, faça login no Trello, e copie a API Key que aparece na página.
+      </p>
+      <a href="https://trello.com/power-ups/admin" target="_blank" class="btn btn-secondary" style="margin-bottom:16px">Abrir Trello Power-Ups →</a>
+      <div class="form-group" style="margin-top:16px;margin-bottom:0">
+        <label>Cole sua API Key aqui</label>
+        <input type="text" name="trello.api_key" value="<?php echo $V::e($trelloKey); ?>" placeholder="Ex: a1b2c3d4e5f6..."/>
+      </div>
+    </div>
+
+    <!-- Passo 2: Conectar (só aparece se já tem API Key) -->
+    <?php if (!empty($trelloKey)): ?>
+    <div style="background:rgba(34,197,94,.04);border:1px solid rgba(34,197,94,.15);padding:24px;margin-bottom:24px">
+      <p style="font-size:.92rem;font-weight:500;margin-bottom:12px">Passo 2: Autorizar</p>
+      <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:16px">
+        Clique no botão abaixo para autorizar a Lexus a criar cards no seu Trello.
+      </p>
+      <a href="https://trello.com/1/authorize?expiration=never&scope=read,write&response_type=token&key=<?php echo $V::e($trelloKey); ?>&return_url=<?php echo $V::e($baseUrl); ?>/equipe/trello/callback&name=Lexus+Corretora" class="btn btn-primary">
+        Conectar Trello
+      </a>
+    </div>
+    <?php endif; ?>
+
+    <p style="font-size:.82rem;color:var(--text-muted)">Salve a API Key primeiro, depois clique em "Conectar Trello".</p>
+
+  <?php else: ?>
+    <!-- Conectado -->
+    <div style="display:flex;align-items:center;gap:12px;padding:20px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);margin-bottom:24px">
+      <span style="width:12px;height:12px;border-radius:50%;background:#22c55e;flex-shrink:0"></span>
+      <span style="font-size:.92rem;font-weight:500;color:#166534">Trello conectado</span>
+      <form method="POST" action="/equipe/trello/desconectar" style="margin-left:auto">
+        <?php echo $C::campo(); ?>
+        <button type="submit" class="btn btn-danger btn-sm">Desconectar</button>
+      </form>
+    </div>
+
+    <!-- Seleção de Board e Lista -->
+    <div id="trelloBoardsArea">
+      <p style="font-size:.92rem;font-weight:500;margin-bottom:8px">Escolha onde os cards serão criados</p>
+      <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:16px">Selecione o board e a lista. Você pode usar a mesma lista para tudo ou separar por tipo.</p>
+
+      <div id="trelloLoading" style="padding:20px;text-align:center;color:var(--text-muted)">Carregando boards...</div>
+      <div id="trelloSelects" style="display:none">
+        <div class="form-group">
+          <label>Board</label>
+          <select id="trelloBoardSelect" onchange="trelloLoadLists(this.value)">
+            <option value="">Selecione um board...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Lista padrão (todos os cards)</label>
+          <select id="trelloListDefault" name="list_id">
+            <option value="">Selecione uma lista...</option>
+          </select>
+        </div>
+        <p style="font-size:.78rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin:20px 0 12px">Listas por tipo (opcional)</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Lista — Contatos</label>
+            <select id="trelloListContato" name="list_contato"><option value="">Usar padrão</option></select>
+          </div>
+          <div class="form-group">
+            <label>Lista — Demandas</label>
+            <select id="trelloListDemanda" name="list_demanda"><option value="">Usar padrão</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Lista — Parceiros</label>
+          <select id="trelloListParceiro" name="list_parceiro"><option value="">Usar padrão</option></select>
+        </div>
+        <button type="button" onclick="salvarListasTrello()" class="btn btn-primary" style="margin-top:12px">Salvar Listas</button>
+      </div>
+    </div>
+
+    <?php if (!empty($listId)): ?>
+    <div style="margin-top:16px;padding:16px;background:var(--bg);border-left:3px solid var(--gold)">
+      <p style="font-size:.82rem;color:var(--text-muted)">Lista padrão configurada: <code style="background:rgba(0,0,0,.06);padding:2px 6px"><?php echo $V::e($listId); ?></code></p>
+    </div>
+    <?php endif; ?>
+
+    <script>
+    (function(){
+      fetch('/equipe/trello/boards').then(r=>r.json()).then(function(boards){
+        document.getElementById('trelloLoading').style.display='none';
+        document.getElementById('trelloSelects').style.display='block';
+        var sel=document.getElementById('trelloBoardSelect');
+        boards.forEach(function(b){
+          var o=document.createElement('option');o.value=b.id;o.textContent=b.name;
+          o.dataset.lists=JSON.stringify(b.lists);sel.appendChild(o);
+        });
+        // Se já tem lista configurada, tentar selecionar o board certo
+        var currentList='<?php echo $V::e($listId); ?>';
+        if(currentList){
+          boards.forEach(function(b){
+            b.lists.forEach(function(l){
+              if(l.id===currentList){sel.value=b.id;trelloLoadLists(b.id)}
+            });
+          });
+        }
+      }).catch(function(){
+        document.getElementById('trelloLoading').textContent='Erro ao carregar boards.';
+      });
+    })();
+    function trelloLoadLists(boardId){
+      var sel=document.getElementById('trelloBoardSelect');
+      var opt=sel.querySelector('option[value="'+boardId+'"]');
+      if(!opt)return;
+      var lists=JSON.parse(opt.dataset.lists||'[]');
+      var selects=['trelloListDefault','trelloListContato','trelloListDemanda','trelloListParceiro'];
+      var currentList='<?php echo $V::e($listId); ?>';
+      var currentContato='<?php echo $V::e($settings['trello.list_contato'] ?? ''); ?>';
+      var currentDemanda='<?php echo $V::e($settings['trello.list_demanda'] ?? ''); ?>';
+      var currentParceiro='<?php echo $V::e($settings['trello.list_parceiro'] ?? ''); ?>';
+      var currents=[currentList,currentContato,currentDemanda,currentParceiro];
+      selects.forEach(function(id,i){
+        var s=document.getElementById(id);
+        s.innerHTML=i===0?'<option value="">Selecione...</option>':'<option value="">Usar padrão</option>';
+        lists.forEach(function(l){
+          var o=document.createElement('option');o.value=l.id;o.textContent=l.name;
+          if(l.id===currents[i])o.selected=true;
+          s.appendChild(o);
+        });
+      });
+    }
+    function salvarListasTrello(){
+      var f=document.createElement('form');f.method='POST';f.action='/equipe/trello/salvar-lista';
+      var csrf=document.querySelector('meta[name=csrf-token]');
+      if(csrf){var i=document.createElement('input');i.type='hidden';i.name='_csrf_token';i.value=csrf.content;f.appendChild(i)}
+      var campos={list_id:'trelloListDefault',list_contato:'trelloListContato',list_demanda:'trelloListDemanda',list_parceiro:'trelloListParceiro'};
+      for(var name in campos){
+        var sel=document.getElementById(campos[name]);
+        if(sel&&sel.value){var inp=document.createElement('input');inp.type='hidden';inp.name=name;inp.value=sel.value;f.appendChild(inp)}
+      }
+      document.body.appendChild(f);f.submit();
+    }
+    </script>
+  <?php endif; ?>
 
 <?php elseif ($secao === 'geral'): ?>
   <div class="form-row">
@@ -228,3 +377,4 @@ if ($secao === 'branding'): ?>
 <?php else: ?>
   <p style="color:var(--text-muted);font-size:.88rem">Seção "<?php echo $V::e($secao); ?>" em desenvolvimento.</p>
 <?php endif; ?>
+
