@@ -133,7 +133,6 @@ final class DemandasController
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/demandas/' . $id);
     }
-}
 
     public function aprovarRepasse(Requisicao $req): Resposta
     {
@@ -159,3 +158,4 @@ final class DemandasController
         $_SESSION['flash'] = ['type' => 'success', 'message' => 'Repasse aprovado com sucesso!'];
         return Resposta::redirecionar('/equipe/demandas/' . $id);
     }
+}
