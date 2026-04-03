@@ -288,9 +288,9 @@ Roteador::get('/equipe/relatorios/{tipo}', [RelatoriosController::class, 'gerar'
 // Configurações
 Roteador::get('/equipe/configuracoes', [ConfigController::class, 'index'], $eqMw);
 Roteador::post('/equipe/configuracoes', [ConfigController::class, 'salvar'], $eqMw);
+Roteador::post('/equipe/smtp/testar', [ConfigController::class, 'testarSMTP'], $eqMw);
 Roteador::get('/equipe/configuracoes/{secao}', [ConfigController::class, 'secao'], $eqMw);
 Roteador::post('/equipe/configuracoes/{secao}', [ConfigController::class, 'salvarSecao'], $eqMw);
-Roteador::post('/equipe/configuracoes/smtp/testar', [ConfigController::class, 'testarSMTP'], $eqMw);
 
 // Notificações
 Roteador::get('/equipe/notificacoes', [NotificacoesController::class, 'index'], $eqMw);

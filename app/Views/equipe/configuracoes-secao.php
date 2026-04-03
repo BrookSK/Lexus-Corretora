@@ -113,7 +113,7 @@ $settings = $settings ?? [];
       var formData = new FormData();
       formData.append('email', email);
       formData.append('_csrf_token', csrf ? csrf.content : '');
-      fetch('/equipe/configuracoes/smtp/testar', {
+      fetch('/equipe/smtp/testar', {
         method: 'POST',
         headers: {'Accept': 'application/json'},
         body: formData
