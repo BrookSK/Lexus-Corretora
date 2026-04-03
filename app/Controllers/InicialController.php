@@ -153,8 +153,8 @@ final class InicialController
         // Processar arquivos enviados
         $filesRaw = $_FILES['files'] ?? [];
         if (!empty($filesRaw['name'])) {
-            foreach ($filesRaw['name'] as $i => $nome) {
-                $arq = ['name' => $nome, 'type' => $filesRaw['type'][$i], 'tmp_name' => $filesRaw['tmp_name'][$i], 'error' => $filesRaw['error'][$i], 'size' => $filesRaw['size'][$i]];
+            foreach ($filesRaw['name'] as $i => $nomeArquivo) {
+                $arq = ['name' => $nomeArquivo, 'type' => $filesRaw['type'][$i], 'tmp_name' => $filesRaw['tmp_name'][$i], 'error' => $filesRaw['error'][$i], 'size' => $filesRaw['size'][$i]];
                 if ($arq['error'] === UPLOAD_ERR_OK) {
                     try { ArquivosService::upload($arq, 'demanda', $demandaId); } catch (\Throwable $e) { /* silenciar */ }
                 }
