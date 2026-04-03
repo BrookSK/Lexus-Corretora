@@ -10,6 +10,8 @@ $CATEGORIAS_NICHO = [
     'Paisagismo', 'Decoração', 'Design de Interiores'
 ];
 ?>
+<style>body { background: #0E0C09 !important; }</style>
+<div class="landing-page">
 <link rel="stylesheet" href="/assets/css/landing-pages.css"/>
 
 <!-- HERO -->
@@ -450,6 +452,8 @@ $CATEGORIAS_NICHO = [
     </div>
   </div>
 </section>
+
+</div><!-- .landing-page -->
 
 <script>
 (function(){

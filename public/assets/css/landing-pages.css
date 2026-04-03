@@ -13,27 +13,52 @@
   --ml: 90px;
 }
 
-/* HERO - Ajustado para funcionar com header padrão do sistema */
-.hero {
-  min-height: calc(100vh - 64px);
-  display: grid; grid-template-columns: 1fr 1fr;
-  margin-top: 0;
+/* HERO - Sobrescreve estilos do sistema para landing pages */
+.landing-page .hero {
+  min-height: calc(100vh - 64px) !important;
+  display: grid !important; 
+  grid-template-columns: 1fr 1fr !important;
+  margin-top: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  position: static !important;
+  overflow: visible !important;
+  flex-direction: row !important;
+  justify-content: stretch !important;
+  align-items: stretch !important;
+}
+
+/* Remove elementos decorativos do hero padrão */
+.landing-page .hero .hgrid,
+.landing-page .hero .hero-img,
+.landing-page .hero .hero-geo,
+.landing-page .hero .hero-content,
+.landing-page .hero .hactions-row,
+.landing-page .hero .hstats {
+  display: none !important;
 }
 
 /* RIGHT: headline */
-.hero-headline-col {
-  order: 2;
-  display: flex; align-items: center;
-  padding: 80px 72px;
-  position: relative; overflow: hidden;
-  background: var(--dark);
+.landing-page .hero-headline-col {
+  order: 2 !important;
+  display: flex !important; 
+  align-items: center !important;
+  padding: 80px 72px !important;
+  position: relative !important; 
+  overflow: hidden !important;
+  background: var(--dark) !important;
+  flex-direction: column !important;
+  justify-content: center !important;
 }
 
-.hero-headline-col::before {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
+.landing-page .hero-headline-col::before {
+  content: '' !important; 
+  position: absolute !important; 
+  inset: 0 !important; 
+  pointer-events: none !important;
   background:
     radial-gradient(ellipse 60% 50% at 75% 30%, rgba(201,168,76,.08) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 60% at 20% 80%, rgba(201,168,76,.04) 0%, transparent 60%);
+    radial-gradient(ellipse 40% 60% at 20% 80%, rgba(201,168,76,.04) 0%, transparent 60%) !important;
 }
 
 .hero-headline-inner { position: relative; z-index: 1; }
@@ -95,12 +120,16 @@
 .stat-label { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
 
 /* LEFT: form panel */
-.hero-form-col {
-  order: 1;
-  background: var(--dark2);
-  border-right: 1px solid rgba(201,168,76,.1);
-  display: flex; flex-direction: column;
-  position: relative; overflow: hidden;
+.landing-page .hero-form-col {
+  order: 1 !important;
+  background: var(--dark2) !important;
+  border-right: 1px solid rgba(201,168,76,.1) !important;
+  display: flex !important; 
+  flex-direction: column !important;
+  position: relative !important; 
+  overflow: hidden !important;
+  padding: 0 !important;
+  min-height: calc(100vh - 64px) !important;
 }
 
 /* Progress bar */
