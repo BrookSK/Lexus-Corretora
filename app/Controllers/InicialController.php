@@ -91,7 +91,14 @@ final class InicialController
         $senha  = $dados['password'] ?? '';
         $titulo = trim($dados['title'] ?? '');
 
+        // Log para debug
+        \LEX\Core\AppLogger::info('salvarDemanda recebido', [
+            'nome' => $nome, 'email' => $email, 'titulo' => $titulo,
+            'senha_len' => strlen($senha), 'ip' => $req->ip(),
+        ]);
+
         if (empty($nome) || empty($email) || strlen($senha) < 8 || empty($titulo)) {
+            \LEX\Core\AppLogger::info('salvarDemanda validacao falhou', ['nome'=>$nome,'email'=>$email,'titulo'=>$titulo,'senha_len'=>strlen($senha)]);
             $_SESSION['flash'] = ['type' => 'error', 'message' => I18n::t('erro.validacao')];
             $voltar = str_contains($_SERVER['HTTP_REFERER'] ?? '', 'para-clientes') ? '/para-clientes' : '/abrir-demanda';
             return Resposta::redirecionar($voltar);
@@ -102,6 +109,7 @@ final class InicialController
         $exists = $pdo->prepare("SELECT id FROM clientes WHERE email = :e LIMIT 1");
         $exists->execute(['e' => $email]);
         if ($exists->fetch()) {
+            \LEX\Core\AppLogger::info('salvarDemanda email ja existe', ['email'=>$email]);
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'E-mail já cadastrado. Acesse sua conta para abrir uma demanda.'];
             $voltar = str_contains($_SERVER['HTTP_REFERER'] ?? '', 'para-clientes') ? '/para-clientes' : '/abrir-demanda';
             return Resposta::redirecionar($voltar);
@@ -119,6 +127,16 @@ final class InicialController
             'state'   => $dados['state'] ?? null,
         ]);
         $clienteId = (int)$pdo->lastInsertId();
+        \LEX\Core\AppLogger::info('salvarDemanda cliente criado', ['clienteId'=>$clienteId]);
+
+        // Limpar máscara BRL dos campos monetários
+        foreach (['budget_min', 'budget_max'] as $campo) {
+            if (!empty($dados[$campo])) {
+                $dados[$campo] = preg_replace('/[^\d,.]/', '', $dados[$campo]);
+                $dados[$campo] = str_replace(',', '.', str_replace('.', '', $dados[$campo]));
+                if (!is_numeric($dados[$campo])) $dados[$campo] = null;
+            }
+        }
 
         $dadosDemanda = array_intersect_key($dados, array_flip([
             'title','description','category','work_type','urgency','address',
@@ -129,6 +147,7 @@ final class InicialController
         $dadosDemanda['origin']     = 'lead';
         $dadosDemanda['status']     = 'novo';
         $demandaId = DemandasService::criar($dadosDemanda);
+        \LEX\Core\AppLogger::info('salvarDemanda demanda criada', ['demandaId'=>$demandaId]);
         TimelineService::registrar($demandaId, 'demanda_criada', 'Demanda criada via formulário público', 'cliente', $clienteId);
 
         // Processar arquivos enviados
@@ -149,9 +168,12 @@ final class InicialController
         try {
             $demanda = \LEX\App\Services\Demandas\DemandasService::obterPorId($demandaId);
             if ($demanda) {
-                \LEX\App\Services\Email\EmailService::novaDemanda($email, $nome, $demanda['code'] ?? '', $demanda['title'] ?? '');
+                $emailOk = \LEX\App\Services\Email\EmailService::novaDemanda($email, $nome, $demanda['code'] ?? '', $demanda['title'] ?? '');
+                \LEX\Core\AppLogger::info('salvarDemanda email enviado', ['para'=>$email,'ok'=>$emailOk]);
             }
-        } catch (\Throwable $e) { /* silenciar */ }
+        } catch (\Throwable $e) {
+            \LEX\Core\AppLogger::erro('salvarDemanda email erro: ' . $e->getMessage());
+        }
 
         Auth::loginCliente(['id' => $clienteId, 'name' => $nome, 'email' => $email]);
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('demanda.sucesso')];

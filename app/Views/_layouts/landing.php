@@ -354,6 +354,14 @@ padding: 15px 36px; transition: all .2s; display: inline-block;
   </div>
 </nav>
 
+<?php if (!empty($_SESSION['flash'])): ?>
+<div style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;padding:14px 28px;border-radius:4px;font-size:.88rem;font-weight:500;max-width:500px;text-align:center;
+  background:<?php echo $_SESSION['flash']['type'] === 'success' ? 'rgba(34,197,94,.95)' : 'rgba(239,68,68,.95)'; ?>;
+  color:#fff;box-shadow:0 4px 20px rgba(0,0,0,.2)">
+  <?php echo View::e($_SESSION['flash']['message']); ?>
+</div>
+<?php unset($_SESSION['flash']); endif; ?>
+
 <?php echo $conteudo ?? ''; ?>
 
 </body>
