@@ -2,17 +2,14 @@
 declare(strict_types=1);
 use LEX\Core\{View, I18n, Csrf};
 
-// Incluir categorias para o formulário
 $CATEGORIAS_NICHO = [
     'Construção Civil', 'Reforma Residencial', 'Reforma Comercial',
     'Arquitetura', 'Engenharia', 'Elétrica', 'Hidráulica',
     'Pintura', 'Marcenaria', 'Serralheria', 'Vidraçaria',
     'Paisagismo', 'Decoração', 'Design de Interiores'
 ];
-
-$pageTitle = 'Para Parceiros — Lexus Corretora';
-include __DIR__ . '/_landing-header.php';
 ?>
+<link rel="stylesheet" href="/assets/css/landing-pages.css"/>
 
 <!-- HERO -->
 <section class="hero">
@@ -20,13 +17,13 @@ include __DIR__ . '/_landing-header.php';
   <div class="hero-form-col">
     <!-- top progress -->
     <div class="progress-bar-wrap">
-      <div class="progress-bar-fill" id="progressFill" style="width:16.67%"></div>
+      <div class="progress-bar-fill" id="progressFill" style="width:16.66%"></div>
     </div>
     
     <!-- fixed header -->
     <div class="step-header">
       <div class="step-meta">
-        <div class="step-eyebrow" id="stepEyebrow">Dados da Empresa</div>
+        <div class="step-eyebrow" id="stepEyebrow">Dados Pessoais</div>
         <div class="step-counter">Etapa <span id="stepNum">1</span> de 6</div>
       </div>
       <div class="step-dots" id="stepDots"></div>
@@ -38,70 +35,28 @@ include __DIR__ . '/_landing-header.php';
       <div class="slider-viewport">
         <div class="slides-track" id="slidesTrack">
 
-          <!-- 1: Dados da Empresa -->
+          <!-- 1: Dados Pessoais -->
           <div class="slide">
-            <div class="slide-title">Dados da<br>sua empresa.</div>
+            <div class="slide-title">Conte-nos<br>quem você é.</div>
             <div class="form-row">
               <div class="form-group">
-                <label>Nome / Razão Social <span class="req">*</span></label>
-                <input type="text" name="name" required/>
+                <label>Nome completo / Razão Social <span class="req">*</span></label>
+                <input type="text" name="name" required placeholder="Seu nome ou empresa"/>
               </div>
-              <div class="form-group">
-                <label>Nome Fantasia</label>
-                <input type="text" name="trade_name"/>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Tipo de Parceiro <span class="req">*</span></label>
-                <select name="type" required>
-                  <option value="">— Selecione —</option>
-                  <option value="construtora">Construtora</option>
-                  <option value="arquiteto">Arquiteto</option>
-                  <option value="engenheiro">Engenheiro</option>
-                  <option value="empreiteira">Empreiteira</option>
-                  <option value="prestador">Prestador de Serviços</option>
-                  <option value="fornecedor">Fornecedor</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>CPF/CNPJ <span class="req">*</span></label>
-                <input type="text" name="document" required/>
-              </div>
-            </div>
-            <div class="form-row">
               <div class="form-group">
                 <label>E-mail <span class="req">*</span></label>
-                <input type="email" name="email" required/>
-              </div>
-              <div class="form-group">
-                <label>WhatsApp <span class="req">*</span></label>
-                <input type="tel" name="whatsapp" required/>
+                <input type="email" name="email" required placeholder="seu@email.com"/>
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>Telefone Fixo</label>
-                <input type="tel" name="phone"/>
+                <label>Telefone / WhatsApp <span class="req">*</span></label>
+                <input type="tel" name="whatsapp" required placeholder="(11) 00000-0000"/>
               </div>
               <div class="form-group">
-                <label>CREA/CAU</label>
-                <input type="text" name="crea_cau" placeholder="Ex: CREA-SP 123456"/>
+                <label>CPF / CNPJ <span class="req">*</span></label>
+                <input type="text" name="document" required placeholder="000.000.000-00"/>
               </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Site</label>
-                <input type="text" name="website" placeholder="www.suaempresa.com.br"/>
-              </div>
-              <div class="form-group">
-                <label>Instagram</label>
-                <input type="text" name="instagram" placeholder="@suaempresa"/>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>LinkedIn</label>
-              <input type="text" name="linkedin" placeholder="linkedin.com/company/suaempresa"/>
             </div>
             <div class="form-row">
               <div class="form-group">
@@ -115,9 +70,29 @@ include __DIR__ . '/_landing-header.php';
             </div>
           </div>
           
-          <!-- 2: Localização -->
+          <!-- 2: Dados da Empresa -->
           <div class="slide">
-            <div class="slide-title">Localização e<br>área de atuação.</div>
+            <div class="slide-title">Sobre sua<br>empresa.</div>
+            <div class="form-group">
+              <label>Tipo de parceiro <span class="req">*</span></label>
+              <select name="type" required>
+                <option value="">— Selecione —</option>
+                <option value="prestador">Prestador de Serviços</option>
+                <option value="fornecedor">Fornecedor de Materiais</option>
+                <option value="arquiteto">Arquiteto / Engenheiro</option>
+                <option value="construtora">Construtora</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nome Fantasia</label>
+                <input type="text" name="fantasy_name" placeholder="Nome comercial"/>
+              </div>
+              <div class="form-group">
+                <label>Inscrição Estadual</label>
+                <input type="text" name="state_registration" placeholder="IE"/>
+              </div>
+            </div>
             <div class="form-row">
               <?php
               $estadoSelecionado = '';
@@ -127,19 +102,19 @@ include __DIR__ . '/_landing-header.php';
               ?>
             </div>
             <div class="form-group">
-              <label>Endereço Completo</label>
-              <input type="text" name="address" placeholder="Rua, número, bairro, CEP"/>
+              <label>Endereço completo <span class="req">*</span></label>
+              <input type="text" name="address" required placeholder="Rua, número, bairro, CEP"/>
             </div>
           </div>
           
           <!-- 3: Especialidades -->
           <div class="slide">
-            <div class="slide-title">Especialidades<br>e serviços.</div>
+            <div class="slide-title">Suas<br>especialidades.</div>
             <div class="form-group">
-              <label>Selecione suas especialidades <span class="req">*</span></label>
-              <div class="check-grid" id="specialtiesGrid">
+              <label>Selecione suas áreas de atuação <span class="req">*</span> — pode escolher múltiplas</label>
+              <div class="check-grid" id="specialtyGrid">
                 <?php foreach ($CATEGORIAS_NICHO as $cat): ?>
-                <div class="check-item" data-value="<?php echo View::e($cat); ?>">
+                <div class="check-item" data-value="<?php echo View::e(strtolower(str_replace(' ', '_', $cat))); ?>">
                   <div class="check-box"><svg viewBox="0 0 12 12"><polyline points="1,6 5,10 11,2"/></svg></div>
                   <span class="check-label"><?php echo View::e($cat); ?></span>
                 </div>
@@ -149,135 +124,87 @@ include __DIR__ . '/_landing-header.php';
             </div>
           </div>
           
-          <!-- 4: Capacidade e Estrutura -->
+          <!-- 4: Experiência -->
           <div class="slide">
-            <div class="slide-title">Capacidade e<br>estrutura.</div>
+            <div class="slide-title">Sua<br>experiência.</div>
             <div class="form-row">
               <div class="form-group">
-                <label>Tamanho da Equipe</label>
-                <select name="team_size">
+                <label>Tempo de experiência</label>
+                <select name="experience_years">
                   <option value="">— Selecione —</option>
-                  <option value="1-5">1 a 5 pessoas</option>
-                  <option value="6-10">6 a 10 pessoas</option>
-                  <option value="11-20">11 a 20 pessoas</option>
-                  <option value="21-50">21 a 50 pessoas</option>
-                  <option value="50+">Mais de 50 pessoas</option>
+                  <option value="0-2">Até 2 anos</option>
+                  <option value="3-5">3 a 5 anos</option>
+                  <option value="6-10">6 a 10 anos</option>
+                  <option value="10+">Mais de 10 anos</option>
                 </select>
               </div>
               <div class="form-group">
-                <label>Tempo de Mercado (anos)</label>
-                <input type="number" name="years_in_market" min="0" placeholder="Ex: 10"/>
+                <label>Equipe disponível</label>
+                <input type="number" name="team_size" placeholder="Nº de profissionais"/>
               </div>
             </div>
             <div class="form-group">
-              <label style="display:flex;align-items:center;gap:8px">
-                <input type="checkbox" name="has_own_team" value="1"/>
-                Possui equipe própria (não terceiriza)
-              </label>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Ticket Médio Mínimo (R$)</label>
-                <div class="currency-wrap">
-                  <span>R$</span>
-                  <input type="text" id="ticket_min_display" placeholder="0,00" inputmode="numeric" autocomplete="off" oninput="mascaraBRL(this,'average_ticket_min')"/>
-                  <input type="hidden" name="average_ticket_min" id="average_ticket_min"/>
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Ticket Médio Máximo (R$)</label>
-                <div class="currency-wrap">
-                  <span>R$</span>
-                  <input type="text" id="ticket_max_display" placeholder="0,00" inputmode="numeric" autocomplete="off" oninput="mascaraBRL(this,'average_ticket_max')"/>
-                  <input type="hidden" name="average_ticket_max" id="average_ticket_max"/>
-                </div>
-              </div>
+              <label>Capacidade mensal (projetos)</label>
+              <input type="number" name="monthly_capacity" placeholder="Quantos projetos pode atender por mês"/>
             </div>
             <div class="form-group">
-              <label>Descrição da Empresa <span class="req">*</span></label>
-              <textarea name="description" required rows="4" placeholder="Conte sobre sua empresa, experiência, diferenciais..."></textarea>
+              <label>Apresentação / Bio <span class="req">*</span></label>
+              <textarea name="description" required rows="6" placeholder="Conte sobre sua experiência, diferenciais e principais trabalhos..."></textarea>
             </div>
           </div>
           
-          <!-- 5: Portfólio -->
+          <!-- 5: Certificações e Documentos -->
           <div class="slide">
-            <div class="slide-title">Portfólio e<br>qualificação.</div>
-            <div class="notice-box">
-              <span class="ni">📸</span>
-              <p><strong>Portfólio (opcional, mas recomendado)</strong>Envie fotos de obras similares para aumentar suas chances de receber oportunidades. Quanto melhor seu portfólio, maior a confiança dos clientes.</p>
+            <div class="slide-title">Certificações<br>e documentos.</div>
+            <div class="form-group">
+              <label>Certificações / Registros profissionais</label>
+              <textarea name="certifications" rows="4" placeholder="Ex: CREA, CAU, certificações técnicas..."></textarea>
             </div>
             <div class="form-group">
-              <label>Portfólio (PDF ou Fotos)</label>
-              <div class="file-upload-area" onclick="document.getElementById('portfolioInput').click()">
-                <input type="file" id="portfolioInput" name="portfolio[]" multiple accept=".pdf,.jpg,.jpeg,.png,.webp"/>
-                <div style="font-size:1.4rem;margin-bottom:8px">📎</div>
-                <p class="upload-hint">Arraste arquivos aqui ou <span>clique para selecionar</span><br>Envie 1 PDF ou no mínimo 6 fotos de trabalhos realizados</p>
-              </div>
+              <label>Certidão CNPJ (opcional)</label>
+              <div class="upload-hint">Envie a certidão simplificada da Receita Federal</div>
+              <input type="file" name="certidao_cnpj" accept=".pdf,.jpg,.jpeg,.png"/>
             </div>
             <div class="form-group">
-              <label>Link do Portfólio Online</label>
-              <input type="text" name="portfolio_url" placeholder="https://..."/>
+              <label>Referências / Clientes anteriores</label>
+              <textarea name="references" rows="4" placeholder="Liste empresas ou clientes que podem atestar seu trabalho..."></textarea>
             </div>
           </div>
           
-          <!-- 6: Documentação e Preferências -->
+          <!-- 6: Portfólio -->
           <div class="slide">
-            <div class="slide-title">Documentação e<br>preferências.</div>
+            <div class="slide-title">Seu<br>portfólio.</div>
             <div class="form-group">
-              <label>Certidão de CNPJ Ativo</label>
-              <div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);padding:12px;margin-bottom:8px;font-size:.82rem;line-height:1.5">
-                Para emitir, acesse: <a href="https://solucoes.receita.fazenda.gov.br/servicos/cnpjreva/cnpjreva_solicitacao.asp" target="_blank" rel="noopener" style="color:var(--gold)">Receita Federal</a>
+              <label>Fotos de trabalhos realizados (opcional)</label>
+              <div class="upload-hint">Mostre seus melhores projetos</div>
+              <div class="dropzone" id="dropzone">
+                <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                </svg>
+                <p class="dropzone-text">Arraste arquivos aqui ou clique para selecionar</p>
+                <input type="file" name="portfolio[]" multiple id="fileInput" accept="image/*,.pdf" style="display:none"/>
               </div>
-              <div class="file-upload-area" onclick="document.getElementById('certidaoInput').click()">
-                <input type="file" id="certidaoInput" name="certidao_cnpj" accept=".pdf,.jpg,.jpeg,.png"/>
-                <div style="font-size:1.4rem;margin-bottom:8px">📄</div>
-                <p class="upload-hint">Clique para selecionar o arquivo</p>
-              </div>
+              <div class="file-list" id="fileList"></div>
             </div>
             <div class="form-group">
-              <label>Outros Documentos (Certificações, Licenças, etc.)</label>
-              <div class="file-upload-area" onclick="document.getElementById('docsInput').click()">
-                <input type="file" id="docsInput" name="documents[]" multiple accept=".pdf,.jpg,.jpeg,.png"/>
-                <div style="font-size:1.4rem;margin-bottom:8px">📋</div>
-                <p class="upload-hint">Clique para selecionar arquivos</p>
-              </div>
+              <label>Link do site / Instagram (opcional)</label>
+              <input type="url" name="website" placeholder="https://..."/>
             </div>
-            <div class="form-group">
-              <label style="display:flex;align-items:center;gap:8px">
-                <input type="checkbox" name="accepts_referral" value="1" checked/>
-                Aceito receber demandas por repasse de outros parceiros
-              </label>
-              <small style="font-size:.75rem;color:var(--text-muted);display:block;margin-top:4px">
-                Você poderá receber oportunidades indicadas por outros profissionais da rede
-              </small>
-            </div>
-            <div class="form-group">
-              <label>Comissão de Repasse (%)</label>
-              <input type="number" name="referral_commission_pct" min="0" max="100" step="0.1" placeholder="Ex: 10" value="10"/>
-              <small style="font-size:.75rem;color:var(--text-muted);display:block;margin-top:4px">
-                Percentual que você está disposto a pagar em comissão por demandas repassadas
-              </small>
-            </div>
+            <button type="submit" class="submit-btn">Enviar Cadastro</button>
           </div>
-          
-        </div><!-- /slides-track -->
-      </div><!-- /slider-viewport -->
+
+        </div><!-- .slides-track -->
+      </div><!-- .slider-viewport -->
       
-      <!-- success -->
-      <div class="success-screen" id="successScreen">
-        <div class="success-icon">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <div class="success-title">Cadastro enviado!</div>
-        <p class="success-sub">Nossa equipe analisará seu perfil e retornará em até 48h com os próximos passos.</p>
-      </div>
-      
-      <!-- nav buttons -->
-      <div class="form-nav" id="formNav">
-        <button type="button" class="btn-back" id="btnBack" disabled onclick="navigate(-1)">← Voltar</button>
-        <button type="button" class="btn-next" id="btnNext" onclick="navigate(1)">
-          Avançar
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      <!-- navigation -->
+      <div class="slide-nav">
+        <button type="button" class="slide-nav-btn" id="prevBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          Voltar
+        </button>
+        <button type="button" class="slide-nav-btn slide-nav-btn-next" id="nextBtn">
+          Próximo
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         </button>
       </div>
     </form>
@@ -285,97 +212,112 @@ include __DIR__ . '/_landing-header.php';
   
   <!-- RIGHT: HEADLINE -->
   <div class="hero-headline-col">
-    <div class="hero-text">
-      <div class="hero-tag fade-up">Para Parceiros</div>
-      <h1 class="hero-h1 fade-up d1">Receba oportunidades<br><em>qualificadas.</em></h1>
-      <p class="hero-sub fade-up d2">Faça parte da rede Lexus e receba demandas estruturadas, compatíveis com seu perfil e especialidade — com o Selo Vetriks de qualidade.</p>
-      <div class="hero-stats fade-up d3">
-        <div>
-          <div class="stat-num">500+</div>
-          <div class="stat-label">Demandas/mês</div>
+    <div class="hero-headline-inner">
+      <h1 class="hero-headline-title">Faça parte da nossa rede de parceiros</h1>
+      <p class="hero-headline-desc">Conecte-se com clientes qualificados e expanda seus negócios com a Lexus.</p>
+      <ul class="hero-headline-list">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Oportunidades qualificadas
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Gestão simplificada
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Pagamentos garantidos
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="how-it-works">
+  <div class="section-container">
+    <h2 class="section-title">Como funciona</h2>
+    <p class="section-subtitle">Simples, rápido e lucrativo</p>
+    <div class="how-cards">
+      <div class="how-card">
+        <div class="how-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="8.5" cy="7" r="4"/>
+            <polyline points="17 11 19 13 23 9"/>
+          </svg>
         </div>
-        <div>
-          <div class="stat-num">85%</div>
-          <div class="stat-label">Taxa de conversão</div>
+        <h3 class="how-card-title">1. Cadastre-se</h3>
+        <p class="how-card-desc">Preencha o formulário e aguarde a aprovação do seu perfil.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
         </div>
-        <div>
-          <div class="stat-num">0</div>
-          <div class="stat-label">Taxa de cadastro</div>
+        <h3 class="how-card-title">2. Receba oportunidades</h3>
+        <p class="how-card-desc">Acesse demandas compatíveis com seu perfil e especialidades.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+          </svg>
         </div>
+        <h3 class="how-card-title">3. Envie propostas e fature</h3>
+        <p class="how-card-desc">Elabore orçamentos, feche negócios e receba com segurança.</p>
       </div>
     </div>
   </div>
 </section>
 
-
-<!-- HOW -->
-<section class="how-section">
-  <div class="section-inner">
-    <div class="section-eyebrow">Como funciona</div>
-    <h2 class="section-h2">Como funciona para <em>parceiros</em></h2>
-    <p style="color:#5a5145;max-width:500px;font-size:.87rem;line-height:1.75">Cadastre-se, complete seu perfil e receba oportunidades compatíveis com sua região, especialidade e porte de atuação.</p>
-    <div class="how-grid">
-      <div class="how-card">
-        <span class="step-num">01</span>
-        <div class="step-icon">
-          <svg viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/><path d="M15.5 2.5a2.121 2.121 0 0 1 3 3L12 12l-4 1 1-4 6.5-6.5z"/></svg>
-        </div>
-        <div class="step-title">Cadastre-se e qualifique</div>
-        <p class="step-desc">Complete seu perfil profissional. Após análise, você recebe o Selo Vetriks e passa a receber oportunidades.</p>
-      </div>
-      <div class="how-card">
-        <span class="step-num">02</span>
-        <div class="step-icon">
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        </div>
-        <div class="step-title">Receba demandas estruturadas</div>
-        <p class="step-desc">Acesse oportunidades qualificadas e compatíveis com seu perfil. Todas as demandas passam por curadoria da equipe Lexus.</p>
-      </div>
-      <div class="how-card">
-        <span class="step-num">03</span>
-        <div class="step-icon">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <div class="step-title">Envie propostas e feche negócios</div>
-        <p class="step-desc">Elabore propostas estruturadas e acompanhe todo o processo pelo painel. A Lexus apoia na apresentação ao cliente.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- BENEFITS -->
-<section class="benefits-section">
-  <div class="section-inner">
-    <div class="section-eyebrow">Benefícios</div>
-    <h2 class="section-h2">O que você <em>ganha</em></h2>
+<!-- BENEFÍCIOS -->
+<section class="benefits">
+  <div class="section-container">
+    <h2 class="section-title">Vantagens de ser parceiro Lexus</h2>
     <div class="benefits-grid">
       <div class="benefit-card">
         <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
         </div>
-        <div class="benefit-title">Selo Vetriks de qualificação</div>
-        <p class="benefit-desc">Certificado de experiência, capacidade e confiabilidade que aumenta sua visibilidade e credibilidade na plataforma.</p>
+        <h3 class="benefit-title">Leads Qualificados</h3>
+        <p class="benefit-desc">Receba apenas oportunidades compatíveis com seu perfil.</p>
       </div>
       <div class="benefit-card">
         <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
         </div>
-        <div class="benefit-title">Demandas qualificadas e estruturadas</div>
-        <p class="benefit-desc">Receba oportunidades com informações completas, orçamento definido e cliente já qualificado pela equipe Lexus.</p>
+        <h3 class="benefit-title">Gestão Facilitada</h3>
+        <p class="benefit-desc">Plataforma completa para gerenciar propostas e projetos.</p>
       </div>
       <div class="benefit-card">
         <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
         </div>
-        <div class="benefit-title">Processo transparente e ágil</div>
-        <p class="benefit-desc">Acompanhe cada etapa em tempo real. Sem taxas de cadastro, sem intermediação financeira, sem burocracia.</p>
+        <h3 class="benefit-title">Pagamento Seguro</h3>
+        <p class="benefit-desc">Receba com garantia através da nossa plataforma.</p>
       </div>
       <div class="benefit-card">
         <div class="benefit-icon">
-          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
         </div>
-        <div class="benefit-title">Suporte e curadoria dedicada</div>
-        <p class="benefit-desc">Nossa equipe cuida da qualificação de clientes e apresentação de propostas, aumentando sua taxa de conversão.</p>
+        <h3 class="benefit-title">Cresça seu Negócio</h3>
+        <p class="benefit-desc">Expanda sua carteira de clientes e aumente seu faturamento.</p>
       </div>
     </div>
   </div>
@@ -383,146 +325,186 @@ include __DIR__ . '/_landing-header.php';
 
 <!-- CTA -->
 <section class="cta-section">
-  <div class="cta-inner">
-    <div>
-      <div class="cta-tag">Próximo passo</div>
-      <h2 class="cta-h2">Quer fazer parte da<br><em>rede Lexus?</em></h2>
-    </div>
-    <div class="cta-actions">
-      <a href="/seja-parceiro" class="btn-cta-primary">Seja Parceiro →</a>
-      <a href="/vetriks" class="btn-cta-ghost">Conheça o Vetriks</a>
+  <div class="section-container">
+    <h2 class="cta-title">Pronto para crescer com a Lexus?</h2>
+    <p class="cta-desc">Cadastre-se agora e comece a receber oportunidades de negócio.</p>
+    <div class="cta-buttons">
+      <a href="#hero" class="cta-btn cta-btn-primary">Cadastrar Agora</a>
+      <a href="/como-funciona" class="cta-btn cta-btn-secondary">Saiba Mais</a>
     </div>
   </div>
 </section>
 
-<?php include __DIR__ . '/_landing-footer.php'; ?>
-
 <script>
-/* Multi-step slider */
-const TOTAL = 6;
-const LABELS = ['Dados da Empresa','Localização','Especialidades','Capacidade e Estrutura','Portfólio','Documentação'];
-let current = 0;
-const track = document.getElementById('slidesTrack');
-const progressFill = document.getElementById('progressFill');
-const stepNumEl = document.getElementById('stepNum');
-const eyebrowEl = document.getElementById('stepEyebrow');
-const dotsWrap = document.getElementById('stepDots');
-const btnBack = document.getElementById('btnBack');
-const btnNext = document.getElementById('btnNext');
-const formNav = document.getElementById('formNav');
-const successEl = document.getElementById('successScreen');
-const form = document.getElementById('parceiroForm');
-
-// build dots
-for(let i=0;i<TOTAL;i++){
-  const d=document.createElement('div');
-  d.className='step-dot'+(i===0?' active':'');
-  d.style.width=i===0?'24px':'8px';
-  dotsWrap.appendChild(d);
-}
-
-function updateUI(){
-  track.style.transform=`translateX(-${current*100}%)`;
-  progressFill.style.width=`${((current+1)/TOTAL)*100}%`;
-  stepNumEl.textContent=current+1;
-  eyebrowEl.textContent=LABELS[current];
-  const dots=dotsWrap.querySelectorAll('.step-dot');
-  dots.forEach((d,i)=>{
-    d.classList.remove('active','done');
-    d.style.width='8px';
-    if(i<current)d.classList.add('done');
-    else if(i===current){d.classList.add('active');d.style.width='24px';}
-  });
-  btnBack.disabled=current===0;
-  if(current===TOTAL-1){
-    btnNext.innerHTML='Enviar Cadastro <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2"><polyline points="20 6 9 17 4 12"/></svg>';
-  } else {
-    btnNext.innerHTML='Avançar <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2"><polyline points="9 18 15 12 9 6"/></svg>';
+(function(){
+  const TOTAL_STEPS = 6;
+  let currentStep = 0;
+  
+  const track = document.getElementById('slidesTrack');
+  const slides = track.querySelectorAll('.slide');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressFill = document.getElementById('progressFill');
+  const stepNum = document.getElementById('stepNum');
+  const stepEyebrow = document.getElementById('stepEyebrow');
+  const stepDots = document.getElementById('stepDots');
+  const form = document.getElementById('parceiroForm');
+  
+  const stepTitles = [
+    'Dados Pessoais',
+    'Dados da Empresa',
+    'Especialidades',
+    'Experiência',
+    'Certificações e Documentos',
+    'Portfólio'
+  ];
+  
+  // Criar dots
+  for (let i = 0; i < TOTAL_STEPS; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'step-dot' + (i === 0 ? ' active' : '');
+    stepDots.appendChild(dot);
   }
-  const slides=track.querySelectorAll('.slide');
-  if(slides[current])slides[current].scrollTop=0;
-}
-
-function navigate(dir){
-  if(dir===1&&current===TOTAL-1){ 
-    // Validar e submeter
-    if(validateForm()){
-      form.submit();
+  
+  function updateUI() {
+    track.style.transform = `translateX(-${currentStep * 100}%)`;
+    progressFill.style.width = ((currentStep + 1) / TOTAL_STEPS * 100) + '%';
+    stepNum.textContent = currentStep + 1;
+    stepEyebrow.textContent = stepTitles[currentStep];
+    
+    prevBtn.disabled = currentStep === 0;
+    nextBtn.style.display = currentStep === TOTAL_STEPS - 1 ? 'none' : 'flex';
+    
+    const dots = stepDots.querySelectorAll('.step-dot');
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentStep);
+    });
+  }
+  
+  function validateStep(step) {
+    const slide = slides[step];
+    const required = slide.querySelectorAll('[required]');
+    for (let inp of required) {
+      if (!inp.value.trim()) {
+        inp.focus();
+        alert('Por favor, preencha todos os campos obrigatórios.');
+        return false;
+      }
     }
-    return; 
-  }
-  current=Math.max(0,Math.min(TOTAL-1,current+dir));
-  updateUI();
-}
-
-function validateForm(){
-  const name = form.querySelector('[name="name"]').value;
-  const email = form.querySelector('[name="email"]').value;
-  const password = form.querySelector('[name="password"]').value;
-  const password_confirm = form.querySelector('[name="password_confirm"]').value;
-  const type = form.querySelector('[name="type"]').value;
-  const description = form.querySelector('[name="description"]').value;
-  
-  if(!name || !email || !password || !type || !description){
-    alert('Por favor, preencha todos os campos obrigatórios.');
-    return false;
-  }
-  
-  if(password !== password_confirm){
-    alert('As senhas não coincidem.');
-    return false;
-  }
-  
-  if(password.length < 8){
-    alert('A senha deve ter no mínimo 8 caracteres.');
-    return false;
+    
+    // Validação especial: senha
+    if (step === 0) {
+      const pwd = slide.querySelector('[name="password"]');
+      const conf = slide.querySelector('[name="password_confirm"]');
+      if (pwd.value !== conf.value) {
+        alert('As senhas não coincidem.');
+        conf.focus();
+        return false;
+      }
+    }
+    
+    // Validação especial: especialidades
+    if (step === 2) {
+      const specialtiesInput = document.getElementById('specialtiesInput');
+      if (!specialtiesInput.value) {
+        alert('Selecione pelo menos uma especialidade.');
+        return false;
+      }
+    }
+    
+    return true;
   }
   
-  return true;
-}
-
-// checkbox toggle for specialties
-document.querySelectorAll('#specialtiesGrid .check-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    item.classList.toggle('checked');
-    updateSpecialtiesInput();
+  prevBtn.addEventListener('click', () => {
+    if (currentStep > 0) {
+      currentStep--;
+      updateUI();
+    }
   });
-});
-
-function updateSpecialtiesInput(){
-  const checked = Array.from(document.querySelectorAll('#specialtiesGrid .check-item.checked')).map(el=>el.dataset.value);
-  document.getElementById('specialtiesInput').value = JSON.stringify(checked);
-}
-
-// Currency mask
-function mascaraBRL(input, hiddenId) {
-  var digits = input.value.replace(/\D/g, '');
-  if (!digits) { input.value = ''; document.getElementById(hiddenId).value = ''; return; }
-  var cents = parseInt(digits, 10);
-  var reais = (cents / 100).toFixed(2);
-  var parts = reais.split('.');
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  input.value = 'R$ ' + parts[0] + ',' + parts[1];
-  document.getElementById(hiddenId).value = (cents / 100).toFixed(2);
-}
-
-// scroll reveal
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.querySelectorAll('.how-card,.benefit-card').forEach((el,i)=>{
-        el.style.cssText=`opacity:0;transform:translateY(18px);transition:opacity .5s ease ${i*.1}s,transform .5s ease ${i*.1}s`;
-        requestAnimationFrame(()=>{
-          el.style.opacity='1';
-          el.style.transform='translateY(0)';
+  
+  nextBtn.addEventListener('click', () => {
+    if (!validateStep(currentStep)) return;
+    if (currentStep < TOTAL_STEPS - 1) {
+      currentStep++;
+      updateUI();
+    }
+  });
+  
+  // Especialidades multi-select
+  const specialtyGrid = document.getElementById('specialtyGrid');
+  const specialtiesInput = document.getElementById('specialtiesInput');
+  if (specialtyGrid) {
+    specialtyGrid.addEventListener('click', (e) => {
+      const item = e.target.closest('.check-item');
+      if (!item) return;
+      item.classList.toggle('checked');
+      const selected = Array.from(specialtyGrid.querySelectorAll('.check-item.checked'))
+        .map(el => el.dataset.value);
+      specialtiesInput.value = selected.join(',');
+    });
+  }
+  
+  // Drag & Drop
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const fileList = document.getElementById('fileList');
+  
+  if (dropzone && fileInput) {
+    dropzone.addEventListener('click', () => fileInput.click());
+    
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('dragover');
+    });
+    
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      const dt = e.dataTransfer;
+      fileInput.files = dt.files;
+      updateFileList();
+    });
+    
+    fileInput.addEventListener('change', updateFileList);
+    
+    function updateFileList() {
+      fileList.innerHTML = '';
+      Array.from(fileInput.files).forEach((file, i) => {
+        const item = document.createElement('div');
+        item.className = 'file-item';
+        item.innerHTML = `
+          <span class="file-name">${file.name}</span>
+          <button type="button" class="file-remove" data-index="${i}">×</button>
+        `;
+        fileList.appendChild(item);
+      });
+      
+      fileList.querySelectorAll('.file-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.index);
+          const dt = new DataTransfer();
+          Array.from(fileInput.files).forEach((f, i) => {
+            if (i !== idx) dt.items.add(f);
+          });
+          fileInput.files = dt.files;
+          updateFileList();
         });
       });
-      obs.unobserve(e.target);
     }
+  }
+  
+  // Scroll suave para #hero
+  document.querySelectorAll('a[href="#hero"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
+    });
   });
-},{threshold:.12});
-
-document.querySelectorAll('.how-section,.benefits-section').forEach(s=>obs.observe(s));
-
-updateUI();
+  
+  updateUI();
+})();
 </script>
