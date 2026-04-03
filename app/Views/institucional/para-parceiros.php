@@ -504,6 +504,13 @@ $CATEGORIAS_NICHO = [
     });
   });
   
+  // Antes de submeter: remover required de todos os slides
+  document.getElementById('parceiroForm').addEventListener('submit', function() {
+    slides.forEach(slide => {
+      slide.querySelectorAll('[required]').forEach(el => el.removeAttribute('required'));
+    });
+  });
+
   updateUI();
 })();
 </script>

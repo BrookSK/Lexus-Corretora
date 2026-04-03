@@ -326,15 +326,36 @@ padding: 15px 36px; transition: all .2s; display: inline-block;
 .cta-btn-secondary { color: var(--text-muted); border: 1px solid rgba(201,168,76,.25); }
 .cta-btn-secondary:hover { border-color: var(--gold); color: var(--cream); }
 @media(max-width:960px){
-:root{--ml:28px}
-.hero{grid-template-columns:1fr;min-height:auto}
-.hero-headline-col{order:1;padding:48px 28px}
-.hero-form-col{order:2;min-height:100vh}
+:root{--ml:20px}
+/* Nav mobile */
+nav{padding:0 20px;height:56px}
+.nav-links,.nav-actions{display:none}
+/* Hero: form em cima, headline embaixo */
+.hero{grid-template-columns:1fr !important;min-height:auto}
+.hero-headline-col{order:1 !important;padding:80px 20px 40px;grid-column:1 !important}
+.hero-headline-title{font-size:clamp(2rem,8vw,3rem)}
+.hero-headline-desc{max-width:100%;font-size:.88rem}
+.hero-form-col{order:2 !important;min-height:100svh;grid-column:1 !important}
+/* Step header */
+.step-header{padding:28px 20px 0}
+/* Slide */
+.slide{padding:4px 20px 16px}
+/* Nav buttons */
+.slide-nav{padding:14px 20px 20px}
+.slide-nav-btn{padding:10px 18px;font-size:.65rem}
+/* Form row: 1 coluna no mobile */
+.form-row{grid-template-columns:1fr}
+/* Check grid: 1 coluna */
+.check-grid{grid-template-columns:1fr}
+/* Sections */
 .how-cards{grid-template-columns:1fr}
 .benefits-grid{grid-template-columns:1fr}
-.cta-buttons{flex-direction:column;width:100%}
-.cta-btn{width:100%;text-align:center}
-.section-container{padding:60px 28px}
+.cta-buttons{flex-direction:column;width:100%;align-items:center}
+.cta-btn{width:100%;max-width:320px;text-align:center}
+.section-container{padding:52px 20px}
+.how-it-works{padding:52px 0}
+.benefits{padding:52px 0}
+.cta-section{padding:72px 0}
 }
 </style>
 </head>
@@ -352,7 +373,35 @@ padding: 15px 36px; transition: all .2s; display: inline-block;
     <a href="/cliente/entrar" class="btn-ghost">Entrar</a>
     <a href="/abrir-demanda" class="btn-primary">Abrir Demanda</a>
   </div>
+  <button class="nav-burger" id="navBurger" aria-label="Menu">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
 </nav>
+<div class="nav-drawer" id="navDrawer">
+  <a href="/sobre">Sobre</a>
+  <a href="/como-funciona">Como Funciona</a>
+  <a href="/para-clientes">Para Clientes</a>
+  <a href="/para-parceiros">Para Parceiros</a>
+  <a href="/contato">Contato</a>
+  <a href="/cliente/entrar" style="color:var(--gold)">Entrar</a>
+  <a href="/abrir-demanda" style="background:var(--gold);color:var(--dark);padding:12px 20px;text-align:center;font-weight:500">Abrir Demanda</a>
+</div>
+<style>
+.nav-burger{display:none;background:none;border:none;color:var(--cream);cursor:pointer;padding:4px}
+.nav-drawer{display:none;position:fixed;top:56px;left:0;right:0;background:var(--dark2);border-bottom:1px solid rgba(201,168,76,.15);z-index:199;flex-direction:column;padding:16px 20px;gap:4px}
+.nav-drawer a{display:block;padding:12px 0;font-size:.82rem;color:var(--text-light);text-decoration:none;border-bottom:1px solid rgba(201,168,76,.08);letter-spacing:.06em}
+.nav-drawer a:last-child{border-bottom:none;margin-top:8px}
+@media(max-width:960px){
+  .nav-burger{display:flex}
+  .nav-drawer.open{display:flex}
+}
+</style>
+<script>
+(function(){
+  var btn=document.getElementById('navBurger'),drawer=document.getElementById('navDrawer');
+  btn.addEventListener('click',function(){drawer.classList.toggle('open')});
+})();
+</script>
 
 <?php if (!empty($_SESSION['flash'])): ?>
 <div style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;padding:14px 28px;border-radius:4px;font-size:.88rem;font-weight:500;max-width:500px;text-align:center;
