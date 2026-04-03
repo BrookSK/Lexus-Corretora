@@ -59,8 +59,11 @@ final class AuthController
         $hash = password_hash($senha, PASSWORD_BCRYPT, ['cost' => 12]);
         $stmt = $pdo->prepare("INSERT INTO parceiros (name, email, password, type, status, is_active, created_at) VALUES (:n, :e, :p, :t, 'cadastrado', 1, NOW())");
         $stmt->execute(['n' => $nome, 'e' => $email, 'p' => $hash, 't' => $tipo]);
+        $parceiroId = (int)$pdo->lastInsertId();
 
-        Auth::loginParceiro(['id' => (int)$pdo->lastInsertId(), 'name' => $nome, 'email' => $email]);
+        try { \LEX\App\Services\Email\EmailService::boasVindasParceiro($email, $nome); } catch (\Throwable $e) { /* silenciar */ }
+
+        Auth::loginParceiro(['id' => $parceiroId, 'name' => $nome, 'email' => $email]);
         return Resposta::redirecionar('/parceiro/dashboard');
     }
 

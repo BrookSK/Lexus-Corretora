@@ -63,6 +63,27 @@ final class ContratosController
         $status = $req->post('status', '');
         ContratosService::alterarStatus($id, $status);
         AuditService::registrar('equipe', Auth::equipeId(), 'contrato.status', 'contratos', $id, ['status' => $status]);
+
+        // Notificar cliente e parceiro quando formalizado
+        if ($status === 'formalizado') {
+            try {
+                $contrato = ContratosService::obterPorId($id);
+                if ($contrato) {
+                    $valor = 'R$ ' . number_format((float)($contrato['amount'] ?? 0), 2, ',', '.');
+                    $codigo = $contrato['demanda_code'] ?? '#' . $id;
+                    if (!empty($contrato['cliente_email'])) {
+                        \LEX\App\Services\Email\EmailService::contratoFormalizado(
+                            $contrato['cliente_email'], $contrato['cliente_nome'] ?? '', $codigo, $valor
+                        );
+                    }
+                    if (!empty($contrato['parceiro_email'])) {
+                        \LEX\App\Services\Email\EmailService::contratoFormalizado(
+                            $contrato['parceiro_email'], $contrato['parceiro_nome'] ?? '', $codigo, $valor
+                        );
+                    }
+                }
+            } catch (\Throwable $e) { /* silenciar */ }
+        }
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/contratos/' . $id);
     }

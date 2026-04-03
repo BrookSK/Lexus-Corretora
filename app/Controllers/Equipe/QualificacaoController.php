@@ -55,6 +55,19 @@ final class QualificacaoController
         if ($status === 'aprovado') ParceirosService::alterarStatus($parceiroId, $vetriks ? 'vetriks_ativo' : 'aprovado');
         elseif ($status === 'reprovado') ParceirosService::alterarStatus($parceiroId, 'reprovado');
         AuditService::registrar('equipe', Auth::equipeId(), 'qualificacao.avaliar', 'parceiros', $parceiroId, ['status' => $status, 'vetriks' => $vetriks]);
+
+        // Notificar parceiro por e-mail
+        $parceiro = ParceirosService::obterPorId($parceiroId);
+        if ($parceiro && !empty($parceiro['email'])) {
+            try {
+                \LEX\App\Services\Email\EmailService::resultadoQualificacao(
+                    $parceiro['email'],
+                    $parceiro['name'] ?? '',
+                    $vetriks ? 'vetriks_ativo' : $status,
+                    $parecer
+                );
+            } catch (\Throwable $e) { /* silenciar */ }
+        }
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/parceiros/' . $parceiroId);
     }

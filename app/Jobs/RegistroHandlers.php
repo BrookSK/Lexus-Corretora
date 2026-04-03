@@ -10,7 +10,12 @@ final class RegistroHandlers
     public static function registrar(ProcessadorJobs $processador): void
     {
         $processador->registrar('enviar_email', function (ContextoJob $ctx) {
-            // TODO: Implementar envio de email via SMTP
+            $para    = $ctx->payload['para'] ?? '';
+            $assunto = $ctx->payload['assunto'] ?? '';
+            $corpo   = $ctx->payload['corpo'] ?? '';
+            if ($para && $assunto && $corpo) {
+                \LEX\App\Services\Email\EmailService::enviar($para, $assunto, $corpo);
+            }
             AppLogger::info('Job enviar_email processado', $ctx->payload);
         });
 

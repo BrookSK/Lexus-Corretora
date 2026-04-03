@@ -11,50 +11,184 @@ final class EmailService
     public static function enviar(string $para, string $assunto, string $corpo): bool
     {
         $config = ConfiguracoesSistema::smtpConfig();
+        if (empty($config['host']) || empty($config['usuario'])) {
+            error_log('[EmailService] SMTP não configurado.');
+            return false;
+        }
         $mail = new PHPMailer(true);
-
         try {
             $mail->isSMTP();
-            $mail->Host = $config['host'];
-            $mail->Port = $config['porta'];
-            $mail->SMTPAuth = true;
-            $mail->Username = $config['usuario'];
-            $mail->Password = $config['senha'];
-            $mail->SMTPSecure = $config['porta'] === 465 ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->CharSet = 'UTF-8';
-
+            $mail->Host       = $config['host'];
+            $mail->Port       = (int)$config['porta'];
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $config['usuario'];
+            $mail->Password   = $config['senha'];
+            $mail->SMTPSecure = (int)$config['porta'] === 465 ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->CharSet    = 'UTF-8';
             $mail->setFrom($config['de_email'], $config['de_nome']);
             $mail->addAddress($para);
-
             $mail->isHTML(true);
             $mail->Subject = $assunto;
-            $mail->Body = $corpo;
+            $mail->Body    = self::wrapHtml($assunto, $corpo);
             $mail->AltBody = strip_tags($corpo);
-
             $mail->send();
             return true;
         } catch (PHPMailerException $e) {
-            error_log('[EmailService] Falha ao enviar e-mail para ' . $para . ': ' . $e->getMessage());
+            error_log('[EmailService] Falha ao enviar para ' . $para . ': ' . $e->getMessage());
             return false;
         }
     }
 
-    public static function enviarTemplate(string $para, string $template, array $dados): bool
+    // ── Eventos de negócio ────────────────────────────────────────────────
+
+    /** Confirmação de nova demanda criada (para o cliente) */
+    public static function novaDemanda(string $para, string $nomeCliente, string $codigoDemanda, string $tituloDemanda): bool
     {
-        $templatePath = dirname(__DIR__, 2) . '/Views/_emails/' . $template . '.php';
+        $nome = ConfiguracoesSistema::nome();
+        $url  = ConfiguracoesSistema::url();
+        return self::enviar($para, "Sua demanda foi recebida — {$codigoDemanda}", "
+            <p>Olá, <strong>{$nomeCliente}</strong>!</p>
+            <p>Recebemos sua demanda <strong>{$codigoDemanda} — {$tituloDemanda}</strong>.</p>
+            <p>Nossa equipe irá analisá-la e em breve você receberá propostas de parceiros qualificados.</p>
+            <p><a href='{$url}/cliente/demandas' style='color:#B8945A'>Acompanhar minha demanda →</a></p>
+            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
+        ");
+    }
 
-        if (!file_exists($templatePath)) {
-            error_log('[EmailService] Template não encontrado: ' . $template);
-            return false;
-        }
+    /** Notificação de nova oportunidade distribuída (para o parceiro) */
+    public static function novaOportunidade(string $para, string $nomeParceiro, string $codigoDemanda, string $tituloDemanda, string $cidade, string $estado): bool
+    {
+        $nome = ConfiguracoesSistema::nome();
+        $url  = ConfiguracoesSistema::url();
+        return self::enviar($para, "Nova oportunidade disponível — {$codigoDemanda}", "
+            <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
+            <p>Uma nova oportunidade compatível com seu perfil está disponível:</p>
+            <table style='border-collapse:collapse;width:100%;margin:16px 0'>
+                <tr><td style='padding:8px;border:1px solid #eee;font-weight:500'>Código</td><td style='padding:8px;border:1px solid #eee'>{$codigoDemanda}</td></tr>
+                <tr><td style='padding:8px;border:1px solid #eee;font-weight:500'>Título</td><td style='padding:8px;border:1px solid #eee'>{$tituloDemanda}</td></tr>
+                <tr><td style='padding:8px;border:1px solid #eee;font-weight:500'>Localização</td><td style='padding:8px;border:1px solid #eee'>{$cidade} / {$estado}</td></tr>
+            </table>
+            <p><a href='{$url}/parceiro/oportunidades' style='color:#B8945A;font-weight:500'>Ver oportunidade →</a></p>
+            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
+        ");
+    }
 
-        extract($dados, EXTR_SKIP);
-        ob_start();
-        include $templatePath;
-        $corpo = ob_get_clean();
+    /** Notificação de proposta recebida (para o cliente) */
+    public static function novaPropostaCliente(string $para, string $nomeCliente, string $codigoDemanda, string $nomeParceiro): bool
+    {
+        $nome = ConfiguracoesSistema::nome();
+        $url  = ConfiguracoesSistema::url();
+        return self::enviar($para, "Nova proposta recebida — {$codigoDemanda}", "
+            <p>Olá, <strong>{$nomeCliente}</strong>!</p>
+            <p>O parceiro <strong>{$nomeParceiro}</strong> enviou uma proposta para sua demanda <strong>{$codigoDemanda}</strong>.</p>
+            <p><a href='{$url}/cliente/propostas' style='color:#B8945A;font-weight:500'>Ver proposta →</a></p>
+            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
+        ");
+    }
 
-        $assunto = $dados['assunto'] ?? $dados['subject'] ?? 'Lexus Corretora';
+    /** Notificação de proposta selecionada (para o parceiro) */
+    public static function propostaSelecionada(string $para, string $nomeParceiro, string $codigoDemanda): bool
+    {
+        $nome = ConfiguracoesSistema::nome();
+        $url  = ConfiguracoesSistema::url();
+        return self::enviar($para, "Sua proposta foi selecionada — {$codigoDemanda}", "
+            <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
+            <p>Parabéns! Sua proposta para a demanda <strong>{$codigoDemanda}</strong> foi selecionada.</p>
+            <p>Nossa equipe entrará em contato para os próximos passos.</p>
+            <p><a href='{$url}/parceiro/propostas' style='color:#B8945A;font-weight:500'>Ver minhas propostas →</a></p>
+            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
+        ");
+    }
 
-        return self::enviar($para, $assunto, $corpo);
+    /** Notificação de proposta recusada (para o parceiro) */
+    public static function propostaRecusada(string $para, string $nomeParceiro, string $codigoDemanda): bool
+    {
+        $nome = ConfiguracoesSistema::nome();
+        return self::enviar($para, "Atualização sobre sua proposta — {$codigoDemanda}", "
+            <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
+            <p>Informamos que sua proposta para a demanda <strong>{$codigoDemanda}</strong> não foi selecionada desta vez.</p>
+            <p>Continue acompanhando novas oportunidades em nossa plataforma.</p>
+            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
+        ");
+    }
+
+    /** Notificação de contrato formalizado (para cliente e parceiro) */
+    public static function contratoFormalizado(string $para, string $nomeDestinatario, string $codigoDemanda, string $valor): bool
+    {
+        $nome = ConfiguracoesSistema::nome();
+        $url  = ConfiguracoesSistema::url();
+        return self::enviar($para, "Contrato formalizado — {$codigoDemanda}", "
+            <p>Olá, <strong>{$nomeDestinatario}</strong>!</p>
+            <p>O contrato referente à demanda <strong>{$codigoDemanda}</strong> foi formalizado.</p>
+            <p><strong>Valor:</strong> {$valor}</p>
+            <p><a href='{$url}/equipe/contratos' style='color:#B8945A;font-weight:500'>Ver contrato →</a></p>
+            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
+        ");
+    }
+
+    /** Resultado de qualificação (para o parceiro) */
+    public static function resultadoQualificacao(string $para, string $nomeParceiro, string $status, string $parecer = ''): bool
+    {
+        $nome = ConfiguracoesSistema::nome();
+        $url  = ConfiguracoesSistema::url();
+        $aprovado = in_array($status, ['aprovado', 'vetriks_ativo'], true);
+        $titulo = $aprovado ? 'Qualificação aprovada' : 'Resultado da qualificação';
+        $msg = $aprovado
+            ? 'Sua qualificação foi <strong>aprovada</strong>! Você já pode receber oportunidades qualificadas.'
+            : 'Sua qualificação foi analisada. Infelizmente não foi possível aprovar neste momento.';
+        $parecerHtml = $parecer ? "<p><strong>Parecer:</strong> {$parecer}</p>" : '';
+        return self::enviar($para, "{$titulo} — {$nome}", "
+            <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
+            <p>{$msg}</p>
+            {$parecerHtml}
+            <p><a href='{$url}/parceiro/perfil' style='color:#B8945A;font-weight:500'>Ver meu perfil →</a></p>
+            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
+        ");
+    }
+
+    /** Boas-vindas ao novo parceiro cadastrado */
+    public static function boasVindasParceiro(string $para, string $nomeParceiro): bool
+    {
+        $nome = ConfiguracoesSistema::nome();
+        $url  = ConfiguracoesSistema::url();
+        return self::enviar($para, "Bem-vindo à {$nome}!", "
+            <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
+            <p>Seu cadastro foi recebido com sucesso. Nossa equipe irá analisar seu perfil e em breve você receberá o resultado da qualificação.</p>
+            <p><a href='{$url}/parceiro/dashboard' style='color:#B8945A;font-weight:500'>Acessar meu painel →</a></p>
+            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
+        ");
+    }
+
+    /** Notificação interna de novo contato recebido (para a equipe) */
+    public static function novoContatoEquipe(string $paraEquipe, string $nomeRemetente, string $emailRemetente, string $mensagem): bool
+    {
+        $nome = ConfiguracoesSistema::nome();
+        return self::enviar($paraEquipe, "Novo contato recebido — {$nome}", "
+            <p><strong>Nome:</strong> {$nomeRemetente}</p>
+            <p><strong>E-mail:</strong> {$emailRemetente}</p>
+            <p><strong>Mensagem:</strong></p>
+            <blockquote style='border-left:3px solid #B8945A;padding:8px 16px;margin:8px 0;color:#555'>{$mensagem}</blockquote>
+        ");
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────
+
+    private static function wrapHtml(string $titulo, string $corpo): string
+    {
+        $nome = ConfiguracoesSistema::nome();
+        $gold = '#B8945A';
+        return "<!DOCTYPE html><html><head><meta charset='UTF-8'/></head><body style='font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:0'>
+            <div style='max-width:600px;margin:32px auto;background:#fff;border-radius:4px;overflow:hidden'>
+                <div style='background:#0C0C0A;padding:24px 32px'>
+                    <span style='font-family:Georgia,serif;font-size:1.4rem;color:{$gold};letter-spacing:.08em'>{$nome}</span>
+                </div>
+                <div style='padding:32px;color:#333;line-height:1.7;font-size:.95rem'>
+                    {$corpo}
+                </div>
+                <div style='background:#f9f9f9;padding:16px 32px;font-size:.75rem;color:#999;border-top:1px solid #eee'>
+                    Este é um e-mail automático. Por favor, não responda diretamente.
+                </div>
+            </div>
+        </body></html>";
     }
 }

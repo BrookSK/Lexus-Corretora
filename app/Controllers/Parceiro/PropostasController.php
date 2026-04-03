@@ -46,6 +46,22 @@ final class PropostasController
             TimelineService::registrar((int)$dados['demanda_id'], 'proposta_enviada', 'Nova proposta recebida', 'parceiro', Auth::parceiroId());
         }
 
+        // Notificar cliente sobre nova proposta
+        try {
+            $demandaId = (int)($dados['demanda_id'] ?? 0);
+            if ($demandaId) {
+                $demanda = DemandasService::obterPorId($demandaId);
+                if ($demanda && !empty($demanda['cliente_email'])) {
+                    \LEX\App\Services\Email\EmailService::novaPropostaCliente(
+                        $demanda['cliente_email'],
+                        $demanda['cliente_nome'] ?? '',
+                        $demanda['code'] ?? '',
+                        Auth::parceiroNome() ?? ''
+                    );
+                }
+            }
+        } catch (\Throwable $e) { /* silenciar */ }
+
         // Processar arquivos da proposta
         $filesRaw = $_FILES['files'] ?? [];
         if (!empty($filesRaw['name'])) {

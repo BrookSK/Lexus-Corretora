@@ -39,6 +39,26 @@ final class DistribuicaoController
         $distId = DistribuicaoService::distribuir($demandaId, $parceiroIds, Auth::equipeId());
         TimelineService::registrar($demandaId, 'distribuida', 'Oportunidade distribuída para ' . count($parceiroIds) . ' parceiro(s)', 'equipe', Auth::equipeId());
         AuditService::registrar('equipe', Auth::equipeId(), 'demanda.distribuir', 'demandas', $demandaId, ['parceiros' => $parceiroIds]);
+
+        // Notificar parceiros por e-mail
+        $demanda = \LEX\App\Services\Demandas\DemandasService::obterPorId($demandaId);
+        if ($demanda) {
+            $destinatarios = DistribuicaoService::listarDestinatarios($distId);
+            foreach ($destinatarios as $dest) {
+                if (!empty($dest['parceiro_email'])) {
+                    try {
+                        \LEX\App\Services\Email\EmailService::novaOportunidade(
+                            $dest['parceiro_email'],
+                            $dest['parceiro_nome'] ?? '',
+                            $demanda['code'] ?? '',
+                            $demanda['title'] ?? '',
+                            $demanda['city'] ?? '',
+                            $demanda['state'] ?? ''
+                        );
+                    } catch (\Throwable $e) { /* silenciar */ }
+                }
+            }
+        }
         $_SESSION['flash'] = ['type' => 'success', 'message' => 'Oportunidade distribuída com sucesso.'];
         return Resposta::redirecionar('/equipe/demandas/' . $demandaId);
     }

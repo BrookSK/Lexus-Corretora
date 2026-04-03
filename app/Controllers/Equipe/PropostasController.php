@@ -86,6 +86,23 @@ final class PropostasController
         $status = $req->post('status', '');
         PropostasService::alterarStatus($id, $status);
         AuditService::registrar('equipe', Auth::equipeId(), 'proposta.status', 'propostas', $id, ['status' => $status]);
+
+        // Notificar parceiro
+        try {
+            $proposta = PropostasService::obterPorId($id);
+            if ($proposta && !empty($proposta['parceiro_email'])) {
+                $codigo = $proposta['demanda_code'] ?? '';
+                if ($status === 'selecionada' || $status === 'convertida') {
+                    \LEX\App\Services\Email\EmailService::propostaSelecionada(
+                        $proposta['parceiro_email'], $proposta['parceiro_nome'] ?? '', $codigo
+                    );
+                } elseif ($status === 'descartada' || $status === 'perdida') {
+                    \LEX\App\Services\Email\EmailService::propostaRecusada(
+                        $proposta['parceiro_email'], $proposta['parceiro_nome'] ?? '', $codigo
+                    );
+                }
+            }
+        } catch (\Throwable $e) { /* silenciar */ }
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/propostas/' . $id);
     }

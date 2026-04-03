@@ -53,6 +53,18 @@ final class DemandasController
             }
         }
 
+        // E-mail de confirmação
+        try {
+            $demanda = DemandasService::obterPorId($id);
+            $clienteEmail = Auth::clienteEmail();
+            $clienteNome  = Auth::clienteNome();
+            if ($demanda && $clienteEmail) {
+                \LEX\App\Services\Email\EmailService::novaDemanda(
+                    $clienteEmail, $clienteNome ?? '', $demanda['code'] ?? '', $demanda['title'] ?? ''
+                );
+            }
+        } catch (\Throwable $e) { /* silenciar */ }
+
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('demanda.sucesso')];
         return Resposta::redirecionar('/cliente/demandas/' . $id);
     }

@@ -143,6 +143,14 @@ final class InicialController
         // Integração Trello
         try { TrelloService::cardDemanda($dados); } catch (\Throwable $e) { /* silenciar */ }
 
+        // E-mail de confirmação para o cliente
+        try {
+            $demanda = \LEX\App\Services\Demandas\DemandasService::obterPorId($demandaId);
+            if ($demanda) {
+                \LEX\App\Services\Email\EmailService::novaDemanda($email, $nome, $demanda['code'] ?? '', $demanda['title'] ?? '');
+            }
+        } catch (\Throwable $e) { /* silenciar */ }
+
         Auth::loginCliente(['id' => $clienteId, 'name' => $nome, 'email' => $email]);
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('demanda.sucesso')];
         return Resposta::redirecionar('/cliente/dashboard');
@@ -216,6 +224,9 @@ final class InicialController
 
         // Integração Trello
         try { TrelloService::cardParceiro($dados); } catch (\Throwable $e) { /* silenciar */ }
+
+        // E-mail de boas-vindas
+        try { \LEX\App\Services\Email\EmailService::boasVindasParceiro($email, $nome); } catch (\Throwable $e) { /* silenciar */ }
 
         Auth::loginParceiro(['id' => $parceiroId, 'name' => $nome, 'email' => $email]);
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('parceiro.sucesso')];
