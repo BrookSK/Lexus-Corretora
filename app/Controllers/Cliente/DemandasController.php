@@ -65,6 +65,20 @@ final class DemandasController
             }
         } catch (\Throwable $e) { /* silenciar */ }
 
+        // Webhook
+        try {
+            $demanda = $demanda ?? DemandasService::obterPorId($id);
+            \LEX\App\Services\Webhooks\WebhookService::disparar('nova_demanda', [
+                'cliente_nome'    => Auth::clienteNome() ?? '',
+                'cliente_email'   => Auth::clienteEmail() ?? '',
+                'demanda_id'      => $id,
+                'demanda_codigo'  => $demanda['code'] ?? '',
+                'demanda_titulo'  => $demanda['title'] ?? '',
+                'cidade'          => $demanda['city'] ?? '',
+                'estado'          => $demanda['state'] ?? '',
+            ]);
+        } catch (\Throwable $e) { /* silenciar */ }
+
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('demanda.sucesso')];
         return Resposta::redirecionar('/cliente/demandas/' . $id);
     }

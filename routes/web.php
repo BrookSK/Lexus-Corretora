@@ -56,6 +56,7 @@ use LEX\App\Controllers\Equipe\UsuariosController;
 use LEX\App\Controllers\Equipe\PermissoesController;
 use LEX\App\Controllers\Equipe\LogsController;
 use LEX\App\Controllers\Equipe\JobsController;
+use LEX\App\Controllers\Equipe\WebhooksController;
 use LEX\App\Controllers\Equipe\MensagensController as EquipeMensagens;
 use LEX\App\Controllers\Equipe\InicializacaoController;
 use LEX\App\Controllers\Equipe\NotificacoesController;
@@ -318,6 +319,11 @@ Roteador::get('/equipe/logs/app', [LogsController::class, 'app'], $eqMw);
 // Jobs
 Roteador::get('/equipe/jobs', [JobsController::class, 'index'], $eqMw);
 Roteador::post('/equipe/jobs/{id}/retry', [JobsController::class, 'retry'], $eqMw);
+
+// Webhooks
+Roteador::get('/equipe/webhooks', [WebhooksController::class, 'index'], $eqMw);
+Roteador::post('/equipe/webhooks/salvar', [WebhooksController::class, 'salvar'], $eqMw);
+Roteador::post('/equipe/webhooks/{id}/excluir', [WebhooksController::class, 'excluir'], $eqMw);
 
 // Minha Conta (equipe)
 use LEX\App\Controllers\Equipe\ContaController as EquipeConta;

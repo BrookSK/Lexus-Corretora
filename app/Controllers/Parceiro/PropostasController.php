@@ -59,6 +59,17 @@ final class PropostasController
                         Auth::parceiroNome() ?? ''
                     );
                 }
+                // Webhook
+                \LEX\App\Services\Webhooks\WebhookService::disparar('nova_proposta', [
+                    'parceiro_id'    => Auth::parceiroId(),
+                    'parceiro_nome'  => Auth::parceiroNome() ?? '',
+                    'demanda_id'     => $demandaId,
+                    'demanda_codigo' => $demanda['code'] ?? '',
+                    'demanda_titulo' => $demanda['title'] ?? '',
+                    'cliente_nome'   => $demanda['cliente_nome'] ?? '',
+                    'cliente_email'  => $demanda['cliente_email'] ?? '',
+                    'proposta_id'    => $id,
+                ]);
             }
         } catch (\Throwable $e) { /* silenciar */ }
 

@@ -57,6 +57,19 @@ final class DistribuicaoController
                         );
                     } catch (\Throwable $e) { /* silenciar */ }
                 }
+                // Webhook por parceiro
+                try {
+                    \LEX\App\Services\Webhooks\WebhookService::disparar('nova_oportunidade', [
+                        'parceiro_id'    => $dest['parceiro_id'],
+                        'parceiro_nome'  => $dest['parceiro_nome'] ?? '',
+                        'parceiro_email' => $dest['parceiro_email'] ?? '',
+                        'demanda_id'     => $demandaId,
+                        'demanda_codigo' => $demanda['code'] ?? '',
+                        'demanda_titulo' => $demanda['title'] ?? '',
+                        'cidade'         => $demanda['city'] ?? '',
+                        'estado'         => $demanda['state'] ?? '',
+                    ]);
+                } catch (\Throwable $e) { /* silenciar */ }
             }
         }
         $_SESSION['flash'] = ['type' => 'success', 'message' => 'Oportunidade distribuída com sucesso.'];

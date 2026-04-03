@@ -63,6 +63,7 @@ if ($painelTipo === 'equipe') {
         ['url'=>'/equipe/usuarios','icon'=>'admin','label'=>I18n::t('sidebar.usuarios')],
         ['url'=>'/equipe/logs','icon'=>'bug','label'=>I18n::t('sidebar.logs')],
         ['url'=>'/equipe/jobs','icon'=>'schedule','label'=>I18n::t('sidebar.jobs')],
+        ['url'=>'/equipe/webhooks','icon'=>'analytics','label'=>'Webhooks'],
     ];
 } elseif ($painelTipo === 'cliente') {
     $notificacoesNaoLidas = 0;
