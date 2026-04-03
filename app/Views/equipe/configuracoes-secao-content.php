@@ -155,7 +155,70 @@ if ($secao === 'branding'): ?>
   </div>
 
 <?php elseif ($secao === 'notificacoes'): ?>
-  <p style="color:var(--text-muted);font-size:.88rem">Configure os eventos de notificação em <a href="/equipe/notificacoes" style="color:var(--gold)">Notificações</a>.</p>
+<?php
+// Garantir que os eventos padrão existem no banco (tabela pode não existir ainda)
+$webhooks = [];
+try {
+    $eventosDisponiveis = \LEX\App\Services\Webhooks\WebhookService::eventosDisponiveis();
+    $webhooksExistentes = \LEX\App\Services\Webhooks\WebhookService::listar();
+    $eventosCadastrados = array_column($webhooksExistentes, 'evento');
+    foreach ($eventosDisponiveis as $slug => $desc) {
+        if (!in_array($slug, $eventosCadastrados, true)) {
+            \LEX\App\Services\Webhooks\WebhookService::criar(['evento' => $slug, 'url' => '', 'ativo' => 0, 'secret' => '', 'descricao' => $desc]);
+        }
+    }
+    $webhooks = \LEX\App\Services\Webhooks\WebhookService::listar();
+} catch (\Throwable $whErr) {
+    // Tabela ainda não existe — mostrar aviso
+}
+?>
+
+<h3 style="font-size:.88rem;font-weight:500;margin-bottom:4px;color:var(--gold)">Webhooks por Evento</h3>
+<p style="font-size:.82rem;color:var(--text-muted);margin-bottom:24px">Configure uma URL para cada evento. O sistema enviará um POST JSON quando o evento ocorrer. Deixe a URL em branco para desativar.</p>
+
+<?php if (empty($webhooks) && isset($whErr)): ?>
+<div style="padding:16px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.85rem;margin-bottom:20px">
+  Tabela de webhooks não encontrada. <a href="/equipe/inicializacao" style="color:var(--gold)">Execute a inicialização</a> para criar as tabelas necessárias.
+</div>
+<?php endif; ?>
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<?php foreach ($webhooks as $wh): ?>
+<div style="border:1px solid var(--border);padding:20px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <div>
+      <code style="font-size:.75rem;background:rgba(184,148,90,.08);padding:2px 8px;color:var(--gold)"><?php echo $V::e($wh['evento']); ?></code>
+      <span style="font-size:.82rem;color:var(--text-muted);margin-left:10px"><?php echo $V::e($wh['descricao'] ?? ''); ?></span>
+    </div>
+    <label style="display:flex;align-items:center;gap:6px;font-size:.78rem;cursor:pointer">
+      <input type="checkbox" form="wh-form-<?php echo (int)$wh['id']; ?>" name="ativo" value="1" <?php echo $wh['ativo'] ? 'checked' : ''; ?> style="width:auto"/>
+      Ativo
+    </label>
+  </div>
+  <form method="POST" action="/equipe/webhooks/salvar" id="wh-form-<?php echo (int)$wh['id']; ?>" style="display:flex;gap:10px;align-items:flex-end">
+    <?php echo $C::campo(); ?>
+    <input type="hidden" name="id" value="<?php echo (int)$wh['id']; ?>"/>
+    <input type="hidden" name="evento" value="<?php echo $V::e($wh['evento']); ?>"/>
+    <input type="hidden" name="descricao" value="<?php echo $V::e($wh['descricao'] ?? ''); ?>"/>
+    <div class="form-group" style="margin:0;flex:1">
+      <label>URL do Webhook</label>
+      <input type="text" name="url" value="<?php echo $V::e($wh['url'] ?? ''); ?>" placeholder="https://seu-sistema.com/webhook/<?php echo $V::e($wh['evento']); ?>"/>
+    </div>
+    <div class="form-group" style="margin:0;width:200px">
+      <label>Secret (HMAC opcional)</label>
+      <input type="text" name="secret" value="" placeholder="Deixe vazio para manter"/>
+    </div>
+    <button type="submit" class="btn btn-secondary btn-sm" style="flex-shrink:0">Salvar</button>
+  </form>
+</div>
+<?php endforeach; ?>
+</div>
+
+<div style="margin-top:24px;padding:16px;background:var(--bg);border-left:3px solid var(--gold);font-size:.82rem">
+  <p style="font-weight:500;margin-bottom:8px">Payload enviado (exemplo — nova_demanda)</p>
+  <pre style="font-size:.75rem;line-height:1.6;overflow-x:auto">{"evento":"nova_demanda","timestamp":"2026-04-03T15:00:00-03:00","sistema":"Lexus Corretora","cliente_nome":"João Silva","cliente_email":"joao@email.com","demanda_codigo":"LEX-000001","demanda_titulo":"Reforma residencial","cidade":"São Paulo","estado":"SP"}</pre>
+  <p style="margin-top:8px;color:var(--text-muted)">Se o Secret estiver preenchido, o header <code>X-Lexus-Signature: sha256=...</code> será enviado para validação.</p>
+</div>
 
 <?php elseif ($secao === 'integracao'): ?>
   <p style="color:var(--text-muted);font-size:.88rem">Integrações disponíveis: Trello (veja aba Trello).</p>
