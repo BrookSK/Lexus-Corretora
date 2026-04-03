@@ -463,6 +463,15 @@ if (hero) {
     minHeight: window.getComputedStyle(hero).minHeight,
     padding: window.getComputedStyle(hero).padding
   });
+  
+  // Força remover padding
+  hero.style.padding = '0';
+  hero.style.paddingTop = '0';
+  hero.style.paddingBottom = '0';
+  hero.style.paddingLeft = '0';
+  hero.style.paddingRight = '0';
+  
+  console.log('Hero padding AFTER fix:', window.getComputedStyle(hero).padding);
 }
 
 // Debug das colunas
