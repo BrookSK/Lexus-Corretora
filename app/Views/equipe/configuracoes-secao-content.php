@@ -2,7 +2,7 @@
 // Conteúdo das seções de configuração
 // Variável $secao deve estar definida
 // Variável $settings deve estar definida
-use LEX\Core\{View, I18n, Csrf};
+// As classes View, I18n, Csrf já foram importadas no arquivo pai
 
 if ($secao === 'branding'): ?>
   <div class="form-group">

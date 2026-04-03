@@ -69,6 +69,8 @@ $tabs = [
     <?php
     // Incluir o conteúdo da seção específica
     $secao = $currentTab;
+    // Debug temporário
+    // echo "<!-- DEBUG: secao = " . htmlspecialchars($secao) . " -->";
     include __DIR__ . '/configuracoes-secao-content.php';
     ?>
 
