@@ -31,7 +31,7 @@ use LEX\Core\{View, I18n, Csrf};
         <label><?php echo View::e(I18n::t('auth.senha')); ?></label>
         <input type="password" name="password" required autocomplete="current-password"/>
       </div>
-      <button type="submit" class="btn btn-primary" id="loginBtn" style="width:100%"><?php echo View::e(I18n::t('auth.entrar')); ?></button>
+      <button type="submit" class="btn btn-primary" id="loginBtn" style="width:100%;background:#B8945A !important;color:#0C0C0A !important"><?php echo View::e(I18n::t('auth.entrar')); ?></button>
     </form>
   </div>
 </div>
@@ -77,6 +77,7 @@ if (btn) {
             selector: rule.selectorText,
             background: rule.style.background || rule.style.backgroundColor,
             color: rule.style.color,
+            cssText: rule.cssText,
             sheet: sheet.href || 'inline'
           });
         }
@@ -85,7 +86,10 @@ if (btn) {
       console.log('Cannot read stylesheet:', sheet.href);
     }
   }
-  console.log('All CSS rules for button:', btnRules);
+  console.log('All CSS rules for button:');
+  btnRules.forEach((r, i) => {
+    console.log(`${i + 1}.`, r);
+  });
 }
 console.log('=== END DEBUG ===');
 </script>
