@@ -484,23 +484,33 @@ if (formCol) {
   console.log('Form col computed:', {
     display: window.getComputedStyle(formCol).display,
     flexDirection: window.getComputedStyle(formCol).flexDirection,
-    background: window.getComputedStyle(formCol).backgroundColor
+    background: window.getComputedStyle(formCol).backgroundColor,
+    width: window.getComputedStyle(formCol).width,
+    height: window.getComputedStyle(formCol).height
   });
   
   // Força estilos
-  formCol.style.cssText = 'background: #161410 !important; border-right: 1px solid rgba(201,168,76,.1) !important; display: flex !important; flex-direction: column !important; position: relative !important; overflow: hidden !important; min-height: calc(100vh - 64px) !important;';
-  console.log('Form col AFTER force:', window.getComputedStyle(formCol).display);
+  formCol.style.cssText = 'background: #161410 !important; border-right: 1px solid rgba(201,168,76,.1) !important; display: flex !important; flex-direction: column !important; position: relative !important; overflow: hidden !important; min-height: calc(100vh - 64px) !important; width: auto !important; max-width: none !important;';
+  console.log('Form col AFTER force:', {
+    display: window.getComputedStyle(formCol).display,
+    width: window.getComputedStyle(formCol).width
+  });
 }
 
 if (headlineCol) {
   console.log('Headline col computed:', {
     display: window.getComputedStyle(headlineCol).display,
-    background: window.getComputedStyle(headlineCol).backgroundColor
+    background: window.getComputedStyle(headlineCol).backgroundColor,
+    width: window.getComputedStyle(headlineCol).width,
+    height: window.getComputedStyle(headlineCol).height
   });
   
   // Força estilos
-  headlineCol.style.cssText = 'background: #0E0C09 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 80px 72px !important; position: relative !important;';
-  console.log('Headline col AFTER force:', window.getComputedStyle(headlineCol).display);
+  headlineCol.style.cssText = 'background: #0E0C09 !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 80px 72px !important; position: relative !important; width: auto !important; max-width: none !important;';
+  console.log('Headline col AFTER force:', {
+    display: window.getComputedStyle(headlineCol).display,
+    width: window.getComputedStyle(headlineCol).width
+  });
 }
 
 console.log('=== END DEBUG ===');
