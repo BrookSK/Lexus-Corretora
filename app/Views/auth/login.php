@@ -31,8 +31,62 @@ use LEX\Core\{View, I18n, Csrf};
         <label><?php echo View::e(I18n::t('auth.senha')); ?></label>
         <input type="password" name="password" required autocomplete="current-password"/>
       </div>
-      <button type="submit" class="btn btn-primary" style="width:100%"><?php echo View::e(I18n::t('auth.entrar')); ?></button>
+      <button type="submit" class="btn btn-primary" id="loginBtn" style="width:100%"><?php echo View::e(I18n::t('auth.entrar')); ?></button>
     </form>
   </div>
 </div>
+<script>
+// Debug do botão de login
+console.log('=== LOGIN BUTTON DEBUG ===');
+const btn = document.getElementById('loginBtn');
+if (btn) {
+  console.log('Button element:', btn);
+  console.log('Button classes:', btn.className);
+  
+  const computed = window.getComputedStyle(btn);
+  console.log('Computed styles:', {
+    background: computed.backgroundColor,
+    backgroundImage: computed.backgroundImage,
+    color: computed.color,
+    display: computed.display,
+    padding: computed.padding,
+    border: computed.border,
+    width: computed.width,
+    height: computed.height
+  });
+  
+  // Verificar variáveis CSS
+  const root = document.documentElement;
+  const rootStyles = window.getComputedStyle(root);
+  console.log('CSS Variables:', {
+    '--gold': rootStyles.getPropertyValue('--gold'),
+    '--black': rootStyles.getPropertyValue('--black'),
+    '--white': rootStyles.getPropertyValue('--white'),
+    '--gold-lt': rootStyles.getPropertyValue('--gold-lt')
+  });
+  
+  // Verificar todas as regras CSS aplicadas ao botão
+  const sheets = document.styleSheets;
+  const btnRules = [];
+  for (let sheet of sheets) {
+    try {
+      const rules = sheet.cssRules || sheet.rules;
+      for (let rule of rules) {
+        if (rule.selectorText && (rule.selectorText.includes('.btn-primary') || rule.selectorText.includes('.btn'))) {
+          btnRules.push({
+            selector: rule.selectorText,
+            background: rule.style.background || rule.style.backgroundColor,
+            color: rule.style.color,
+            sheet: sheet.href || 'inline'
+          });
+        }
+      }
+    } catch(e) {
+      console.log('Cannot read stylesheet:', sheet.href);
+    }
+  }
+  console.log('All CSS rules for button:', btnRules);
+}
+console.log('=== END DEBUG ===');
+</script>
 </body></html>
