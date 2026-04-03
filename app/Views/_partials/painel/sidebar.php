@@ -30,9 +30,20 @@ $icons = [
 
 $menuItems = [];
 if ($painelTipo === 'equipe') {
-    // Obter contadores de notificações
-    $repassesPendentes = \LEX\App\Services\Demandas\DemandasService::contarRepassesPendentes();
-    $notificacoesNaoLidas = \LEX\App\Services\Notificacoes\EventosService::obterContadorNaoLidas('equipe', Auth::equipeId());
+    // Obter contadores de notificações (com verificação de existência)
+    $repassesPendentes = 0;
+    $notificacoesNaoLidas = 0;
+    
+    try {
+        if (class_exists('\LEX\App\Services\Demandas\DemandasService') && method_exists('\LEX\App\Services\Demandas\DemandasService', 'contarRepassesPendentes')) {
+            $repassesPendentes = \LEX\App\Services\Demandas\DemandasService::contarRepassesPendentes();
+        }
+        if (class_exists('\LEX\App\Services\Notificacoes\EventosService') && method_exists('\LEX\App\Services\Notificacoes\EventosService', 'obterContadorNaoLidas')) {
+            $notificacoesNaoLidas = \LEX\App\Services\Notificacoes\EventosService::obterContadorNaoLidas('equipe', Auth::equipeId());
+        }
+    } catch (\Throwable $e) {
+        // Silenciar erros de contadores
+    }
     
     $menuItems = [
         ['url'=>'/equipe/dashboard','icon'=>'dashboard','label'=>I18n::t('sidebar.dashboard')],
@@ -53,7 +64,14 @@ if ($painelTipo === 'equipe') {
         ['url'=>'/equipe/jobs','icon'=>'schedule','label'=>I18n::t('sidebar.jobs')],
     ];
 } elseif ($painelTipo === 'cliente') {
-    $notificacoesNaoLidas = \LEX\App\Services\Notificacoes\EventosService::obterContadorNaoLidas('cliente', Auth::clienteId());
+    $notificacoesNaoLidas = 0;
+    try {
+        if (class_exists('\LEX\App\Services\Notificacoes\EventosService') && method_exists('\LEX\App\Services\Notificacoes\EventosService', 'obterContadorNaoLidas')) {
+            $notificacoesNaoLidas = \LEX\App\Services\Notificacoes\EventosService::obterContadorNaoLidas('cliente', Auth::clienteId());
+        }
+    } catch (\Throwable $e) {
+        // Silenciar erros
+    }
     
     $menuItems = [
         ['url'=>'/cliente/dashboard','icon'=>'dashboard','label'=>I18n::t('sidebar_cli.dashboard')],
@@ -63,7 +81,14 @@ if ($painelTipo === 'equipe') {
         ['url'=>'/cliente/minha-conta','icon'=>'person','label'=>I18n::t('sidebar_cli.minha_conta')],
     ];
 } elseif ($painelTipo === 'parceiro') {
-    $notificacoesNaoLidas = \LEX\App\Services\Notificacoes\EventosService::obterContadorNaoLidas('parceiro', Auth::parceiroId());
+    $notificacoesNaoLidas = 0;
+    try {
+        if (class_exists('\LEX\App\Services\Notificacoes\EventosService') && method_exists('\LEX\App\Services\Notificacoes\EventosService', 'obterContadorNaoLidas')) {
+            $notificacoesNaoLidas = \LEX\App\Services\Notificacoes\EventosService::obterContadorNaoLidas('parceiro', Auth::parceiroId());
+        }
+    } catch (\Throwable $e) {
+        // Silenciar erros
+    }
     
     $menuItems = [
         ['url'=>'/parceiro/dashboard','icon'=>'dashboard','label'=>I18n::t('sidebar_par.dashboard')],

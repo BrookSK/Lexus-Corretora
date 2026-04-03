@@ -243,7 +243,6 @@ final class DemandasService
         );
         return $stmt->fetchAll();
     }
-}
 
     public static function listarRepasses(int $page = 1, int $perPage = 20, array $filtros = []): array
     {
@@ -325,3 +324,4 @@ final class DemandasService
         );
         return (int)$stmt->fetchColumn();
     }
+}
