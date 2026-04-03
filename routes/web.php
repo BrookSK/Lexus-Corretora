@@ -224,6 +224,7 @@ Roteador::get('/equipe/demandas/{id}', [EquipeDemandas::class, 'detalhe'], $eqMw
 Roteador::get('/equipe/demandas/{id}/editar', [EquipeDemandas::class, 'editar'], $eqMw);
 Roteador::post('/equipe/demandas/{id}/editar', [EquipeDemandas::class, 'atualizar'], $eqMw);
 Roteador::post('/equipe/demandas/{id}/status', [EquipeDemandas::class, 'alterarStatus'], $eqMw);
+Roteador::post('/equipe/demandas/{id}/aprovar-repasse', [EquipeDemandas::class, 'aprovarRepasse'], $eqMw);
 
 // Distribuição
 Roteador::get('/equipe/distribuicao/{demandaId}', [DistribuicaoController::class, 'index'], $eqMw);
@@ -286,6 +287,12 @@ Roteador::get('/equipe/configuracoes', [ConfigController::class, 'index'], $eqMw
 Roteador::post('/equipe/configuracoes', [ConfigController::class, 'salvar'], $eqMw);
 Roteador::get('/equipe/configuracoes/{secao}', [ConfigController::class, 'secao'], $eqMw);
 Roteador::post('/equipe/configuracoes/{secao}', [ConfigController::class, 'salvarSecao'], $eqMw);
+
+// Notificações
+use LEX\App\Controllers\Equipe\NotificacoesController;
+Roteador::get('/equipe/notificacoes', [NotificacoesController::class, 'index'], $eqMw);
+Roteador::get('/equipe/notificacoes/{id}/editar', [NotificacoesController::class, 'editar'], $eqMw);
+Roteador::post('/equipe/notificacoes/{id}/editar', [NotificacoesController::class, 'atualizar'], $eqMw);
 
 // Usuários
 Roteador::get('/equipe/usuarios', [UsuariosController::class, 'index'], $eqMw);

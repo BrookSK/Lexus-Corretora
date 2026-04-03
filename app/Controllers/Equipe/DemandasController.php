@@ -14,14 +14,27 @@ final class DemandasController
 {
     public function index(Requisicao $req): Resposta
     {
+        $tab = $req->get('tab', 'todas');
         $page = max(1, (int)$req->get('page', '1'));
         $filtros = array_filter([
             'busca' => $req->get('busca'), 'status' => $req->get('status'),
             'urgency' => $req->get('urgency'), 'origin' => $req->get('origin'),
+            'repasse_status' => $req->get('repasse_status'),
         ]);
-        $resultado = DemandasService::listar($page, 20, $filtros);
+        
+        if ($tab === 'repasse') {
+            $resultado = DemandasService::listarRepasses($page, 20, $filtros);
+        } else {
+            $resultado = DemandasService::listar($page, 20, $filtros);
+        }
+        
+        $repassesPendentes = DemandasService::contarRepassesPendentes();
+        
         $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/demandas.php', [
-            'items' => $resultado['items'], 'total' => $resultado['total'], 'page' => $page,
+            'items' => $resultado['items'], 
+            'total' => $resultado['total'], 
+            'page' => $page,
+            'repassesPendentes' => $repassesPendentes,
         ]);
         return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
             'conteudo' => $conteudo, 'painelTipo' => 'equipe',
@@ -121,3 +134,28 @@ final class DemandasController
         return Resposta::redirecionar('/equipe/demandas/' . $id);
     }
 }
+
+    public function aprovarRepasse(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        $demanda = DemandasService::obterPorId($id);
+        
+        if (!$demanda || !$demanda['is_repasse']) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Demanda não encontrada ou não é um repasse'];
+            return Resposta::redirecionar('/equipe/demandas?tab=repasse');
+        }
+        
+        DemandasService::aprovarRepasse($id);
+        TimelineService::registrar($id, 'repasse_aprovado', 'Repasse aprovado pela equipe', 'equipe', Auth::equipeId());
+        AuditService::registrar('equipe', Auth::equipeId(), 'demanda.aprovar_repasse', 'demandas', $id);
+        
+        // Disparar notificação para o parceiro
+        \LEX\App\Services\Notificacoes\EventosService::dispararEvento('repasse_aprovado', [
+            'codigo' => $demanda['code'],
+            'titulo' => $demanda['title'],
+            'parceiro_id' => $demanda['parceiro_originador_id'],
+        ]);
+        
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Repasse aprovado com sucesso!'];
+        return Resposta::redirecionar('/equipe/demandas/' . $id);
+    }

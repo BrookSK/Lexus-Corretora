@@ -83,6 +83,24 @@ final class RepasseController
             }
         }
 
+        // Obter dados do parceiro para notificação
+        $pdo = \LEX\Core\BancoDeDados::obter();
+        $stmt = $pdo->prepare("SELECT name FROM parceiros WHERE id = :id");
+        $stmt->execute(['id' => Auth::parceiroId()]);
+        $parceiro = $stmt->fetch();
+        
+        // Obter código da demanda
+        $demanda = DemandasService::obterPorId($id);
+        
+        // Disparar notificação
+        \LEX\App\Services\Notificacoes\EventosService::dispararEvento('demanda_repassada', [
+            'codigo' => $demanda['code'],
+            'titulo' => $dados['title'],
+            'parceiro' => $parceiro['name'] ?? 'Parceiro',
+            'categoria' => $dados['category'] ?? '',
+            'cidade' => $dados['city'] ?? '',
+        ]);
+
         $_SESSION['flash'] = ['type' => 'success', 'message' => 'Repasse enviado com sucesso! Nossa equipe entrará em contato.'];
         return Resposta::redirecionar('/parceiro/repasse');
     }

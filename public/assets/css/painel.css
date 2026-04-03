@@ -173,3 +173,233 @@ body.painel-body{font-family:'Outfit',sans-serif;font-weight:400;background:var(
   .form-row{grid-template-columns:1fr}
   .section-header{flex-direction:column;align-items:flex-start;gap:12px}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   NOTIFICAÇÕES E BADGES
+   ═══════════════════════════════════════════════════════════════ */
+
+.badge-notification {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: #25D366;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 10px;
+  margin-left: 8px;
+  line-height: 1;
+}
+
+.sidebar-label .badge-notification {
+  margin-left: auto;
+}
+
+.tab-item .badge-notification {
+  margin-left: 8px;
+  font-size: 0.65rem;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TABS
+   ═══════════════════════════════════════════════════════════════ */
+
+.tabs-container {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tabs {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 24px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tab-item:hover {
+  color: var(--text-primary);
+  background: rgba(184, 148, 90, 0.04);
+}
+
+.tab-item.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  background: rgba(184, 148, 90, 0.06);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BADGES DE STATUS
+   ═══════════════════════════════════════════════════════════════ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 12px;
+  text-transform: capitalize;
+}
+
+.badge-success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-warning {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge-danger {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.badge-info {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.badge-secondary {
+  background: #e2e3e5;
+  color: #383d41;
+}
+
+.badge-primary {
+  background: rgba(184, 148, 90, 0.15);
+  color: var(--primary);
+}
+
+.badge-novo {
+  background: #cfe2ff;
+  color: #084298;
+}
+
+.badge-em_triagem {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge-distribuido {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.badge-fechado_ganho {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-fechado_perda,
+.badge-cancelado {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.badge-pausado {
+  background: #e2e3e5;
+  color: #383d41;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DATA TABLE
+   ═══════════════════════════════════════════════════════════════ */
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table thead {
+  background: var(--bg-secondary);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.data-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.data-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.88rem;
+}
+
+.data-table tbody tr:hover {
+  background: rgba(184, 148, 90, 0.03);
+}
+
+.data-table a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.data-table a:hover {
+  text-decoration: underline;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════════ */
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--primary);
+}

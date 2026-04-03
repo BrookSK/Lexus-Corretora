@@ -121,6 +121,11 @@ final class DemandasService
         $pdo = BancoDeDados::obter();
         $dados['code'] = self::gerarCodigo();
 
+        // Marcar como repasse se tiver parceiro originador
+        if (!empty($dados['parceiro_originador_id'])) {
+            $dados['is_repasse'] = 1;
+        }
+
         // Campos FK: converter string vazia para null
         foreach (['cliente_id', 'parceiro_originador_id', 'assigned_to'] as $fk) {
             if (array_key_exists($fk, $dados) && $dados[$fk] === '') {
@@ -138,7 +143,7 @@ final class DemandasService
             $dados['desired_deadline'] = null;
         }
 
-        $campos = ['code', 'origin', 'cliente_id', 'parceiro_originador_id', 'assigned_to',
+        $campos = ['code', 'origin', 'cliente_id', 'parceiro_originador_id', 'is_repasse', 'assigned_to',
                     'title', 'description', 'category', 'subcategory', 'work_type',
                     'city', 'state', 'country', 'address', 'area_sqm', 'current_phase',
                     'desired_deadline', 'budget_min', 'budget_max', 'currency_code',
@@ -239,3 +244,84 @@ final class DemandasService
         return $stmt->fetchAll();
     }
 }
+
+    public static function listarRepasses(int $page = 1, int $perPage = 20, array $filtros = []): array
+    {
+        $pdo = BancoDeDados::obter();
+        $where = ['d.deleted_at IS NULL', 'd.is_repasse = 1'];
+        $params = [];
+
+        if (!empty($filtros['busca'])) {
+            $where[] = '(d.title LIKE :busca OR d.code LIKE :busca2)';
+            $params['busca'] = '%' . $filtros['busca'] . '%';
+            $params['busca2'] = '%' . $filtros['busca'] . '%';
+        }
+        if (!empty($filtros['status'])) {
+            $where[] = 'd.status = :status';
+            $params['status'] = $filtros['status'];
+        }
+        if (!empty($filtros['repasse_status'])) {
+            $where[] = 'd.repasse_status = :repasse_status';
+            $params['repasse_status'] = $filtros['repasse_status'];
+        }
+
+        $whereSql = implode(' AND ', $where);
+        $offset = ($page - 1) * $perPage;
+
+        $countStmt = $pdo->prepare("SELECT COUNT(*) FROM demandas d WHERE {$whereSql}");
+        $countStmt->execute($params);
+        $total = (int)$countStmt->fetchColumn();
+
+        $stmt = $pdo->prepare(
+            "SELECT d.id, d.code, d.title, d.status, d.urgency, d.category, d.city, d.state,
+                    d.budget_min, d.budget_max, d.created_at, d.repasse_status,
+                    d.parceiro_originador_id, d.description,
+                    p.name AS parceiro_nome, p.email AS parceiro_email
+             FROM demandas d
+             LEFT JOIN parceiros p ON p.id = d.parceiro_originador_id
+             WHERE {$whereSql}
+             ORDER BY d.created_at DESC
+             LIMIT :limit OFFSET :offset"
+        );
+        foreach ($params as $k => $v) {
+            $stmt->bindValue($k, $v);
+        }
+        $stmt->bindValue('limit', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return ['items' => $stmt->fetchAll(), 'total' => $total];
+    }
+
+    public static function atualizarRepasse(int $id, array $dados): bool
+    {
+        // Quando uma demanda repassada é editada, marca para revisão
+        $demanda = self::obterPorId($id);
+        if ($demanda && $demanda['is_repasse']) {
+            $dados['repasse_status'] = 'em_revisao';
+        }
+        
+        return self::atualizar($id, $dados);
+    }
+
+    public static function aprovarRepasse(int $id): bool
+    {
+        $pdo = BancoDeDados::obter();
+        $stmt = $pdo->prepare(
+            "UPDATE demandas SET repasse_status = 'aprovado' WHERE id = :id AND is_repasse = 1"
+        );
+        $stmt->execute(['id' => $id]);
+        return $stmt->rowCount() > 0;
+    }
+
+    public static function contarRepassesPendentes(): int
+    {
+        $pdo = BancoDeDados::obter();
+        $stmt = $pdo->query(
+            "SELECT COUNT(*) FROM demandas 
+             WHERE is_repasse = 1 
+             AND (repasse_status = 'em_revisao' OR repasse_status IS NULL)
+             AND deleted_at IS NULL"
+        );
+        return (int)$stmt->fetchColumn();
+    }

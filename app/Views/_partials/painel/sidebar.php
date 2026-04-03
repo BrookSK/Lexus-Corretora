@@ -30,11 +30,15 @@ $icons = [
 
 $menuItems = [];
 if ($painelTipo === 'equipe') {
+    // Obter contadores de notificações
+    $repassesPendentes = \LEX\App\Services\Demandas\DemandasService::contarRepassesPendentes();
+    $notificacoesNaoLidas = \LEX\App\Services\Notificacoes\EventosService::obterContadorNaoLidas('equipe', Auth::equipeId());
+    
     $menuItems = [
         ['url'=>'/equipe/dashboard','icon'=>'dashboard','label'=>I18n::t('sidebar.dashboard')],
         ['url'=>'/equipe/clientes','icon'=>'people','label'=>I18n::t('sidebar.clientes')],
         ['url'=>'/equipe/parceiros','icon'=>'handshake','label'=>I18n::t('sidebar.parceiros')],
-        ['url'=>'/equipe/demandas','icon'=>'assignment','label'=>I18n::t('sidebar.demandas')],
+        ['url'=>'/equipe/demandas','icon'=>'assignment','label'=>I18n::t('sidebar.demandas'), 'badge'=>$repassesPendentes],
         ['url'=>'/equipe/propostas','icon'=>'description','label'=>I18n::t('sidebar.propostas')],
         ['url'=>'/equipe/contratos','icon'=>'gavel','label'=>I18n::t('sidebar.contratos')],
         ['url'=>'/equipe/comissoes','icon'=>'payments','label'=>I18n::t('sidebar.comissoes')],
@@ -49,6 +53,8 @@ if ($painelTipo === 'equipe') {
         ['url'=>'/equipe/jobs','icon'=>'schedule','label'=>I18n::t('sidebar.jobs')],
     ];
 } elseif ($painelTipo === 'cliente') {
+    $notificacoesNaoLidas = \LEX\App\Services\Notificacoes\EventosService::obterContadorNaoLidas('cliente', Auth::clienteId());
+    
     $menuItems = [
         ['url'=>'/cliente/dashboard','icon'=>'dashboard','label'=>I18n::t('sidebar_cli.dashboard')],
         ['url'=>'/cliente/demandas','icon'=>'assignment','label'=>I18n::t('sidebar_cli.demandas')],
@@ -57,6 +63,8 @@ if ($painelTipo === 'equipe') {
         ['url'=>'/cliente/minha-conta','icon'=>'person','label'=>I18n::t('sidebar_cli.minha_conta')],
     ];
 } elseif ($painelTipo === 'parceiro') {
+    $notificacoesNaoLidas = \LEX\App\Services\Notificacoes\EventosService::obterContadorNaoLidas('parceiro', Auth::parceiroId());
+    
     $menuItems = [
         ['url'=>'/parceiro/dashboard','icon'=>'dashboard','label'=>I18n::t('sidebar_par.dashboard')],
         ['url'=>'/parceiro/oportunidades','icon'=>'assignment','label'=>I18n::t('sidebar_par.oportunidades')],
@@ -88,7 +96,12 @@ $logoutUrl = "/sair";
        class="sidebar-item<?php echo str_starts_with($currentPath, $item['url']) ? ' active' : ''; ?>"
        title="<?php echo View::e($item['label']); ?>">
       <span class="sidebar-icon"><?php echo $icons[$item['icon']] ?? ''; ?></span>
-      <span class="sidebar-label"><?php echo View::e($item['label']); ?></span>
+      <span class="sidebar-label">
+        <?php echo View::e($item['label']); ?>
+        <?php if (!empty($item['badge']) && $item['badge'] > 0): ?>
+          <span class="badge-notification"><?php echo (int)$item['badge']; ?></span>
+        <?php endif; ?>
+      </span>
     </a>
     <?php endforeach; ?>
   </nav>

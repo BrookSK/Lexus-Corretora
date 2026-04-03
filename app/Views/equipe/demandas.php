@@ -1,14 +1,35 @@
 <?php
 declare(strict_types=1);
 use LEX\Core\{View, I18n, Csrf};
+$currentTab = $_GET['tab'] ?? 'todas';
 ?>
 <div class="section-header">
   <div>
     <h1 class="section-title"><?php echo View::e(I18n::t('sidebar.demandas')); ?></h1>
-    <p class="section-subtitle"><?php echo View::e(I18n::t('demandas.subtitulo_lista')); ?></p>
+    <p class="section-subtitle">Gerenciar demandas e oportunidades</p>
   </div>
   <a href="/equipe/demandas/nova" class="btn btn-primary"><?php echo View::e(I18n::t('demandas.nova_demanda')); ?></a>
 </div>
+
+<!-- Tabs -->
+<div class="tabs-container" style="margin-bottom:24px">
+  <div class="tabs">
+    <a href="/equipe/demandas?tab=todas" class="tab-item<?php echo $currentTab === 'todas' ? ' active' : ''; ?>">
+      Todas as Demandas
+    </a>
+    <a href="/equipe/demandas?tab=repasse" class="tab-item<?php echo $currentTab === 'repasse' ? ' active' : ''; ?>">
+      Repasse
+      <?php if (!empty($repassesPendentes) && $repassesPendentes > 0): ?>
+        <span class="badge-notification"><?php echo $repassesPendentes; ?></span>
+      <?php endif; ?>
+    </a>
+  </div>
+</div>
+
+<?php if ($currentTab === 'repasse'): ?>
+  <?php include __DIR__ . '/demandas-repasse.php'; ?>
+  <?php return; ?>
+<?php endif; ?>
 
 <div class="card" style="margin-bottom:20px;padding:16px 20px">
   <form method="GET" action="/equipe/demandas" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
