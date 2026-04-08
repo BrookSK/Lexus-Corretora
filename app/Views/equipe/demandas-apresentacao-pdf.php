@@ -206,23 +206,6 @@ $propostasEnviadas = array_filter($propostas, fn($p) => ($p['status'] ?? '') ===
 </div>
 <?php endif; ?>
 
-<!-- TIMELINE -->
-<?php if (!empty($timeline)): ?>
-<div class="section">
-<div class="section-title">— Timeline Completa da Demanda</div>
-<div class="timeline">
-<?php foreach ($timeline as $event): ?>
-<div class="timeline-item">
-<div class="timeline-dot"></div>
-<div class="timeline-date"><?php echo date('d/m/Y H:i', strtotime($event['created_at'])); ?></div>
-<div class="timeline-event"><?php echo View::e($event['description'] ?? $event['event_type']); ?></div>
-<div class="timeline-actor"><?php echo View::e(ucfirst($event['actor_type'] ?? 'Sistema')); ?><?php if (!empty($event['actor_id'])): ?> · ID: <?php echo (int)$event['actor_id']; ?><?php endif; ?></div>
-</div>
-<?php endforeach; ?>
-</div>
-</div>
-<?php endif; ?>
-
 </div>
 
 <footer class="footer">
