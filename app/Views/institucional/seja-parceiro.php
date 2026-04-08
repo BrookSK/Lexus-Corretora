@@ -272,6 +272,66 @@ function mascaraBRL(input, hiddenId) {
       document.getElementById('mc-esp-sp').scrollIntoView({behavior: 'smooth', block: 'center'});
       return;
     }
+    
+    // Validar todos os campos obrigatórios
+    var requiredFields = f.querySelectorAll('[required]');
+    var firstInvalid = null;
+    var invalidCount = 0;
+    
+    requiredFields.forEach(function(field){
+      var isValid = true;
+      
+      if(field.type === 'checkbox' || field.type === 'radio'){
+        // Para checkboxes/radios, verificar se pelo menos um do grupo está marcado
+        var name = field.name;
+        var group = f.querySelectorAll('[name="' + name + '"]');
+        var hasChecked = Array.from(group).some(function(el){ return el.checked; });
+        isValid = hasChecked;
+      } else if(field.tagName === 'SELECT'){
+        isValid = field.value !== '' && field.value !== null;
+      } else if(field.type === 'file'){
+        isValid = field.files && field.files.length > 0;
+      } else {
+        isValid = field.value.trim() !== '';
+      }
+      
+      if(!isValid){
+        invalidCount++;
+        if(!firstInvalid) firstInvalid = field;
+        field.style.borderColor = '#ef4444';
+        field.style.borderWidth = '2px';
+      } else {
+        field.style.borderColor = '';
+        field.style.borderWidth = '';
+      }
+    });
+    
+    if(invalidCount > 0){
+      e.preventDefault();
+      alert('Por favor, preencha todos os campos obrigatórios (' + invalidCount + ' campo(s) pendente(s)).');
+      if(firstInvalid){
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(function(){ firstInvalid.focus(); }, 500);
+      }
+      return;
+    }
+  });
+  
+  // Remover destaque vermelho quando o usuário começar a preencher
+  var allInputs = f.querySelectorAll('input, select, textarea');
+  allInputs.forEach(function(input){
+    input.addEventListener('input', function(){
+      if(this.style.borderColor === 'rgb(239, 68, 68)'){
+        this.style.borderColor = '';
+        this.style.borderWidth = '';
+      }
+    });
+    input.addEventListener('change', function(){
+      if(this.style.borderColor === 'rgb(239, 68, 68)'){
+        this.style.borderColor = '';
+        this.style.borderWidth = '';
+      }
+    });
   });
 })();
 </script>
