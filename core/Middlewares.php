@@ -48,9 +48,8 @@ final class Middlewares
             $parceiroId = Auth::parceiroId();
             $pdo = BancoDeDados::obter();
             $stmt = $pdo->prepare(
-                "SELECT `type`, fantasy_name, state_registration, estado, cidade, address, 
-                        specialties, experience_years, team_size, monthly_capacity, description,
-                        certifications, `references`, website
+                "SELECT `type`, phone, whatsapp, document, specialties, service_areas, 
+                        service_cities, service_states, portfolio_url, bio
                  FROM parceiros WHERE id = ?"
             );
             $stmt->execute([$parceiroId]);
@@ -62,17 +61,23 @@ final class Middlewares
             }
             
             // Verificar se campos essenciais estão preenchidos
-            $camposObrigatorios = [
-                'type', 'fantasy_name', 'state_registration', 'estado', 'cidade', 'address',
-                'specialties', 'experience_years', 'team_size', 'monthly_capacity', 'description',
-                'certifications', 'references', 'website'
-            ];
-            
             $perfilIncompleto = false;
-            foreach ($camposObrigatorios as $campo) {
-                if (empty($parceiro[$campo])) {
+            
+            // Campos obrigatórios básicos
+            if (empty($parceiro['phone']) || 
+                empty($parceiro['whatsapp']) || 
+                empty($parceiro['document']) || 
+                empty($parceiro['bio'])) {
+                $perfilIncompleto = true;
+            }
+            
+            // Verificar JSON fields (devem ter pelo menos 1 item)
+            if (!$perfilIncompleto) {
+                $specialties = json_decode($parceiro['specialties'] ?? '[]', true);
+                $serviceAreas = json_decode($parceiro['service_areas'] ?? '[]', true);
+                
+                if (empty($specialties) || empty($serviceAreas)) {
                     $perfilIncompleto = true;
-                    break;
                 }
             }
             
