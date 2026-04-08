@@ -220,10 +220,24 @@ use LEX\Core\{View, I18n, Csrf};
         </p>
       </div>
       <div class="form-group">
-        <label>Upload de Fotos / Vídeos / Plantas (OPCIONAL, mas recomendado)</label>
-        <input type="file" name="files[]" multiple accept=".pdf,.jpg,.jpeg,.png,.mp4,.mov,.dwg,.dxf,.doc,.docx,.zip"/>
-        <small style="font-size:.75rem;color:rgba(12,12,10,.4);display:block;margin-top:4px">
-          PDF, imagens, vídeos, DWG, DOC — máx. 10MB por arquivo
+        <label style="display:flex;align-items:center;justify-content:space-between">
+          <span>Upload de Fotos / Vídeos / Plantas (OPCIONAL, mas recomendado)</span>
+          <span id="fileCount" style="font-size:.8rem;color:var(--gold);font-weight:500"></span>
+        </label>
+        <div style="position:relative">
+          <input type="file" name="files[]" id="filesInput" multiple accept=".pdf,.jpg,.jpeg,.png,.mp4,.mov,.dwg,.dxf,.doc,.docx,.zip" style="display:none"/>
+          <button type="button" onclick="document.getElementById('filesInput').click()" style="width:100%;padding:16px;border:2px dashed rgba(184,148,90,.3);background:rgba(184,148,90,.05);color:var(--gold);font-size:.9rem;cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            Clique para selecionar arquivos (múltiplos)
+          </button>
+        </div>
+        <div id="filesPreview" style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px"></div>
+        <small style="font-size:.75rem;color:rgba(12,12,10,.4);display:block;margin-top:8px">
+          📎 Você pode selecionar múltiplos arquivos de uma vez • PDF, imagens, vídeos, DWG, DOC — máx. 10MB por arquivo
         </small>
       </div>
 
@@ -245,6 +259,54 @@ function mascaraBRL(input, hiddenId) {
   input.value = 'R$ ' + parts[0] + ',' + parts[1];
   document.getElementById(hiddenId).value = (cents / 100).toFixed(2);
 }
+
+// Preview de arquivos
+(function(){
+  var input = document.getElementById('filesInput');
+  var preview = document.getElementById('filesPreview');
+  var count = document.getElementById('fileCount');
+  if(!input || !preview || !count) return;
+  
+  input.addEventListener('change', function(){
+    var files = Array.from(input.files);
+    count.textContent = files.length ? files.length + ' arquivo(s) selecionado(s)' : '';
+    preview.innerHTML = '';
+    
+    files.forEach(function(file){
+      var item = document.createElement('div');
+      item.style.cssText = 'position:relative;border:1px solid rgba(184,148,90,.2);border-radius:4px;overflow:hidden;background:rgba(184,148,90,.05);padding:8px;display:flex;flex-direction:column;gap:6px';
+      
+      if(file.type.startsWith('image/')){
+        var img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.style.cssText = 'width:100%;height:80px;object-fit:cover;border-radius:2px';
+        item.appendChild(img);
+      } else if(file.type.startsWith('video/')){
+        var video = document.createElement('video');
+        video.src = URL.createObjectURL(file);
+        video.style.cssText = 'width:100%;height:80px;object-fit:cover;border-radius:2px';
+        item.appendChild(video);
+      } else {
+        var icon = document.createElement('div');
+        icon.innerHTML = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--gold);margin:12px auto"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+        icon.style.cssText = 'display:flex;align-items:center;justify-content:center;height:80px';
+        item.appendChild(icon);
+      }
+      
+      var name = document.createElement('div');
+      name.textContent = file.name.length > 18 ? file.name.substring(0,15) + '...' : file.name;
+      name.style.cssText = 'font-size:.7rem;color:rgba(12,12,10,.6);text-align:center;word-break:break-all';
+      item.appendChild(name);
+      
+      var size = document.createElement('div');
+      size.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+      size.style.cssText = 'font-size:.65rem;color:rgba(12,12,10,.4);text-align:center';
+      item.appendChild(size);
+      
+      preview.appendChild(item);
+    });
+  });
+})();
 </script>
 <script>
 (function(){

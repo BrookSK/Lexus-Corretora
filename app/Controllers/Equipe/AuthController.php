@@ -56,6 +56,47 @@ final class AuthController
         return Resposta::redirecionar('/equipe/entrar');
     }
 
+    public function stopImpersonation(Requisicao $req): Resposta
+    {
+        if (empty($_SESSION['impersonation'])) {
+            return Resposta::redirecionar('/equipe/dashboard');
+        }
+
+        $impersonation = $_SESSION['impersonation'];
+        $duration = time() - strtotime($impersonation['started_at']);
+
+        // Limpar sessão do usuário impersonado
+        unset($_SESSION['cliente'], $_SESSION['parceiro']);
+
+        // Restaurar sessão do admin
+        $pdo = BancoDeDados::obter();
+        $stmt = $pdo->prepare("SELECT u.*, r.slug as role_slug FROM users u LEFT JOIN user_roles ur ON ur.user_id = u.id LEFT JOIN roles r ON r.id = ur.role_id WHERE u.id = :id LIMIT 1");
+        $stmt->execute(['id' => $impersonation['original_user_id']]);
+        $user = $stmt->fetch();
+
+        if ($user) {
+            Auth::loginEquipe($user);
+        }
+
+        // Registrar fim da impersonation
+        \LEX\App\Services\Audit\AuditService::registrar(
+            'equipe',
+            $impersonation['original_user_id'],
+            'impersonation.stop',
+            $impersonation['impersonating_type'] === 'cliente' ? 'clientes' : 'parceiros',
+            $impersonation['impersonating_id'],
+            [
+                'duration_seconds' => $duration,
+                'target_name' => $impersonation['impersonating_name'],
+            ]
+        );
+
+        unset($_SESSION['impersonation']);
+
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Você voltou para sua conta de administrador'];
+        return Resposta::redirecionar('/equipe/dashboard');
+    }
+
     private static function logAuth(string $tipo, ?int $userId, ?string $email, string $action, Requisicao $req): void
     {
         try {

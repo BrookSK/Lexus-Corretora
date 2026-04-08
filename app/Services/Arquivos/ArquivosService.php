@@ -8,6 +8,85 @@ use PDO;
 
 final class ArquivosService
 {
+    public static function uploadComLegenda(array $arquivo, string $tipo, int $demandaId, string $caption = '', string $uploadedBy = 'cliente', int $uploadedById = 0): array
+    {
+        if (!self::validarArquivo($arquivo)) {
+            throw new \RuntimeException('Arquivo inválido: tipo não permitido ou tamanho excedido.');
+        }
+
+        $ext = strtolower(pathinfo($arquivo['name'], PATHINFO_EXTENSION));
+        $nomeUnico = sprintf('demanda_%d_%s.%s', $demandaId, bin2hex(random_bytes(8)), $ext);
+        $publicDir = dirname(__DIR__, 3) . '/public';
+        $diretorio = $publicDir . '/uploads/demandas/' . date('Y/m');
+
+        if (!is_dir($diretorio)) {
+            mkdir($diretorio, 0755, true);
+        }
+
+        $destino = $diretorio . '/' . $nomeUnico;
+        if (!move_uploaded_file($arquivo['tmp_name'], $destino)) {
+            throw new \RuntimeException('Falha ao mover arquivo enviado.');
+        }
+
+        $relativePath = '/uploads/demandas/' . date('Y/m') . '/' . $nomeUnico;
+
+        $pdo = BancoDeDados::obter();
+        $stmt = $pdo->prepare(
+            "INSERT INTO demanda_arquivos (demanda_id, file_name, file_path, caption, file_type, uploaded_by, uploaded_by_id, created_at)
+             VALUES (:demanda_id, :file_name, :file_path, :caption, :file_type, :uploaded_by, :uploaded_by_id, NOW())"
+        );
+        $stmt->execute([
+            'demanda_id' => $demandaId,
+            'file_name' => $arquivo['name'],
+            'file_path' => $relativePath,
+            'caption' => $caption,
+            'file_type' => $tipo,
+            'uploaded_by' => $uploadedBy,
+            'uploaded_by_id' => $uploadedById,
+        ]);
+
+        return [
+            'id' => (int)$pdo->lastInsertId(),
+            'file_name' => $arquivo['name'],
+            'file_path' => $relativePath,
+            'caption' => $caption,
+        ];
+    }
+
+    public static function listarPorDemanda(int $demandaId): array
+    {
+        $pdo = BancoDeDados::obter();
+        $stmt = $pdo->prepare(
+            "SELECT id, file_name, file_path, caption, file_type, uploaded_by, created_at
+             FROM demanda_arquivos
+             WHERE demanda_id = :demanda_id
+             ORDER BY created_at DESC"
+        );
+        $stmt->execute(['demanda_id' => $demandaId]);
+        return $stmt->fetchAll();
+    }
+
+    public static function remover(int $id): bool
+    {
+        $pdo = BancoDeDados::obter();
+        $stmt = $pdo->prepare("SELECT file_path FROM demanda_arquivos WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        $arquivo = $stmt->fetch();
+        
+        if (!$arquivo) {
+            return false;
+        }
+
+        $fullPath = dirname(__DIR__, 3) . '/public' . $arquivo['file_path'];
+        if (file_exists($fullPath)) {
+            unlink($fullPath);
+        }
+
+        $stmt = $pdo->prepare("DELETE FROM demanda_arquivos WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->rowCount() > 0;
+    }
+
     public static function upload(array $arquivo, string $entidade, int $entidadeId, string $tipo = 'geral'): array
     {
         if (!self::validarArquivo($arquivo)) {

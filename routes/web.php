@@ -196,6 +196,7 @@ Roteador::post('/equipe/entrar', [EquipeAuth::class, 'login'], [
 Roteador::get('/equipe/primeiro-acesso', [EquipeAuth::class, 'primeiroAcessoForm']);
 Roteador::post('/equipe/primeiro-acesso', [EquipeAuth::class, 'primeiroAcesso']);
 Roteador::get('/equipe/sair', [EquipeAuth::class, 'logout']);
+Roteador::post('/equipe/stop-impersonation', [EquipeAuth::class, 'stopImpersonation']);
 
 $eqMw = [Middlewares::exigirLoginEquipe()];
 
@@ -211,6 +212,7 @@ Roteador::post('/equipe/clientes/novo', [EquipeClientes::class, 'salvar'], $eqMw
 Roteador::get('/equipe/clientes/{id}', [EquipeClientes::class, 'detalhe'], $eqMw);
 Roteador::get('/equipe/clientes/{id}/editar', [EquipeClientes::class, 'editar'], $eqMw);
 Roteador::post('/equipe/clientes/{id}/editar', [EquipeClientes::class, 'atualizar'], $eqMw);
+Roteador::post('/equipe/clientes/{id}/login-as', [EquipeClientes::class, 'loginAs'], $eqMw);
 
 // Parceiros
 Roteador::get('/equipe/parceiros', [EquipeParceiros::class, 'index'], $eqMw);
@@ -219,6 +221,7 @@ Roteador::post('/equipe/parceiros/novo', [EquipeParceiros::class, 'salvar'], $eq
 Roteador::get('/equipe/parceiros/{id}', [EquipeParceiros::class, 'detalhe'], $eqMw);
 Roteador::get('/equipe/parceiros/{id}/editar', [EquipeParceiros::class, 'editar'], $eqMw);
 Roteador::post('/equipe/parceiros/{id}/editar', [EquipeParceiros::class, 'atualizar'], $eqMw);
+Roteador::post('/equipe/parceiros/{id}/login-as', [EquipeParceiros::class, 'loginAs'], $eqMw);
 
 // Demandas
 Roteador::get('/equipe/demandas', [EquipeDemandas::class, 'index'], $eqMw);
@@ -229,6 +232,7 @@ Roteador::get('/equipe/demandas/{id}/editar', [EquipeDemandas::class, 'editar'],
 Roteador::post('/equipe/demandas/{id}/editar', [EquipeDemandas::class, 'atualizar'], $eqMw);
 Roteador::post('/equipe/demandas/{id}/status', [EquipeDemandas::class, 'alterarStatus'], $eqMw);
 Roteador::post('/equipe/demandas/{id}/aprovar-repasse', [EquipeDemandas::class, 'aprovarRepasse'], $eqMw);
+Roteador::post('/equipe/demandas/arquivo/{id}/remover', [EquipeDemandas::class, 'removerArquivo'], $eqMw);
 
 // Distribuição
 Roteador::get('/equipe/distribuicao/{demandaId}', [DistribuicaoController::class, 'index'], $eqMw);

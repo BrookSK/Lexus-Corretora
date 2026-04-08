@@ -87,4 +87,41 @@ final class ClientesController
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/clientes/' . $id);
     }
+
+    public function loginAs(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        $cliente = ClientesService::obterPorId($id);
+        
+        if (!$cliente) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Cliente não encontrado'];
+            return Resposta::redirecionar('/equipe/clientes');
+        }
+
+        // Salvar sessão original
+        $_SESSION['impersonation'] = [
+            'original_user_type' => 'equipe',
+            'original_user_id' => Auth::equipeId(),
+            'original_user_name' => $_SESSION['equipe']['name'] ?? 'Admin',
+            'impersonating_type' => 'cliente',
+            'impersonating_id' => $id,
+            'impersonating_name' => $cliente['name'],
+            'started_at' => date('Y-m-d H:i:s'),
+        ];
+
+        // Fazer login como cliente
+        Auth::loginCliente([
+            'id' => $cliente['id'],
+            'name' => $cliente['name'],
+            'email' => $cliente['email'],
+        ]);
+
+        // Registrar no audit log
+        AuditService::registrar('equipe', $_SESSION['impersonation']['original_user_id'], 'impersonation.start', 'clientes', $id, [
+            'target_type' => 'cliente',
+            'target_name' => $cliente['name'],
+        ]);
+
+        return Resposta::redirecionar('/cliente/dashboard');
+    }
 }

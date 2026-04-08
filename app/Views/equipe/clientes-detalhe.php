@@ -14,6 +14,16 @@ use LEX\Core\{View, I18n, Csrf};
     </p>
   </div>
   <div style="display:flex;gap:8px">
+    <form method="POST" action="/equipe/clientes/<?php echo (int)$cliente['id']; ?>/login-as" style="display:inline">
+      <?php echo Csrf::campo(); ?>
+      <button type="submit" class="btn btn-secondary" style="display:flex;align-items:center;gap:6px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        Login As
+      </button>
+    </form>
     <a href="/equipe/clientes/<?php echo (int)$cliente['id']; ?>/editar" class="btn btn-secondary"><?php echo View::e(I18n::t('geral.editar')); ?></a>
     <a href="/equipe/clientes" class="btn btn-secondary"><?php echo View::e(I18n::t('geral.voltar')); ?></a>
   </div>

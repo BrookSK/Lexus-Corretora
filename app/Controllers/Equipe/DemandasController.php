@@ -106,7 +106,15 @@ final class DemandasController
         $id = (int)$req->param('id');
         $demanda = DemandasService::obterPorId($id);
         if (!$demanda) return Resposta::redirecionar('/equipe/demandas');
-        $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/demandas-editar.php', ['demanda' => $demanda]);
+        
+        $arquivos = ArquivosService::listarPorDemanda($id);
+        $clientes = \LEX\Core\BancoDeDados::obter()->query("SELECT id, name FROM clientes ORDER BY name")->fetchAll();
+        
+        $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/demandas-editar.php', [
+            'demanda' => $demanda,
+            'arquivos' => $arquivos,
+            'clientes' => $clientes,
+        ]);
         return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
             'conteudo' => $conteudo, 'painelTipo' => 'equipe',
             'pageTitle' => I18n::t('geral.editar'),
@@ -120,9 +128,50 @@ final class DemandasController
         $dados = $req->todosPost();
         unset($dados['_csrf_token']);
         DemandasService::atualizar($id, $dados);
+        
+        // Processar novos uploads com legendas
+        $newFiles = $_FILES['new_files'] ?? [];
+        $newCaptions = $dados['new_captions'] ?? [];
+        
+        if (!empty($newFiles['name']) && is_array($newFiles['name'])) {
+            foreach ($newFiles['name'] as $i => $nome) {
+                if (empty($nome)) continue;
+                
+                $arq = [
+                    'name' => $nome,
+                    'type' => $newFiles['type'][$i] ?? '',
+                    'tmp_name' => $newFiles['tmp_name'][$i] ?? '',
+                    'error' => $newFiles['error'][$i] ?? UPLOAD_ERR_NO_FILE,
+                    'size' => $newFiles['size'][$i] ?? 0
+                ];
+                
+                if ($arq['error'] === UPLOAD_ERR_OK && !empty($arq['tmp_name'])) {
+                    $caption = $newCaptions[$i] ?? '';
+                    try {
+                        ArquivosService::uploadComLegenda($arq, 'evidencia', $id, $caption, 'equipe', Auth::equipeId());
+                    } catch (\Throwable $e) {
+                        error_log("Erro ao fazer upload: " . $e->getMessage());
+                    }
+                }
+            }
+        }
+        
         AuditService::registrar('equipe', Auth::equipeId(), 'demanda.atualizar', 'demandas', $id);
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/demandas/' . $id);
+    }
+
+    public function removerArquivo(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        
+        try {
+            ArquivosService::remover($id);
+            AuditService::registrar('equipe', Auth::equipeId(), 'arquivo.remover', 'demanda_arquivos', $id);
+            return Resposta::json(['success' => true]);
+        } catch (\Throwable $e) {
+            return Resposta::json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function alterarStatus(Requisicao $req): Resposta

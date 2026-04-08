@@ -21,6 +21,20 @@ $contaUrl = match($painelTipo) {
 };
 $logoutUrl = "/{$painelTipo}/sair";
 ?>
+<?php if (!empty($_SESSION['impersonation'])): ?>
+<div style="background:#ff9800;color:#fff;padding:12px 24px;text-align:center;font-size:.9rem;display:flex;align-items:center;justify-content:center;gap:16px">
+  <span>
+    👁️ Você está visualizando como: <strong><?php echo View::e($_SESSION['impersonation']['impersonating_name']); ?></strong> 
+    (<?php echo View::e(ucfirst($_SESSION['impersonation']['impersonating_type'])); ?>)
+  </span>
+  <form method="POST" action="/equipe/stop-impersonation" style="display:inline;margin:0">
+    <?php echo \LEX\Core\Csrf::campo(); ?>
+    <button type="submit" style="background:#fff;color:#ff9800;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-weight:600;font-size:.85rem">
+      Voltar para Admin
+    </button>
+  </form>
+</div>
+<?php endif; ?>
 <header class="painel-header">
   <div class="ph-left">
     <button id="sidebarMobileToggle" class="ph-burger" aria-label="Menu">

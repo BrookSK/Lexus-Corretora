@@ -96,4 +96,41 @@ final class ParceirosController
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/parceiros/' . $id);
     }
+
+    public function loginAs(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        $parceiro = ParceirosService::obterPorId($id);
+        
+        if (!$parceiro) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Parceiro não encontrado'];
+            return Resposta::redirecionar('/equipe/parceiros');
+        }
+
+        // Salvar sessão original
+        $_SESSION['impersonation'] = [
+            'original_user_type' => 'equipe',
+            'original_user_id' => Auth::equipeId(),
+            'original_user_name' => $_SESSION['equipe']['name'] ?? 'Admin',
+            'impersonating_type' => 'parceiro',
+            'impersonating_id' => $id,
+            'impersonating_name' => $parceiro['name'],
+            'started_at' => date('Y-m-d H:i:s'),
+        ];
+
+        // Fazer login como parceiro
+        Auth::loginParceiro([
+            'id' => $parceiro['id'],
+            'name' => $parceiro['name'],
+            'email' => $parceiro['email'],
+        ]);
+
+        // Registrar no audit log
+        AuditService::registrar('equipe', $_SESSION['impersonation']['original_user_id'], 'impersonation.start', 'parceiros', $id, [
+            'target_type' => 'parceiro',
+            'target_name' => $parceiro['name'],
+        ]);
+
+        return Resposta::redirecionar('/parceiro/dashboard');
+    }
 }
