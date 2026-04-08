@@ -431,10 +431,8 @@ function abrirModalCliente() {
   document.getElementById('modalCliente').style.display = 'block';
   document.body.style.overflow = 'hidden';
   
-  // Se já tem cliente, carregar a lista
-  <?php if (!empty($demanda['cliente_id'])): ?>
+  // Carregar clientes automaticamente
   buscarClientes('');
-  <?php endif; ?>
 }
 
 function fecharModalCliente() {
@@ -448,23 +446,14 @@ function buscarClientes(termo) {
   
   const lista = document.getElementById('listaClientes');
   
-  if (termo.length < 2 && termo.length > 0) {
-    lista.innerHTML = '<div style="padding:20px;text-align:center;color:#999;font-size:.85rem">Digite pelo menos 2 caracteres...</div>';
-    return;
-  }
-  
-  if (termo.length === 0) {
-    lista.innerHTML = '<div style="padding:40px;text-align:center;color:#999;font-size:.9rem">Digite para buscar clientes...</div>';
-    return;
-  }
-  
   // Mostrar loading
   lista.innerHTML = '<div style="padding:20px;text-align:center;color:#666;font-size:.85rem">🔍 Buscando...</div>';
   
   timeoutBusca = setTimeout(() => {
     fetch('/equipe/clientes/buscar?q=' + encodeURIComponent(termo))
       .then(r => {
-        if (!r.ok) throw new Error('Erro na requisição');
+        console.log('Status da resposta:', r.status);
+        if (!r.ok) throw new Error('Erro na requisição: ' + r.status);
         return r.json();
       })
       .then(data => {
@@ -474,7 +463,7 @@ function buscarClientes(termo) {
       })
       .catch(err => {
         console.error('Erro ao buscar clientes:', err);
-        lista.innerHTML = '<div style="padding:20px;text-align:center;color:#dc3545;font-size:.85rem">❌ Erro ao buscar clientes. Tente novamente.</div>';
+        lista.innerHTML = '<div style="padding:20px;text-align:center;color:#dc3545;font-size:.85rem">❌ Erro ao buscar clientes. Tente novamente.<br><small style="color:#999;margin-top:8px;display:block">' + err.message + '</small></div>';
       });
   }, 300);
 }

@@ -92,21 +92,32 @@ final class ClientesController
     {
         $termo = trim($req->get('q', ''));
         
+        $pdo = \LEX\Core\BancoDeDados::obter();
+        
         if (strlen($termo) < 2) {
-            return Resposta::json([]);
+            // Se não tem termo, retorna os 20 primeiros clientes ativos
+            $stmt = $pdo->prepare(
+                "SELECT id, name, email, phone, company 
+                 FROM clientes 
+                 WHERE is_active = 1
+                 ORDER BY name ASC 
+                 LIMIT 20"
+            );
+            $stmt->execute();
+        } else {
+            // Busca com termo
+            $stmt = $pdo->prepare(
+                "SELECT id, name, email, phone, company 
+                 FROM clientes 
+                 WHERE (name LIKE :termo OR email LIKE :termo OR phone LIKE :termo)
+                 AND is_active = 1
+                 ORDER BY name ASC 
+                 LIMIT 20"
+            );
+            $stmt->execute(['termo' => "%{$termo}%"]);
         }
         
-        $pdo = \LEX\Core\BancoDeDados::obter();
-        $stmt = $pdo->prepare(
-            "SELECT id, name, email, phone, company 
-             FROM clientes 
-             WHERE (name LIKE :termo OR email LIKE :termo OR phone LIKE :termo)
-             AND is_active = 1
-             ORDER BY name ASC 
-             LIMIT 20"
-        );
-        $stmt->execute(['termo' => "%{$termo}%"]);
-        $clientes = $stmt->fetchAll();
+        $clientes = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
         return Resposta::json($clientes);
     }

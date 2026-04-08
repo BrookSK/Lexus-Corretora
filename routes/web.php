@@ -207,13 +207,13 @@ Roteador::get('/equipe/dashboard', [EquipeDashboard::class, 'index'], $eqMw);
 
 // Clientes
 Roteador::get('/equipe/clientes', [EquipeClientes::class, 'index'], $eqMw);
+Roteador::get('/equipe/clientes/buscar', [EquipeClientes::class, 'buscar'], $eqMw);
 Roteador::get('/equipe/clientes/novo', [EquipeClientes::class, 'criar'], $eqMw);
 Roteador::post('/equipe/clientes/novo', [EquipeClientes::class, 'salvar'], $eqMw);
 Roteador::get('/equipe/clientes/{id}', [EquipeClientes::class, 'detalhe'], $eqMw);
 Roteador::get('/equipe/clientes/{id}/editar', [EquipeClientes::class, 'editar'], $eqMw);
 Roteador::post('/equipe/clientes/{id}/editar', [EquipeClientes::class, 'atualizar'], $eqMw);
 Roteador::post('/equipe/clientes/{id}/login-as', [EquipeClientes::class, 'loginAs'], $eqMw);
-Roteador::get('/equipe/clientes/buscar', [EquipeClientes::class, 'buscar'], $eqMw);
 
 // Parceiros
 Roteador::get('/equipe/parceiros', [EquipeParceiros::class, 'index'], $eqMw);
