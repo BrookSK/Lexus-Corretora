@@ -48,8 +48,7 @@ final class Middlewares
             $parceiroId = Auth::parceiroId();
             $pdo = BancoDeDados::obter();
             $stmt = $pdo->prepare(
-                "SELECT `type`, phone, whatsapp, document, specialties, service_areas, 
-                        service_cities, service_states, portfolio_url, bio
+                "SELECT phone, whatsapp, document, specialties, bio
                  FROM parceiros WHERE id = ?"
             );
             $stmt->execute([$parceiroId]);
@@ -60,23 +59,20 @@ final class Middlewares
                 exit;
             }
             
-            // Verificar se campos essenciais estão preenchidos
+            // Verificar apenas campos essenciais
             $perfilIncompleto = false;
             
             // Campos obrigatórios básicos
             if (empty($parceiro['phone']) || 
                 empty($parceiro['whatsapp']) || 
-                empty($parceiro['document']) || 
-                empty($parceiro['bio'])) {
+                empty($parceiro['document'])) {
                 $perfilIncompleto = true;
             }
             
-            // Verificar JSON fields (devem ter pelo menos 1 item)
+            // Verificar especialidades (deve ter pelo menos 1)
             if (!$perfilIncompleto) {
                 $specialties = json_decode($parceiro['specialties'] ?? '[]', true);
-                $serviceAreas = json_decode($parceiro['service_areas'] ?? '[]', true);
-                
-                if (empty($specialties) || empty($serviceAreas)) {
+                if (empty($specialties)) {
                     $perfilIncompleto = true;
                 }
             }

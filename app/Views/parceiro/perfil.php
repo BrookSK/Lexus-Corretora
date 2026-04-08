@@ -80,8 +80,9 @@ if (!empty($parceiro['service_states'])) {
 
     <div class="form-row">
       <div class="form-group">
-        <label><?php echo View::e(I18n::t('parceiro.tipo')); ?></label>
-        <select name="type">
+        <label><?php echo View::e(I18n::t('parceiro.tipo')); ?> *</label>
+        <select name="type" required>
+          <option value="">— Selecione —</option>
           <option value="construtora" <?php echo ($parceiro['type'] ?? '') === 'construtora' ? 'selected' : ''; ?>>Construtora</option>
           <option value="arquiteto" <?php echo ($parceiro['type'] ?? '') === 'arquiteto' ? 'selected' : ''; ?>>Arquiteto</option>
           <option value="engenheiro" <?php echo ($parceiro['type'] ?? '') === 'engenheiro' ? 'selected' : ''; ?>>Engenheiro</option>
@@ -91,8 +92,8 @@ if (!empty($parceiro['service_states'])) {
         </select>
       </div>
       <div class="form-group">
-        <label>CNPJ / CPF</label>
-        <input type="text" name="document" value="<?php echo View::e($parceiro['document'] ?? ''); ?>"/>
+        <label>CNPJ / CPF *</label>
+        <input type="text" name="document" value="<?php echo View::e($parceiro['document'] ?? ''); ?>" required/>
       </div>
     </div>
 
@@ -102,15 +103,15 @@ if (!empty($parceiro['service_states'])) {
         <input type="email" name="company_email" value="<?php echo View::e($parceiro['company_email'] ?? $parceiro['email'] ?? ''); ?>"/>
       </div>
       <div class="form-group">
-        <label><?php echo View::e(I18n::t('contato.telefone')); ?></label>
-        <input type="tel" name="phone" value="<?php echo View::e($parceiro['phone'] ?? ''); ?>"/>
+        <label><?php echo View::e(I18n::t('contato.telefone')); ?> *</label>
+        <input type="tel" name="phone" value="<?php echo View::e($parceiro['phone'] ?? ''); ?>" required/>
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label>WhatsApp</label>
-        <input type="tel" name="whatsapp" value="<?php echo View::e($parceiro['whatsapp'] ?? ''); ?>"/>
+        <label>WhatsApp *</label>
+        <input type="tel" name="whatsapp" value="<?php echo View::e($parceiro['whatsapp'] ?? ''); ?>" required/>
       </div>
       <div class="form-group">
         <label>Website</label>
@@ -129,7 +130,7 @@ if (!empty($parceiro['service_states'])) {
     <h2 class="card-title" style="margin-bottom:20px"><?php echo View::e(I18n::t('parceiro.dados_prof')); ?></h2>
 
     <div class="form-group">
-      <label><?php echo View::e(I18n::t('parceiro.especialidades')); ?></label>
+      <label><?php echo View::e(I18n::t('parceiro.especialidades')); ?> *</label>
       <?php $mcId = 'mc-especialidades'; ?>
       <?php $mcSel = $especialidadesSelecionadas; ?>
       <div class="mc-wrap" id="<?php echo $mcId; ?>">
@@ -153,6 +154,7 @@ if (!empty($parceiro['service_states'])) {
           </div>
         </div>
       </div>
+      <input type="hidden" name="specialties_required" id="specialtiesRequired" value="<?php echo count($mcSel) > 0 ? '1' : ''; ?>" required/>
     </div>
 
     <div class="form-row">
@@ -192,8 +194,8 @@ if (!empty($parceiro['service_states'])) {
     </div>
 
     <div class="form-group">
-      <label>Descrição / Bio</label>
-      <textarea name="description" placeholder="Descreva sua empresa, experiência e diferenciais..."><?php echo View::e($parceiro['bio'] ?? $parceiro['description'] ?? ''); ?></textarea>
+      <label>Descrição / Bio *</label>
+      <textarea name="description" required placeholder="Descreva sua empresa, experiência e diferenciais..."><?php echo View::e($parceiro['bio'] ?? $parceiro['description'] ?? ''); ?></textarea>
     </div>
   </div>
 
