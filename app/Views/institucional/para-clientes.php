@@ -300,7 +300,7 @@ $CATEGORIAS_NICHO = [
               </div>
               <div class="file-list" id="fileList"></div>
             </div>
-            <button type="submit" class="submit-btn">Enviar Demanda</button>
+            <button type="button" class="submit-btn" id="submitBtn">Enviar Demanda</button>
           </div>
 
         </div><!-- .slides-track -->
@@ -623,6 +623,32 @@ $CATEGORIAS_NICHO = [
       document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
     });
   });
+
+  // Submit button handler
+  const submitBtn = document.getElementById('submitBtn');
+  if (submitBtn) {
+    submitBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      // Validar último step
+      if (!validateStep(currentStep)) {
+        return;
+      }
+      
+      // Remover required de campos não visíveis para permitir submit
+      slides.forEach((slide, idx) => {
+        if (idx !== currentStep) {
+          slide.querySelectorAll('[required]').forEach(el => {
+            el.setAttribute('data-was-required', 'true');
+            el.removeAttribute('required');
+          });
+        }
+      });
+      
+      // Submeter formulário
+      form.submit();
+    });
+  }
 
   updateUI();
 })();

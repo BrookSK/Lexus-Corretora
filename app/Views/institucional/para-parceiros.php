@@ -189,7 +189,7 @@ $CATEGORIAS_NICHO = [
               <label>Link do site / Instagram <span class="req">*</span></label>
               <input type="url" name="website" placeholder="https://..." required/>
             </div>
-            <button type="submit" class="submit-btn">Enviar Cadastro</button>
+            <button type="button" class="submit-btn" id="submitBtn">Enviar Cadastro</button>
           </div>
 
         </div><!-- .slides-track -->
@@ -504,6 +504,32 @@ $CATEGORIAS_NICHO = [
     });
   });
   
+  // Submit button handler
+  const submitBtn = document.getElementById('submitBtn');
+  if (submitBtn) {
+    submitBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      // Validar último step
+      if (!validateStep(currentStep)) {
+        return;
+      }
+      
+      // Remover required de campos não visíveis para permitir submit
+      slides.forEach((slide, idx) => {
+        if (idx !== currentStep) {
+          slide.querySelectorAll('[required]').forEach(el => {
+            el.setAttribute('data-was-required', 'true');
+            el.removeAttribute('required');
+          });
+        }
+      });
+      
+      // Submeter formulário
+      form.submit();
+    });
+  }
+
   updateUI();
 })();
 </script>
