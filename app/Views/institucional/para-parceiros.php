@@ -84,12 +84,12 @@ $CATEGORIAS_NICHO = [
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>Nome Fantasia</label>
-                <input type="text" name="fantasy_name" placeholder="Nome comercial"/>
+                <label>Nome Fantasia <span class="req">*</span></label>
+                <input type="text" name="fantasy_name" placeholder="Nome comercial" required/>
               </div>
               <div class="form-group">
-                <label>Inscrição Estadual</label>
-                <input type="text" name="state_registration" placeholder="IE"/>
+                <label>Inscrição Estadual <span class="req">*</span></label>
+                <input type="text" name="state_registration" placeholder="IE" required/>
               </div>
             </div>
             <div class="form-row">
@@ -128,8 +128,8 @@ $CATEGORIAS_NICHO = [
             <div class="slide-title">Sua<br>experiência.</div>
             <div class="form-row">
               <div class="form-group">
-                <label>Tempo de experiência</label>
-                <select name="experience_years">
+                <label>Tempo de experiência <span class="req">*</span></label>
+                <select name="experience_years" required>
                   <option value="">— Selecione —</option>
                   <option value="0-2">Até 2 anos</option>
                   <option value="3-5">3 a 5 anos</option>
@@ -138,13 +138,13 @@ $CATEGORIAS_NICHO = [
                 </select>
               </div>
               <div class="form-group">
-                <label>Equipe disponível</label>
-                <input type="number" name="team_size" placeholder="Nº de profissionais"/>
+                <label>Equipe disponível <span class="req">*</span></label>
+                <input type="number" name="team_size" placeholder="Nº de profissionais" required/>
               </div>
             </div>
             <div class="form-group">
-              <label>Capacidade mensal (projetos)</label>
-              <input type="number" name="monthly_capacity" placeholder="Quantos projetos pode atender por mês"/>
+              <label>Capacidade mensal (projetos) <span class="req">*</span></label>
+              <input type="number" name="monthly_capacity" placeholder="Quantos projetos pode atender por mês" required/>
             </div>
             <div class="form-group">
               <label>Apresentação / Bio <span class="req">*</span></label>
@@ -156,17 +156,17 @@ $CATEGORIAS_NICHO = [
           <div class="slide">
             <div class="slide-title">Certificações<br>e documentos.</div>
             <div class="form-group">
-              <label>Certificações / Registros profissionais</label>
-              <textarea name="certifications" rows="4" placeholder="Ex: CREA, CAU, certificações técnicas..."></textarea>
+              <label>Certificações / Registros profissionais <span class="req">*</span></label>
+              <textarea name="certifications" rows="4" placeholder="Ex: CREA, CAU, certificações técnicas..." required></textarea>
             </div>
             <div class="form-group">
-              <label>Certidão CNPJ (opcional)</label>
+              <label>Certidão CNPJ <span class="req">*</span></label>
               <div class="upload-hint">Envie a certidão simplificada da Receita Federal</div>
-              <input type="file" name="certidao_cnpj" accept=".pdf,.jpg,.jpeg,.png"/>
+              <input type="file" name="certidao_cnpj" accept=".pdf,.jpg,.jpeg,.png" required/>
             </div>
             <div class="form-group">
-              <label>Referências / Clientes anteriores</label>
-              <textarea name="references" rows="4" placeholder="Liste empresas ou clientes que podem atestar seu trabalho..."></textarea>
+              <label>Referências / Clientes anteriores <span class="req">*</span></label>
+              <textarea name="references" rows="4" placeholder="Liste empresas ou clientes que podem atestar seu trabalho..." required></textarea>
             </div>
           </div>
           
@@ -174,20 +174,20 @@ $CATEGORIAS_NICHO = [
           <div class="slide">
             <div class="slide-title">Seu<br>portfólio.</div>
             <div class="form-group">
-              <label>Fotos de trabalhos realizados (opcional)</label>
+              <label>Fotos de trabalhos realizados <span class="req">*</span></label>
               <div class="upload-hint">Mostre seus melhores projetos</div>
               <div class="dropzone" id="dropzone">
                 <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
                 </svg>
                 <p class="dropzone-text">Arraste arquivos aqui ou clique para selecionar</p>
-                <input type="file" name="portfolio[]" multiple id="fileInput" accept="image/*,.pdf" style="display:none"/>
+                <input type="file" name="portfolio[]" multiple id="fileInput" accept="image/*,.pdf" style="display:none" required/>
               </div>
               <div class="file-list" id="fileList"></div>
             </div>
             <div class="form-group">
-              <label>Link do site / Instagram (opcional)</label>
-              <input type="url" name="website" placeholder="https://..."/>
+              <label>Link do site / Instagram <span class="req">*</span></label>
+              <input type="url" name="website" placeholder="https://..." required/>
             </div>
             <button type="submit" class="submit-btn">Enviar Cadastro</button>
           </div>

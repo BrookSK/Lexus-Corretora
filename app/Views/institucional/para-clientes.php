@@ -153,18 +153,18 @@ $CATEGORIAS_NICHO = [
             <div class="slide-title">Detalhamento<br>técnico.</div>
             <div class="form-row">
               <div class="form-group">
-                <label>Área aproximada (m²)</label>
-                <input type="number" name="area_sqm" step="0.01" placeholder="Ex: 180"/>
+                <label>Área aproximada (m²) <span class="req">*</span></label>
+                <input type="number" name="area_sqm" step="0.01" placeholder="Ex: 180" required/>
               </div>
               <div class="form-group">
-                <label>Qtd. de ambientes</label>
-                <input type="number" name="rooms_count" placeholder="Ex: 5"/>
+                <label>Qtd. de ambientes <span class="req">*</span></label>
+                <input type="number" name="rooms_count" placeholder="Ex: 5" required/>
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>Idade do imóvel</label>
-                <select name="property_age">
+                <label>Idade do imóvel <span class="req">*</span></label>
+                <select name="property_age" required>
                   <option value="">— Selecione —</option>
                   <option value="novo">Novo (até 5 anos)</option>
                   <option value="medio">Médio (5-15 anos)</option>
@@ -173,8 +173,8 @@ $CATEGORIAS_NICHO = [
                 </select>
               </div>
               <div class="form-group">
-                <label>Situação atual</label>
-                <select name="current_situation">
+                <label>Situação atual <span class="req">*</span></label>
+                <select name="current_situation" required>
                   <option value="">— Selecione —</option>
                   <option value="vazio">Vazio</option>
                   <option value="habitado">Habitado</option>
@@ -184,8 +184,9 @@ $CATEGORIAS_NICHO = [
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>Existe projeto?</label>
-                <select name="has_project">
+                <label>Existe projeto? <span class="req">*</span></label>
+                <select name="has_project" required>
+                  <option value="">— Selecione —</option>
                   <option value="nao">Não</option>
                   <option value="arquitetonico">Arquitetônico</option>
                   <option value="estrutural">Estrutural</option>
@@ -193,16 +194,18 @@ $CATEGORIAS_NICHO = [
                 </select>
               </div>
               <div class="form-group">
-                <label>Necessita demolição?</label>
-                <select name="needs_demolition">
+                <label>Necessita demolição? <span class="req">*</span></label>
+                <select name="needs_demolition" required>
+                  <option value="">— Selecione —</option>
                   <option value="0">Não</option>
                   <option value="1">Sim</option>
                 </select>
               </div>
             </div>
             <div class="form-group">
-              <label>Necessita remoção de entulho?</label>
-              <select name="needs_debris_removal_select">
+              <label>Necessita remoção de entulho? <span class="req">*</span></label>
+              <select name="needs_debris_removal_select" required>
+                <option value="">— Selecione —</option>
                 <option value="0">Não</option>
                 <option value="1">Sim</option>
                 <option value="2">A avaliar</option>
@@ -215,18 +218,18 @@ $CATEGORIAS_NICHO = [
             <div class="slide-title">Orçamento<br>e prazo.</div>
             <div class="form-row">
               <div class="form-group">
-                <label>Orçamento mínimo (R$)</label>
-                <input type="text" name="budget_min" class="money-input" placeholder="R$ 0,00"/>
+                <label>Orçamento mínimo (R$) <span class="req">*</span></label>
+                <input type="text" name="budget_min" class="money-input" placeholder="R$ 0,00" required/>
               </div>
               <div class="form-group">
-                <label>Orçamento máximo (R$)</label>
-                <input type="text" name="budget_max" class="money-input" placeholder="R$ 0,00"/>
+                <label>Orçamento máximo (R$) <span class="req">*</span></label>
+                <input type="text" name="budget_max" class="money-input" placeholder="R$ 0,00" required/>
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>Prazo desejado</label>
-                <input type="date" name="desired_deadline"/>
+                <label>Prazo desejado <span class="req">*</span></label>
+                <input type="date" name="desired_deadline" required/>
               </div>
               <div class="form-group">
                 <label>Urgência <span class="req">*</span></label>
@@ -240,8 +243,8 @@ $CATEGORIAS_NICHO = [
               </div>
             </div>
             <div class="form-group">
-              <label>Forma de pagamento preferida</label>
-              <select name="payment_method">
+              <label>Forma de pagamento preferida <span class="req">*</span></label>
+              <select name="payment_method" required>
                 <option value="">— Selecione —</option>
                 <option value="a_vista">À vista</option>
                 <option value="parcelado">Parcelado</option>
@@ -255,8 +258,8 @@ $CATEGORIAS_NICHO = [
           <div class="slide">
             <div class="slide-title">Materiais e<br>acabamentos.</div>
             <div class="form-group">
-              <label>Padrão de acabamento</label>
-              <select name="finish_standard">
+              <label>Padrão de acabamento <span class="req">*</span></label>
+              <select name="finish_standard" required>
                 <option value="">— Selecione —</option>
                 <option value="economico">Econômico</option>
                 <option value="medio">Médio</option>
@@ -265,8 +268,8 @@ $CATEGORIAS_NICHO = [
               </select>
             </div>
             <div class="form-group">
-              <label>Fornecimento de materiais</label>
-              <select name="material_supply">
+              <label>Fornecimento de materiais <span class="req">*</span></label>
+              <select name="material_supply" required>
                 <option value="">— Selecione —</option>
                 <option value="cliente">Cliente fornece</option>
                 <option value="parceiro">Parceiro fornece</option>
@@ -274,8 +277,8 @@ $CATEGORIAS_NICHO = [
               </select>
             </div>
             <div class="form-group">
-              <label>Preferências de materiais / marcas</label>
-              <textarea name="material_preferences" rows="4" placeholder="Descreva suas preferências..."></textarea>
+              <label>Preferências de materiais / marcas <span class="req">*</span></label>
+              <textarea name="material_preferences" rows="4" placeholder="Descreva suas preferências..." required></textarea>
             </div>
           </div>
           
@@ -287,8 +290,8 @@ $CATEGORIAS_NICHO = [
               <textarea name="description" required rows="6" placeholder="Descreva seu projeto em detalhes..."></textarea>
             </div>
             <div class="form-group">
-              <label>Observações adicionais</label>
-              <textarea name="notes" rows="4" placeholder="Informações extras que possam ajudar..."></textarea>
+              <label>Observações adicionais <span class="req">*</span></label>
+              <textarea name="notes" rows="4" placeholder="Informações extras que possam ajudar..." required></textarea>
             </div>
           </div>
           
