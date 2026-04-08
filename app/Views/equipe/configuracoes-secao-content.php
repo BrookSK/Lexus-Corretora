@@ -265,6 +265,65 @@ try {
 <?php elseif ($secao === 'trello'): ?>
   <p style="color:var(--text-muted);font-size:.88rem">Integração com Trello. Configure em <a href="/equipe/configuracoes/trello" style="color:var(--gold)">Configurações > Trello</a> (rota antiga).</p>
 
+<?php elseif ($secao === 'gpt'): ?>
+  <div style="background:rgba(184,148,90,.04);border:1px solid rgba(184,148,90,.15);padding:20px;margin-bottom:24px">
+    <p style="font-size:.82rem;color:var(--text-muted);line-height:1.6">
+      Configure a integração com OpenAI GPT para geração automática de descrições profissionais de demandas.<br>
+      A API key é necessária para utilizar a funcionalidade de geração de apresentações em PDF.
+    </p>
+  </div>
+  
+  <div class="form-group">
+    <label>API Key do OpenAI</label>
+    <input type="password" name="gpt.api_key" value="" placeholder="Deixe vazio para manter a chave atual"/>
+    <small style="font-size:.75rem;color:var(--text-muted)">
+      Sua chave de API do OpenAI (começa com sk-...). 
+      <?php if (!empty($settings['gpt.api_key'])): ?>
+        <span style="color:var(--gold)">✓ Chave configurada</span>
+      <?php else: ?>
+        <span style="color:#ef4444">✗ Nenhuma chave configurada</span>
+      <?php endif; ?>
+    </small>
+  </div>
+  
+  <div class="form-row">
+    <div class="form-group">
+      <label>Modelo GPT</label>
+      <select name="gpt.model">
+        <option value="gpt-4" <?php echo ($settings['gpt.model'] ?? 'gpt-4') === 'gpt-4' ? 'selected' : ''; ?>>GPT-4 (Recomendado)</option>
+        <option value="gpt-4-turbo" <?php echo ($settings['gpt.model'] ?? '') === 'gpt-4-turbo' ? 'selected' : ''; ?>>GPT-4 Turbo</option>
+        <option value="gpt-3.5-turbo" <?php echo ($settings['gpt.model'] ?? '') === 'gpt-3.5-turbo' ? 'selected' : ''; ?>>GPT-3.5 Turbo (Mais rápido)</option>
+      </select>
+      <small style="font-size:.75rem;color:var(--text-muted)">Modelo usado para geração de texto</small>
+    </div>
+    
+    <div class="form-group">
+      <label>Temperature</label>
+      <input type="number" step="0.1" min="0" max="1" name="gpt.temperature" value="<?php echo $V::e((string)($settings['gpt.temperature'] ?? '0.2')); ?>" placeholder="0.2"/>
+      <small style="font-size:.75rem;color:var(--text-muted)">0.0 = mais conservador, 1.0 = mais criativo (recomendado: 0.2)</small>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label>Max Tokens</label>
+    <input type="number" min="100" max="4000" name="gpt.max_tokens" value="<?php echo $V::e((string)($settings['gpt.max_tokens'] ?? '1500')); ?>" placeholder="1500"/>
+    <small style="font-size:.75rem;color:var(--text-muted)">Limite máximo de tokens na resposta (1500 = ~1000 palavras)</small>
+  </div>
+  
+  <div style="margin-top:24px;padding:16px;background:var(--bg);border-left:3px solid var(--gold);font-size:.82rem">
+    <p style="font-weight:500;margin-bottom:8px">ℹ️ Como obter sua API Key</p>
+    <ol style="margin-left:20px;line-height:1.8;color:var(--text-muted)">
+      <li>Acesse <a href="https://platform.openai.com/api-keys" target="_blank" style="color:var(--gold)">platform.openai.com/api-keys</a></li>
+      <li>Faça login com sua conta OpenAI</li>
+      <li>Clique em "Create new secret key"</li>
+      <li>Copie a chave e cole no campo acima</li>
+      <li>Salve as configurações</li>
+    </ol>
+    <p style="margin-top:12px;color:var(--text-muted)">
+      <strong>Importante:</strong> A chave é armazenada de forma segura no banco de dados e nunca é exposta no frontend.
+    </p>
+  </div>
+
 <?php elseif ($secao === 'geral'): ?>
   <div class="form-row">
     <div class="form-group">

@@ -18,43 +18,81 @@ namespace LEX\App\Services\AI;
  */
 final class OpenAIService
 {
-    private const API_KEY = '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';
     private const API_URL = 'https://api.openai.com/v1/chat/completions';
+    
+    /**
+     * Obtém a API key das configurações
+     */
+    private static function getApiKey(): ?string
+    {
+        return \LEX\Core\Settings::obter('gpt.api_key');
+    }
+    
+    /**
+     * Obtém o modelo configurado
+     */
+    private static function getModel(): string
+    {
+        return \LEX\Core\Settings::obter('gpt.model', 'gpt-4');
+    }
+    
+    /**
+     * Obtém a temperature configurada
+     */
+    private static function getTemperature(): float
+    {
+        return (float)\LEX\Core\Settings::obter('gpt.temperature', '0.2');
+    }
+    
+    /**
+     * Obtém o max_tokens configurado
+     */
+    private static function getMaxTokens(): int
+    {
+        return (int)\LEX\Core\Settings::obter('gpt.max_tokens', '1500');
+    }
     
     /**
      * Gera descrição formal da demanda usando GPT
      */
-    public static function gerarDescricaoFormal(array $demanda): string
+    public static function gerarDescricaoFormal(array $demanda, array $arquivos = []): string
     {
-        $prompt = self::construirPrompt($demanda);
+        $apiKey = self::getApiKey();
+        
+        // Se não houver API key configurada, usar fallback
+        if (empty($apiKey)) {
+            error_log('[OpenAI] API key não configurada. Configure em Configurações > GPT.');
+            return self::gerarDescricaoFallback($demanda);
+        }
+        
+        $prompt = self::construirPrompt($demanda, $arquivos);
         
         $data = [
-            'model' => 'gpt-4',
+            'model' => self::getModel(),
             'messages' => [
                 [
                     'role' => 'system',
-                    'content' => 'Você é um assistente de formatação de documentos. REGRAS CRÍTICAS E INVIOLÁVEIS:
+                    'content' => 'Você é um engenheiro civil experiente que prepara apresentações técnicas de projetos. Sua função é organizar informações de forma profissional, clara e estruturada, como um engenheiro apresentaria para clientes e parceiros.
 
-1. NUNCA invente, adicione, suponha ou deduza informações
-2. NUNCA mencione informações que não foram explicitamente fornecidas
-3. APENAS reformate e organize o texto fornecido
-4. Corrija erros de português e gramática
-5. Melhore a clareza e fluidez do texto
-6. Use linguagem formal e profissional
-7. Mantenha o significado EXATO do original
-8. Se uma informação não existe, NÃO a mencione de forma alguma
-9. Legendas de fotos devem ser mantidas EXATAMENTE como fornecidas
-10. NÃO adicione detalhes técnicos, características ou especificações que não foram mencionadas
-
-Sua função é APENAS melhorar a apresentação do texto existente, não criar conteúdo novo.'
+REGRAS CRÍTICAS:
+1. NUNCA invente dados técnicos, medidas ou especificações
+2. Use APENAS as informações fornecidas
+3. Organize o conteúdo de forma lógica e profissional
+4. Incorpore as legendas das fotos como observações técnicas relevantes
+5. Corrija erros de português e gramática
+6. Use linguagem técnica apropriada mas acessível
+7. Estruture em seções claras: Resumo, Características, Requisitos, Observações
+8. Mantenha o significado EXATO das informações originais
+9. Se uma informação não existe, NÃO a mencione
+10. Apresente como um memorial descritivo profissional'
                 ],
                 [
                     'role' => 'user',
                     'content' => $prompt
                 ]
             ],
-            'temperature' => 0.2,
-            'max_tokens' => 1500
+            'temperature' => self::getTemperature(),
+            'max_tokens' => self::getMaxTokens()
         ];
         
         $ch = curl_init(self::API_URL);
@@ -63,7 +101,7 @@ Sua função é APENAS melhorar a apresentação do texto existente, não criar 
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json',
-            'Authorization: Bearer ' . self::API_KEY
+            'Authorization: Bearer ' . $apiKey
         ]);
         
         $response = curl_exec($ch);
@@ -87,51 +125,63 @@ Sua função é APENAS melhorar a apresentação do texto existente, não criar 
     /**
      * Constrói o prompt para o GPT
      */
-    private static function construirPrompt(array $demanda): string
+    private static function construirPrompt(array $demanda, array $arquivos = []): string
     {
-        $prompt = "⚠️ ATENÇÃO CRÍTICA: Você deve APENAS reformatar o texto abaixo. NÃO invente, NÃO adicione, NÃO suponha NENHUMA informação nova.\n\n";
+        $prompt = "TAREFA: Organize as informações abaixo como um MEMORIAL DESCRITIVO profissional de engenharia.\n\n";
         
-        $prompt .= "TAREFA: Reorganize as informações fornecidas de forma profissional e clara, mantendo EXATAMENTE o mesmo conteúdo.\n\n";
+        $prompt .= "Estruture em seções lógicas (Resumo Executivo, Características do Projeto, Requisitos Técnicos, Observações de Campo).\n";
+        $prompt .= "Incorpore as legendas das fotos como observações técnicas relevantes no texto.\n";
+        $prompt .= "Use linguagem técnica mas acessível.\n";
+        $prompt .= "NÃO invente medidas, especificações ou detalhes técnicos.\n\n";
         
-        $prompt .= "=== INFORMAÇÕES DA DEMANDA (USE APENAS ESTAS) ===\n\n";
+        $prompt .= "=== DADOS DO PROJETO ===\n\n";
         
-        $prompt .= "CÓDIGO: {$demanda['code']}\n";
-        $prompt .= "TÍTULO: {$demanda['title']}\n";
+        // Informações básicas
+        $prompt .= "IDENTIFICAÇÃO:\n";
+        $prompt .= "- Código: {$demanda['code']}\n";
+        $prompt .= "- Título: {$demanda['title']}\n";
         
         if (!empty($demanda['cliente_nome'])) {
-            $prompt .= "CLIENTE: {$demanda['cliente_nome']}\n";
+            $prompt .= "- Cliente: {$demanda['cliente_nome']}\n";
         }
         
+        // Classificação
+        $prompt .= "\nCLASSIFICAÇÃO:\n";
         if (!empty($demanda['work_type'])) {
-            $prompt .= "TIPO DE OBRA: {$demanda['work_type']}\n";
+            $prompt .= "- Tipo de Obra: {$demanda['work_type']}\n";
         }
-        
         if (!empty($demanda['category'])) {
-            $prompt .= "CATEGORIA: {$demanda['category']}\n";
+            $prompt .= "- Categoria: {$demanda['category']}\n";
         }
-        
         if (!empty($demanda['subcategory'])) {
-            $prompt .= "SUBCATEGORIA: {$demanda['subcategory']}\n";
+            $prompt .= "- Subcategoria: {$demanda['subcategory']}\n";
+        }
+        if (!empty($demanda['complexity'])) {
+            $prompt .= "- Complexidade: {$demanda['complexity']}\n";
         }
         
+        // Localização
+        $prompt .= "\nLOCALIZAÇÃO:\n";
         if (!empty($demanda['city']) && !empty($demanda['state'])) {
-            $prompt .= "LOCALIZAÇÃO: {$demanda['city']}, {$demanda['state']}\n";
+            $prompt .= "- Município: {$demanda['city']}, {$demanda['state']}\n";
         }
-        
         if (!empty($demanda['address'])) {
-            $prompt .= "ENDEREÇO: {$demanda['address']}\n";
+            $prompt .= "- Endereço: {$demanda['address']}\n";
         }
         
+        // Características técnicas
+        $prompt .= "\nCARACTERÍSTICAS TÉCNICAS:\n";
         if (!empty($demanda['area_sqm'])) {
-            $prompt .= "ÁREA: {$demanda['area_sqm']} m²\n";
+            $prompt .= "- Área: {$demanda['area_sqm']} m²\n";
         }
-        
         if (!empty($demanda['current_phase'])) {
-            $prompt .= "FASE ATUAL: {$demanda['current_phase']}\n";
+            $prompt .= "- Fase Atual: {$demanda['current_phase']}\n";
         }
         
+        // Orçamento e prazo
+        $prompt .= "\nORÇAMENTO E PRAZO:\n";
         if (!empty($demanda['budget_min']) || !empty($demanda['budget_max'])) {
-            $budget = 'ORÇAMENTO: ';
+            $budget = '- Orçamento Estimado: ';
             if (!empty($demanda['budget_min'])) {
                 $budget .= 'R$ ' . number_format((float)$demanda['budget_min'], 2, ',', '.');
             }
@@ -143,61 +193,58 @@ Sua função é APENAS melhorar a apresentação do texto existente, não criar 
             }
             $prompt .= $budget . "\n";
         }
-        
         if (!empty($demanda['desired_deadline'])) {
-            $prompt .= "PRAZO DESEJADO: {$demanda['desired_deadline']}\n";
+            $prompt .= "- Prazo Desejado: {$demanda['desired_deadline']}\n";
         }
-        
         if (!empty($demanda['urgency'])) {
-            $prompt .= "URGÊNCIA: {$demanda['urgency']}\n";
+            $prompt .= "- Urgência: {$demanda['urgency']}\n";
         }
         
-        if (!empty($demanda['complexity'])) {
-            $prompt .= "COMPLEXIDADE: {$demanda['complexity']}\n";
-        }
-        
+        // Requisitos
+        $prompt .= "\nREQUISITOS DO PROJETO:\n";
         if (!empty($demanda['hiring_type'])) {
-            $prompt .= "TIPO DE CONTRATAÇÃO: {$demanda['hiring_type']}\n";
+            $prompt .= "- Tipo de Contratação: {$demanda['hiring_type']}\n";
         }
-        
         if (!empty($demanda['has_project'])) {
-            $prompt .= "POSSUI PROJETO: Sim\n";
+            $prompt .= "- Possui Projeto Arquitetônico: Sim\n";
         }
-        
         if (!empty($demanda['has_architect'])) {
-            $prompt .= "POSSUI ARQUITETO: Sim\n";
+            $prompt .= "- Possui Arquiteto Responsável: Sim\n";
         }
-        
         if (!empty($demanda['wants_multiple_proposals'])) {
-            $prompt .= "ACEITA MÚLTIPLAS PROPOSTAS: Sim\n";
+            $prompt .= "- Aceita Múltiplas Propostas: Sim\n";
         }
         
+        // Descrição do cliente
         if (!empty($demanda['description'])) {
             $prompt .= "\nDESCRIÇÃO FORNECIDA PELO CLIENTE:\n{$demanda['description']}\n";
         }
         
+        // Observações
         if (!empty($demanda['notes'])) {
             $prompt .= "\nOBSERVAÇÕES ADICIONAIS:\n{$demanda['notes']}\n";
         }
         
+        // Legendas das fotos (IMPORTANTE)
+        if (!empty($arquivos)) {
+            $legendasComConteudo = array_filter($arquivos, fn($a) => !empty($a['caption']));
+            if (!empty($legendasComConteudo)) {
+                $prompt .= "\nOBSERVAÇÕES DE CAMPO (Legendas das Fotos):\n";
+                foreach ($legendasComConteudo as $i => $arq) {
+                    $prompt .= "- Foto " . ($i + 1) . ": {$arq['caption']}\n";
+                }
+            }
+        }
+        
         $prompt .= "\n=== INSTRUÇÕES DE FORMATAÇÃO ===\n\n";
-        $prompt .= "1. Organize as informações acima em parágrafos claros\n";
-        $prompt .= "2. Corrija erros de português se houver\n";
-        $prompt .= "3. Melhore a clareza e fluidez\n";
-        $prompt .= "4. Use linguagem formal e profissional\n";
-        $prompt .= "5. Mantenha o significado EXATO\n\n";
-        $prompt .= "⛔ PROIBIDO:\n";
-        $prompt .= "- Inventar informações\n";
-        $prompt .= "- Adicionar dados não fornecidos\n";
-        $prompt .= "- Supor características ou detalhes\n";
-        $prompt .= "- Mencionar informações ausentes\n";
-        $prompt .= "- Adicionar especificações técnicas\n";
-        $prompt .= "- Deduzir ou inferir qualquer coisa\n\n";
-        $prompt .= "✅ PERMITIDO:\n";
-        $prompt .= "- Reorganizar o texto\n";
-        $prompt .= "- Corrigir gramática e ortografia\n";
-        $prompt .= "- Melhorar clareza\n";
-        $prompt .= "- Usar linguagem mais formal\n";
+        $prompt .= "Organize todas as informações acima em um memorial descritivo profissional.\n";
+        $prompt .= "Estruture em seções claras com títulos apropriados.\n";
+        $prompt .= "Incorpore as observações de campo (legendas) no texto de forma natural.\n";
+        $prompt .= "Use linguagem técnica de engenharia mas acessível.\n";
+        $prompt .= "Corrija erros de português.\n";
+        $prompt .= "Mantenha todos os dados técnicos EXATOS.\n\n";
+        $prompt .= "⛔ NÃO INVENTE: medidas, especificações, materiais, detalhes técnicos\n";
+        $prompt .= "✅ PERMITIDO: reorganizar, melhorar redação, estruturar logicamente\n";
         
         return $prompt;
     }
@@ -207,38 +254,47 @@ Sua função é APENAS melhorar a apresentação do texto existente, não criar 
      */
     private static function gerarDescricaoFallback(array $demanda): string
     {
-        $texto = "";
+        $texto = "MEMORIAL DESCRITIVO\n\n";
         
-        // Apenas incluir informações que existem
-        if (!empty($demanda['work_type'])) {
-            $texto .= "Projeto de {$demanda['work_type']}";
-            
-            if (!empty($demanda['city']) && !empty($demanda['state'])) {
-                $texto .= " localizado em {$demanda['city']}, {$demanda['state']}";
+        // Resumo Executivo
+        if (!empty($demanda['work_type']) || !empty($demanda['city'])) {
+            $texto .= "RESUMO EXECUTIVO\n\n";
+            if (!empty($demanda['work_type'])) {
+                $texto .= "Projeto de {$demanda['work_type']}";
+                if (!empty($demanda['city']) && !empty($demanda['state'])) {
+                    $texto .= " localizado em {$demanda['city']}, {$demanda['state']}";
+                }
+                $texto .= ".\n\n";
             }
-            
-            $texto .= ". ";
         }
         
-        if (!empty($demanda['area_sqm'])) {
-            $texto .= "Área de {$demanda['area_sqm']} m². ";
+        // Características
+        if (!empty($demanda['area_sqm']) || !empty($demanda['category'])) {
+            $texto .= "CARACTERÍSTICAS DO PROJETO\n\n";
+            if (!empty($demanda['area_sqm'])) {
+                $texto .= "Área total: {$demanda['area_sqm']} m²\n";
+            }
+            if (!empty($demanda['category'])) {
+                $texto .= "Categoria: {$demanda['category']}\n";
+            }
+            $texto .= "\n";
         }
         
-        if (!empty($demanda['category'])) {
-            $texto .= "Categoria: {$demanda['category']}. ";
-        }
-        
+        // Descrição
         if (!empty($demanda['description'])) {
-            $texto .= "\n\n" . $demanda['description'];
+            $texto .= "DESCRIÇÃO DO PROJETO\n\n";
+            $texto .= $demanda['description'] . "\n\n";
         }
         
+        // Observações
         if (!empty($demanda['notes'])) {
-            $texto .= "\n\nObservações: " . $demanda['notes'];
+            $texto .= "OBSERVAÇÕES TÉCNICAS\n\n";
+            $texto .= $demanda['notes'] . "\n\n";
         }
         
-        // Se não houver nenhuma informação, retornar mensagem genérica
-        if (empty($texto)) {
-            $texto = "Informações detalhadas do projeto conforme especificado.";
+        // Se não houver nenhuma informação
+        if (empty(trim($texto)) || $texto === "MEMORIAL DESCRITIVO\n\n") {
+            $texto = "Memorial descritivo do projeto conforme informações fornecidas pelo cliente.";
         }
         
         return trim($texto);

@@ -20,6 +20,7 @@ $settingsKeys = [
     'legal.termos', 'legal.privacidade',
     'trello.api_key', 'trello.api_token', 'trello.list_id', 'trello.list_contato',
     'trello.list_demanda', 'trello.list_parceiro',
+    'gpt.api_key', 'gpt.model', 'gpt.temperature', 'gpt.max_tokens',
     'comissao.empresa_pct', 'comissao.parceiro_origem_pct',
 ];
 
@@ -36,6 +37,7 @@ $tabs = [
     'notificacoes' => ['label' => 'Notificações', 'icon' => '🔔'],
     'integracao' => ['label' => 'Integrações', 'icon' => '🔗'],
     'trello' => ['label' => 'Trello', 'icon' => '📋'],
+    'gpt' => ['label' => 'GPT / IA', 'icon' => '🤖'],
     'comissoes' => ['label' => 'Comissões', 'icon' => '💰'],
     'seguranca' => ['label' => 'Segurança', 'icon' => '🔒'],
     'geral' => ['label' => 'Geral', 'icon' => '⚙️'],

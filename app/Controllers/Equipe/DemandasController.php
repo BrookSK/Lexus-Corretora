@@ -301,9 +301,9 @@ final class DemandasController
         // Buscar timeline
         $timeline = TimelineService::listarPorDemanda($id);
         
-        // Gerar descrição formal com GPT
+        // Gerar descrição formal com GPT (incluindo legendas das fotos)
         try {
-            $descricaoFormal = \LEX\App\Services\AI\OpenAIService::gerarDescricaoFormal($demanda);
+            $descricaoFormal = \LEX\App\Services\AI\OpenAIService::gerarDescricaoFormal($demanda, $arquivos);
         } catch (\Throwable $e) {
             error_log("Erro ao gerar descrição com GPT: " . $e->getMessage());
             $descricaoFormal = $demanda['description'] ?? '';
