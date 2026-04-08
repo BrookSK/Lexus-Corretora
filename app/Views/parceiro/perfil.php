@@ -69,16 +69,9 @@ if (!empty($parceiro['service_states'])) {
 
     <div class="form-row">
       <div class="form-group">
-        <label>Razão Social</label>
-        <input type="text" name="razao_social" value="<?php echo View::e($parceiro['razao_social'] ?? ''); ?>"/>
+        <label>Nome da Empresa / Profissional *</label>
+        <input type="text" name="name" value="<?php echo View::e($parceiro['name'] ?? ''); ?>" required/>
       </div>
-      <div class="form-group">
-        <label>Nome Fantasia *</label>
-        <input type="text" name="nome_fantasia" value="<?php echo View::e($parceiro['nome_fantasia'] ?? ''); ?>" required/>
-      </div>
-    </div>
-
-    <div class="form-row">
       <div class="form-group">
         <label><?php echo View::e(I18n::t('parceiro.tipo')); ?> *</label>
         <select name="type" required>
@@ -91,37 +84,28 @@ if (!empty($parceiro['service_states'])) {
           <option value="fornecedor" <?php echo ($parceiro['type'] ?? '') === 'fornecedor' ? 'selected' : ''; ?>>Fornecedor</option>
         </select>
       </div>
+    </div>
+
+    <div class="form-row">
       <div class="form-group">
         <label>CNPJ / CPF *</label>
         <input type="text" name="document" value="<?php echo View::e($parceiro['document'] ?? ''); ?>" required/>
       </div>
+      <div class="form-group">
+        <label><?php echo View::e(I18n::t('auth.email')); ?></label>
+        <input type="email" name="email" value="<?php echo View::e($parceiro['email'] ?? ''); ?>" readonly style="background:var(--bg-surface);cursor:not-allowed"/>
+      </div>
     </div>
 
     <div class="form-row">
-      <div class="form-group">
-        <label><?php echo View::e(I18n::t('auth.email')); ?></label>
-        <input type="email" name="company_email" value="<?php echo View::e($parceiro['company_email'] ?? $parceiro['email'] ?? ''); ?>"/>
-      </div>
       <div class="form-group">
         <label><?php echo View::e(I18n::t('contato.telefone')); ?> *</label>
         <input type="tel" name="phone" value="<?php echo View::e($parceiro['phone'] ?? ''); ?>" required/>
       </div>
-    </div>
-
-    <div class="form-row">
       <div class="form-group">
         <label>WhatsApp *</label>
         <input type="tel" name="whatsapp" value="<?php echo View::e($parceiro['whatsapp'] ?? ''); ?>" required/>
       </div>
-      <div class="form-group">
-        <label>Website</label>
-        <input type="text" name="website" value="<?php echo View::e($parceiro['website'] ?? ''); ?>" placeholder="www.suaempresa.com.br"/>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>Instagram</label>
-      <input type="text" name="instagram" value="<?php echo View::e($parceiro['instagram'] ?? ''); ?>" placeholder="@empresa"/>
     </div>
   </div>
 
@@ -183,20 +167,14 @@ if (!empty($parceiro['service_states'])) {
       <button type="button" onclick="adicionarCidadeExtra()" class="btn btn-secondary btn-sm" style="margin-top:6px">+ Adicionar cidade</button>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label><?php echo View::e(I18n::t('parceiro.tempo_mercado')); ?></label>
-        <input type="number" name="years_in_market" min="0" value="<?php echo View::e((string)($parceiro['years_in_market'] ?? '')); ?>" placeholder="Anos"/>
-      </div>
-      <div class="form-group">
-        <label>CREA / CAU</label>
-        <input type="text" name="crea_cau" value="<?php echo View::e($parceiro['crea_cau'] ?? ''); ?>" placeholder="Número do registro"/>
-      </div>
+    <div class="form-group">
+      <label>CREA / CAU</label>
+      <input type="text" name="crea_cau" value="<?php echo View::e($parceiro['crea_cau'] ?? ''); ?>" placeholder="Número do registro (opcional)"/>
     </div>
 
     <div class="form-group">
       <label>Descrição / Bio *</label>
-      <textarea name="description" required rows="5" placeholder="Descreva sua empresa, experiência e diferenciais..."><?php echo View::e($parceiro['bio'] ?? $parceiro['description'] ?? ''); ?></textarea>
+      <textarea name="bio" required rows="5" placeholder="Descreva sua empresa, experiência e diferenciais..."><?php echo View::e($parceiro['bio'] ?? ''); ?></textarea>
       <small style="color:var(--text-muted);font-size:.75rem;display:block;margin-top:4px">Conte sobre sua empresa, principais trabalhos realizados e o que te diferencia no mercado.</small>
     </div>
   </div>
@@ -430,6 +408,82 @@ if (!empty($parceiro['service_states'])) {
 </style>
 
 <script>
+// LocalStorage persistence
+var formId = 'parceiro-perfil-form';
+var form = document.querySelector('form');
+
+// Restaurar dados do localStorage ao carregar
+window.addEventListener('DOMContentLoaded', function() {
+  var saved = localStorage.getItem(formId);
+  if (saved) {
+    try {
+      var data = JSON.parse(saved);
+      Object.keys(data).forEach(function(key) {
+        var input = form.querySelector('[name="' + key + '"]');
+        if (input && !input.value) {
+          if (input.type === 'checkbox') {
+            input.checked = data[key];
+          } else {
+            input.value = data[key];
+          }
+        }
+      });
+    } catch (e) {}
+  }
+});
+
+// Salvar no localStorage a cada mudança
+form.addEventListener('input', function(e) {
+  var data = {};
+  var inputs = form.querySelectorAll('input:not([type=file]):not([type=password]), select, textarea');
+  inputs.forEach(function(input) {
+    if (input.name) {
+      if (input.type === 'checkbox') {
+        data[input.name] = input.checked;
+      } else {
+        data[input.name] = input.value;
+      }
+    }
+  });
+  localStorage.setItem(formId, JSON.stringify(data));
+});
+
+// Limpar localStorage após submit bem-sucedido
+form.addEventListener('submit', function(e) {
+  // Validar especialidades
+  var especialidadesChecked = document.querySelectorAll('#mc-especialidades input[type=checkbox]:checked');
+  var hiddenInput = document.getElementById('specialtiesRequired');
+  if (especialidadesChecked.length === 0) {
+    e.preventDefault();
+    alert('Selecione pelo menos uma especialidade.');
+    return false;
+  }
+  hiddenInput.value = '1';
+  
+  // Validar portfolio
+  var portfolioInput = document.querySelector('input[name="portfolio[]"]');
+  if (portfolioInput && portfolioInput.files.length > 0) {
+    var files = portfolioInput.files;
+    var hasPdf = false;
+    var imageCount = 0;
+    for (var i = 0; i < files.length; i++) {
+      if (files[i].type === 'application/pdf') hasPdf = true;
+      else imageCount++;
+    }
+    if (!hasPdf && imageCount > 0 && imageCount < 6) {
+      e.preventDefault();
+      alert('Envie no mínimo 6 fotos para o portfólio, ou 1 arquivo PDF.');
+      return false;
+    }
+  }
+  
+  // Se passou nas validações, limpar localStorage
+  setTimeout(function() {
+    localStorage.removeItem(formId);
+  }, 100);
+});
+
+// Multiselect functions
 function mcOpen(id) {
   var wrap  = document.getElementById(id);
   var panel = document.getElementById(id + '-panel');
@@ -447,6 +501,12 @@ function mcUpdate(id) {
   var checked = document.querySelectorAll('#' + id + ' input[type=checkbox]:checked');
   var lbl = document.getElementById(id + '-lbl');
   lbl.textContent = checked.length ? checked.length + ' selecionada(s)' : 'Selecione especialidades';
+  
+  // Atualizar campo hidden para validação
+  var hiddenInput = document.getElementById('specialtiesRequired');
+  if (hiddenInput) {
+    hiddenInput.value = checked.length > 0 ? '1' : '';
+  }
 }
 function mcFilter(id, q) {
   q = q.toLowerCase();
@@ -575,22 +635,4 @@ function removePreview(btn) {
     child.dataset.index = i;
   });
 }
-
-document.querySelector('form').addEventListener('submit', function(e) {
-  var portfolioInput = document.querySelector('input[name="portfolio[]"]');
-  if (portfolioInput && portfolioInput.files.length > 0) {
-    var files = portfolioInput.files;
-    var hasPdf = false;
-    var imageCount = 0;
-    for (var i = 0; i < files.length; i++) {
-      if (files[i].type === 'application/pdf') hasPdf = true;
-      else imageCount++;
-    }
-    if (!hasPdf && imageCount > 0 && imageCount < 6) {
-      e.preventDefault();
-      alert('Envie no mínimo 6 fotos para o portfólio, ou 1 arquivo PDF.');
-      return false;
-    }
-  }
-});
 </script>

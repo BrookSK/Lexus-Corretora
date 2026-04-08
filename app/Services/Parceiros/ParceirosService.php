@@ -70,8 +70,7 @@ final class ParceirosService
     {
         $pdo = BancoDeDados::obter();
         $stmt = $pdo->prepare(
-            "SELECT p.*, ep.nome_fantasia AS empresa_nome, ep.cnpj AS empresa_cnpj,
-                    p.name AS nome_fantasia, p.bio AS description
+            "SELECT p.*, ep.nome_fantasia AS empresa_nome, ep.cnpj AS empresa_cnpj
              FROM parceiros p
              LEFT JOIN empresas_parceiras ep ON ep.id = p.empresa_id
              WHERE p.id = :id AND p.deleted_at IS NULL"
@@ -114,24 +113,11 @@ final class ParceirosService
     {
         $pdo = BancoDeDados::obter();
         
-        // Mapear campos do formulário para campos do banco
-        $mapeamento = [
-            'nome_fantasia' => 'name',  // Nome fantasia vai para o campo name
-            'description' => 'bio',      // Description vai para bio
-        ];
-        
-        foreach ($mapeamento as $campoForm => $campoBanco) {
-            if (isset($dados[$campoForm])) {
-                $dados[$campoBanco] = $dados[$campoForm];
-                unset($dados[$campoForm]);
-            }
-        }
-        
-        $campos = ['empresa_id', 'name', 'email', 'phone', 'whatsapp', 'document', 'type',
+        // Campos válidos da tabela parceiros
+        $campos = ['empresa_id', 'name', 'phone', 'whatsapp', 'document', 'type',
                     'avatar', 'crea_cau', 'specialties', 'service_areas', 'service_cities',
                     'service_states', 'portfolio_url', 'bio', 'availability',
-                    'accepts_referral', 'referral_commission_pct', 'status', 'is_vetriks',
-                    'years_in_market', 'website', 'instagram'];
+                    'accepts_referral', 'referral_commission_pct', 'status', 'is_vetriks'];
         $set = [];
         $params = ['id' => $id];
 
