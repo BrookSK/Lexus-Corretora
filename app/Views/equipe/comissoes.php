@@ -67,7 +67,9 @@ use LEX\Core\{View, I18n, Csrf};
 
 <script src="/assets/js/crud-actions.js"></script>
 <script>
-function excluirComissao(id) {
+function excluirComissao(id, event) {
+  // Armazenar o evento globalmente para que excluirRegistro possa acessá-lo
+  window.currentDeleteEvent = event;
   excluirRegistro(`/equipe/comissoes/${id}/excluir`, 'comissão');
 }
 
@@ -90,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
     btnExcluir.className = 'btn btn-danger btn-sm btn-excluir';
     btnExcluir.innerHTML = '🗑️ Excluir';
     btnExcluir.style.marginLeft = '8px';
-    btnExcluir.onclick = () => excluirComissao(id);
+    btnExcluir.onclick = (e) => excluirComissao(id, e);
     
     acoesCell.appendChild(btnExcluir);
   });

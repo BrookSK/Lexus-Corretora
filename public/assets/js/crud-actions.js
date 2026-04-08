@@ -18,6 +18,11 @@ function excluirRegistro(url, entityName, onSuccess) {
   const csrfToken = document.querySelector('input[name="_csrf_token"]')?.value || 
                     document.querySelector('meta[name="csrf-token"]')?.content;
 
+  // Encontrar a linha da tabela que contém o botão clicado
+  const event = window.currentDeleteEvent;
+  const btnExcluir = event?.target?.closest('button');
+  const linhaTabela = btnExcluir?.closest('tr');
+
   fetch(url, {
     method: 'POST',
     headers: {
@@ -32,10 +37,27 @@ function excluirRegistro(url, entityName, onSuccess) {
       // Mostrar mensagem de sucesso
       mostrarFlash('success', data.message || `${entityName} excluído com sucesso!`);
       
-      // Executar callback ou recarregar página
+      // Executar callback personalizado
       if (typeof onSuccess === 'function') {
         onSuccess();
-      } else {
+      } 
+      // Remover linha da tabela se encontrada
+      else if (linhaTabela) {
+        linhaTabela.style.transition = 'opacity 0.3s ease-out';
+        linhaTabela.style.opacity = '0';
+        setTimeout(() => {
+          linhaTabela.remove();
+          
+          // Verificar se a tabela ficou vazia
+          const tbody = document.querySelector('table tbody');
+          if (tbody && tbody.querySelectorAll('tr').length === 0) {
+            // Recarregar para mostrar mensagem de "nenhum registro"
+            setTimeout(() => window.location.reload(), 500);
+          }
+        }, 300);
+      } 
+      // Fallback: recarregar página
+      else {
         setTimeout(() => {
           window.location.reload();
         }, 1000);
