@@ -258,16 +258,6 @@ $CATEGORIAS_NICHO = [
           <div class="slide">
             <div class="slide-title">Materiais e<br>acabamentos.</div>
             <div class="form-group">
-              <label>Padrão de acabamento <span class="req">*</span></label>
-              <select name="finish_standard" required>
-                <option value="">— Selecione —</option>
-                <option value="economico">Econômico</option>
-                <option value="medio">Médio</option>
-                <option value="alto">Alto</option>
-                <option value="luxo">Luxo</option>
-              </select>
-            </div>
-            <div class="form-group">
               <label>Fornecimento de materiais <span class="req">*</span></label>
               <select name="material_supply" required>
                 <option value="">— Selecione —</option>
@@ -631,13 +621,6 @@ $CATEGORIAS_NICHO = [
     link.addEventListener('click', (e) => {
       e.preventDefault();
       document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
-    });
-  });
-
-  // Antes de submeter: remover required de todos os slides (validação já foi feita pelo JS)
-  document.getElementById('demandaForm').addEventListener('submit', function() {
-    slides.forEach(slide => {
-      slide.querySelectorAll('[required]').forEach(el => el.removeAttribute('required'));
     });
   });
 
