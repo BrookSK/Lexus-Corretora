@@ -74,7 +74,50 @@ $statusBadge = match($demanda['status'] ?? '') {
 </div>
 <?php endif; ?>
 
-<!-- Anexos -->
+<!-- Fotos e Vídeos do Projeto -->
+<?php if (!empty($arquivos)): ?>
+<div class="section-header" style="margin-top:32px">
+  <div><h2 class="section-title">📸 Fotos e Vídeos do Projeto</h2></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-bottom:32px">
+  <?php foreach ($arquivos as $arq): ?>
+  <div style="border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.05)">
+    <?php if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $arq['file_path'])): ?>
+      <a href="<?php echo View::e($arq['file_path']); ?>" target="_blank">
+        <img src="<?php echo View::e($arq['file_path']); ?>" style="width:100%;height:200px;object-fit:cover;cursor:pointer"/>
+      </a>
+    <?php elseif (preg_match('/\.(mp4|webm|mov)$/i', $arq['file_path'])): ?>
+      <video src="<?php echo View::e($arq['file_path']); ?>" style="width:100%;height:200px;object-fit:cover" controls></video>
+    <?php else: ?>
+      <a href="<?php echo View::e($arq['file_path']); ?>" target="_blank" style="display:block;height:200px;display:flex;align-items:center;justify-content:center;background:#f5f5f5;text-decoration:none">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2">
+          <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+          <polyline points="13 2 13 9 20 9"/>
+        </svg>
+      </a>
+    <?php endif; ?>
+    <div style="padding:12px">
+      <div style="font-size:.8rem;color:#666;margin-bottom:6px;word-break:break-all">
+        <?php echo View::e(basename($arq['file_path'])); ?>
+      </div>
+      <?php if (!empty($arq['caption'])): ?>
+      <div style="font-size:.85rem;color:#333;background:#f9f9f9;padding:8px;border-radius:4px;border-left:3px solid var(--gold);line-height:1.5">
+        <?php echo nl2br(View::e($arq['caption'])); ?>
+      </div>
+      <?php endif; ?>
+      <div style="font-size:.7rem;color:#999;margin-top:8px">
+        Enviado em <?php echo View::e(date('d/m/Y H:i', strtotime($arq['created_at']))); ?>
+        <?php if (!empty($arq['uploaded_by_type'])): ?>
+          por <?php echo View::e(ucfirst($arq['uploaded_by_type'])); ?>
+        <?php endif; ?>
+      </div>
+    </div>
+  </div>
+  <?php endforeach; ?>
+</div>
+<?php endif; ?>
+
+<!-- Anexos (outros arquivos) -->
 <?php if (!empty($demanda['arquivos'])): ?>
 <div class="card" style="margin-bottom:24px">
   <div class="card-label" style="margin-bottom:12px"><?php echo View::e(I18n::t('demanda.uploads')); ?></div>

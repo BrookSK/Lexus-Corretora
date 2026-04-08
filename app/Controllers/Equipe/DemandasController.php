@@ -89,10 +89,16 @@ final class DemandasController
             $_SESSION['flash'] = ['type' => 'error', 'message' => I18n::t('geral.nenhum_registro')];
             return Resposta::redirecionar('/equipe/demandas');
         }
+        
+        $arquivos = ArquivosService::listarPorDemanda($id);
         $propostas = PropostasService::listarPorDemanda($id);
         $timeline = TimelineService::listarPorDemanda($id);
+        
         $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/demandas-detalhe.php', [
-            'demanda' => $demanda, 'propostas' => $propostas, 'timeline' => $timeline,
+            'demanda' => $demanda, 
+            'arquivos' => $arquivos,
+            'propostas' => $propostas, 
+            'timeline' => $timeline,
         ]);
         return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
             'conteudo' => $conteudo, 'painelTipo' => 'equipe',
