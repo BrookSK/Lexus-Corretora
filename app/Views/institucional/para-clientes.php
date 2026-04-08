@@ -495,8 +495,12 @@ $CATEGORIAS_NICHO = [
     const required = slide.querySelectorAll('[required]');
     for (let inp of required) {
       if (!inp.value.trim()) {
+        inp.style.borderColor = '#ff4444';
         inp.focus();
-        alert('Por favor, preencha todos os campos obrigatórios.');
+        const label = slide.querySelector(`label[for="${inp.id}"]`) || inp.previousElementSibling;
+        const fieldName = label ? label.textContent.replace('*', '').trim() : 'Este campo';
+        showError(`${fieldName} é obrigatório.`);
+        setTimeout(() => { inp.style.borderColor = ''; }, 3000);
         return false;
       }
     }
@@ -506,8 +510,10 @@ $CATEGORIAS_NICHO = [
       const pwd = slide.querySelector('[name="password"]');
       const conf = slide.querySelector('[name="password_confirm"]');
       if (pwd.value !== conf.value) {
-        alert('As senhas não coincidem.');
+        conf.style.borderColor = '#ff4444';
+        showError('As senhas não coincidem.');
         conf.focus();
+        setTimeout(() => { conf.style.borderColor = ''; }, 3000);
         return false;
       }
     }
@@ -516,12 +522,28 @@ $CATEGORIAS_NICHO = [
     if (step === 2) {
       const servicesInput = document.getElementById('servicesInput');
       if (!servicesInput.value) {
-        alert('Selecione pelo menos um serviço.');
+        showError('Selecione pelo menos um serviço.');
         return false;
       }
     }
     
     return true;
+  }
+  
+  function showError(message) {
+    // Remove erro anterior se existir
+    const oldError = document.querySelector('.validation-error');
+    if (oldError) oldError.remove();
+    
+    // Cria novo erro
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'validation-error';
+    errorDiv.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ff4444;color:#fff;padding:15px 30px;border-radius:8px;z-index:9999;font-size:16px;box-shadow:0 4px 12px rgba(0,0,0,0.3);';
+    errorDiv.textContent = message;
+    document.body.appendChild(errorDiv);
+    
+    // Remove após 4 segundos
+    setTimeout(() => errorDiv.remove(), 4000);
   }
   
   prevBtn.addEventListener('click', () => {
@@ -630,9 +652,14 @@ $CATEGORIAS_NICHO = [
     submitBtn.addEventListener('click', (e) => {
       e.preventDefault();
       
-      // Validar último step
-      if (!validateStep(currentStep)) {
-        return;
+      // Validar TODOS os steps antes de submeter
+      for (let i = 0; i < TOTAL_STEPS; i++) {
+        if (!validateStep(i)) {
+          // Navegar para o step com erro
+          currentStep = i;
+          updateUI();
+          return;
+        }
       }
       
       // Remover required de campos não visíveis para permitir submit
