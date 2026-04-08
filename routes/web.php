@@ -216,6 +216,7 @@ Roteador::get('/equipe/clientes/{id}', [EquipeClientes::class, 'detalhe'], $eqMw
 Roteador::get('/equipe/clientes/{id}/editar', [EquipeClientes::class, 'editar'], $eqMw);
 Roteador::post('/equipe/clientes/{id}/editar', [EquipeClientes::class, 'atualizar'], $eqMw);
 Roteador::post('/equipe/clientes/{id}/login-as', [EquipeClientes::class, 'loginAs'], $eqMw);
+Roteador::post('/equipe/clientes/{id}/excluir', [EquipeClientes::class, 'excluir'], $eqMw);
 
 // Parceiros
 Roteador::get('/equipe/parceiros', [EquipeParceiros::class, 'index'], $eqMw);
@@ -237,6 +238,7 @@ Roteador::post('/equipe/demandas/{id}/status', [EquipeDemandas::class, 'alterarS
 Roteador::post('/equipe/demandas/{id}/aprovar-repasse', [EquipeDemandas::class, 'aprovarRepasse'], $eqMw);
 Roteador::post('/equipe/demandas/arquivo/{id}/remover', [EquipeDemandas::class, 'removerArquivo'], $eqMw);
 Roteador::post('/equipe/demandas/{id}/atribuir-cliente', [EquipeDemandas::class, 'atribuirCliente'], $eqMw);
+Roteador::post('/equipe/demandas/{id}/excluir', [EquipeDemandas::class, 'excluir'], $eqMw);
 
 // Distribuição
 Roteador::get('/equipe/distribuicao/{demandaId}', [DistribuicaoController::class, 'index'], $eqMw);
@@ -247,6 +249,7 @@ Roteador::get('/equipe/propostas', [EquipePropostas::class, 'index'], $eqMw);
 Roteador::get('/equipe/propostas/{id}', [EquipePropostas::class, 'detalhe'], $eqMw);
 Roteador::get('/equipe/propostas/comparar/{demandaId}', [EquipePropostas::class, 'comparar'], $eqMw);
 Roteador::post('/equipe/propostas/{id}/status', [EquipePropostas::class, 'alterarStatus'], $eqMw);
+Roteador::post('/equipe/propostas/{id}/excluir', [EquipePropostas::class, 'excluir'], $eqMw);
 
 // Contratos
 Roteador::get('/equipe/contratos', [ContratosController::class, 'index'], $eqMw);
@@ -254,6 +257,7 @@ Roteador::get('/equipe/contratos/novo', [ContratosController::class, 'criar'], $
 Roteador::post('/equipe/contratos/novo', [ContratosController::class, 'salvar'], $eqMw);
 Roteador::get('/equipe/contratos/{id}', [ContratosController::class, 'detalhe'], $eqMw);
 Roteador::post('/equipe/contratos/{id}/status', [ContratosController::class, 'alterarStatus'], $eqMw);
+Roteador::post('/equipe/contratos/{id}/excluir', [ContratosController::class, 'excluir'], $eqMw);
 
 // Comissões
 Roteador::get('/equipe/comissoes', [ComissoesController::class, 'index'], $eqMw);
@@ -261,6 +265,7 @@ Roteador::get('/equipe/comissoes/nova', [ComissoesController::class, 'criar'], $
 Roteador::post('/equipe/comissoes/nova', [ComissoesController::class, 'salvar'], $eqMw);
 Roteador::get('/equipe/comissoes/{id}', [ComissoesController::class, 'detalhe'], $eqMw);
 Roteador::post('/equipe/comissoes/{id}/status', [ComissoesController::class, 'alterarStatus'], $eqMw);
+Roteador::post('/equipe/comissoes/{id}/excluir', [ComissoesController::class, 'excluir'], $eqMw);
 
 // Qualificação / Vetriks
 Roteador::get('/equipe/qualificacao', [QualificacaoController::class, 'index'], $eqMw);

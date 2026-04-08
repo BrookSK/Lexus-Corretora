@@ -67,4 +67,29 @@ final class ComissoesController
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/comissoes/' . $id);
     }
+
+    public function excluir(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        $comissao = ComissoesService::obterPorId($id);
+        
+        if (!$comissao) {
+            return Resposta::json(['success' => false, 'message' => 'Comissão não encontrada'], 404);
+        }
+
+        try {
+            $pdo = \LEX\Core\BancoDeDados::obter();
+            $stmt = $pdo->prepare("UPDATE comissoes SET deleted_at = NOW() WHERE id = :id");
+            $stmt->execute(['id' => $id]);
+            
+            AuditService::registrar('equipe', Auth::equipeId(), 'comissao.excluir', 'comissoes', $id, [
+                'demanda_codigo' => $comissao['demanda_code'] ?? '',
+                'parceiro_nome' => $comissao['parceiro_nome'] ?? ''
+            ]);
+            
+            return Resposta::json(['success' => true, 'message' => 'Comissão excluída com sucesso']);
+        } catch (\Throwable $e) {
+            return Resposta::json(['success' => false, 'message' => 'Erro ao excluir comissão: ' . $e->getMessage()], 500);
+        }
+    }
 }

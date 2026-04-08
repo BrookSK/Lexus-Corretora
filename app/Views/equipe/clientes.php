@@ -34,7 +34,7 @@ use LEX\Core\{View, I18n, Csrf};
       <?php if (empty($items)): ?>
       <tr><td colspan="6"><?php echo View::e(I18n::t('geral.nenhum_registro')); ?></td></tr>
       <?php else: foreach ($items as $item): ?>
-      <tr>
+      <tr data-id="<?php echo (int)$item['id']; ?>">
         <td><?php echo View::e($item['name']); ?></td>
         <td><?php echo View::e($item['email']); ?></td>
         <td><?php echo View::e($item['phone'] ?? '—'); ?></td>
@@ -49,6 +49,7 @@ use LEX\Core\{View, I18n, Csrf};
         <td>
           <a href="/equipe/clientes/<?php echo (int)$item['id']; ?>" class="btn btn-secondary btn-sm"><?php echo View::e(I18n::t('geral.ver')); ?></a>
           <a href="/equipe/clientes/<?php echo (int)$item['id']; ?>/editar" class="btn btn-secondary btn-sm"><?php echo View::e(I18n::t('geral.editar')); ?></a>
+          <button type="button" class="btn btn-danger btn-sm" onclick="excluirCliente(<?php echo (int)$item['id']; ?>)">🗑️ Excluir</button>
         </td>
       </tr>
       <?php endforeach; endif; ?>
@@ -59,3 +60,12 @@ use LEX\Core\{View, I18n, Csrf};
 <?php if (!empty($total) && $total > 0): ?>
 <p style="margin-top:16px;font-size:.82rem;color:var(--text-muted)"><?php echo (int)$total; ?> <?php echo View::e(I18n::t('geral.registros')); ?></p>
 <?php endif; ?>
+
+<?php echo Csrf::campo(); ?>
+
+<script src="/assets/js/crud-actions.js"></script>
+<script>
+function excluirCliente(id) {
+  excluirRegistro(`/equipe/clientes/${id}/excluir`, 'cliente');
+}
+</script>

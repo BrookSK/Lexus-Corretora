@@ -158,4 +158,24 @@ final class ClientesController
 
         return Resposta::redirecionar('/cliente/dashboard');
     }
+
+    public function excluir(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        $cliente = ClientesService::obterPorId($id);
+        
+        if (!$cliente) {
+            return Resposta::json(['success' => false, 'message' => 'Cliente não encontrado'], 404);
+        }
+
+        try {
+            ClientesService::excluir($id);
+            AuditService::registrar('equipe', Auth::equipeId(), 'cliente.excluir', 'clientes', $id, [
+                'nome' => $cliente['name']
+            ]);
+            return Resposta::json(['success' => true, 'message' => 'Cliente excluído com sucesso']);
+        } catch (\Throwable $e) {
+            return Resposta::json(['success' => false, 'message' => 'Erro ao excluir cliente: ' . $e->getMessage()], 500);
+        }
+    }
 }

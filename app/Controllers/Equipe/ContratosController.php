@@ -97,4 +97,28 @@ final class ContratosController
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/contratos/' . $id);
     }
+
+    public function excluir(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        $contrato = ContratosService::obterPorId($id);
+        
+        if (!$contrato) {
+            return Resposta::json(['success' => false, 'message' => 'Contrato não encontrado'], 404);
+        }
+
+        try {
+            $pdo = \LEX\Core\BancoDeDados::obter();
+            $stmt = $pdo->prepare("UPDATE contratos SET deleted_at = NOW() WHERE id = :id");
+            $stmt->execute(['id' => $id]);
+            
+            AuditService::registrar('equipe', Auth::equipeId(), 'contrato.excluir', 'contratos', $id, [
+                'demanda_codigo' => $contrato['demanda_code'] ?? ''
+            ]);
+            
+            return Resposta::json(['success' => true, 'message' => 'Contrato excluído com sucesso']);
+        } catch (\Throwable $e) {
+            return Resposta::json(['success' => false, 'message' => 'Erro ao excluir contrato: ' . $e->getMessage()], 500);
+        }
+    }
 }

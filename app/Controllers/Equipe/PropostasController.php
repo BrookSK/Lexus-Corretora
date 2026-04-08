@@ -120,4 +120,29 @@ final class PropostasController
         $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
         return Resposta::redirecionar('/equipe/propostas/' . $id);
     }
+
+    public function excluir(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        $proposta = PropostasService::obterPorId($id);
+        
+        if (!$proposta) {
+            return Resposta::json(['success' => false, 'message' => 'Proposta não encontrada'], 404);
+        }
+
+        try {
+            $pdo = \LEX\Core\BancoDeDados::obter();
+            $stmt = $pdo->prepare("UPDATE propostas SET deleted_at = NOW() WHERE id = :id");
+            $stmt->execute(['id' => $id]);
+            
+            AuditService::registrar('equipe', Auth::equipeId(), 'proposta.excluir', 'propostas', $id, [
+                'demanda_codigo' => $proposta['demanda_code'] ?? '',
+                'parceiro_nome' => $proposta['parceiro_nome'] ?? ''
+            ]);
+            
+            return Resposta::json(['success' => true, 'message' => 'Proposta excluída com sucesso']);
+        } catch (\Throwable $e) {
+            return Resposta::json(['success' => false, 'message' => 'Erro ao excluir proposta: ' . $e->getMessage()], 500);
+        }
+    }
 }

@@ -258,4 +258,30 @@ final class DemandasController
         $_SESSION['flash'] = ['type' => 'success', 'message' => 'Cliente vinculado com sucesso!'];
         return Resposta::redirecionar('/equipe/demandas/' . $demandaId);
     }
+
+    public function excluir(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        $demanda = DemandasService::obterPorId($id);
+        
+        if (!$demanda) {
+            return Resposta::json(['success' => false, 'message' => 'Demanda não encontrada'], 404);
+        }
+
+        try {
+            $pdo = \LEX\Core\BancoDeDados::obter();
+            $stmt = $pdo->prepare("UPDATE demandas SET deleted_at = NOW() WHERE id = :id");
+            $stmt->execute(['id' => $id]);
+            
+            TimelineService::registrar($id, 'demanda_excluida', 'Demanda excluída pela equipe', 'equipe', Auth::equipeId());
+            AuditService::registrar('equipe', Auth::equipeId(), 'demanda.excluir', 'demandas', $id, [
+                'codigo' => $demanda['code'],
+                'titulo' => $demanda['title']
+            ]);
+            
+            return Resposta::json(['success' => true, 'message' => 'Demanda excluída com sucesso']);
+        } catch (\Throwable $e) {
+            return Resposta::json(['success' => false, 'message' => 'Erro ao excluir demanda: ' . $e->getMessage()], 500);
+        }
+    }
 }
