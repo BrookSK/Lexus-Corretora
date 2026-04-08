@@ -48,9 +48,9 @@ final class Middlewares
             $parceiroId = Auth::parceiroId();
             $pdo = BancoDeDados::obter();
             $stmt = $pdo->prepare(
-                "SELECT type, fantasy_name, state_registration, estado, cidade, address, 
+                "SELECT `type`, fantasy_name, state_registration, estado, cidade, address, 
                         specialties, experience_years, team_size, monthly_capacity, description,
-                        certifications, references, website
+                        certifications, `references`, website
                  FROM parceiros WHERE id = ?"
             );
             $stmt->execute([$parceiroId]);
