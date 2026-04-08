@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-use LEX\Core\{View, I18n};
+use LEX\Core\{View, I18n, Csrf};
 require __DIR__ . '/../_partials/categorias.php';
 $f = $filtros ?? [];
 ?>
