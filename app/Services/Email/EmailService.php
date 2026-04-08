@@ -30,7 +30,7 @@ final class EmailService
             $mail->addAddress($para);
             $mail->isHTML(true);
             $mail->Subject = $assunto;
-            $mail->Body    = self::wrapHtml($assunto, $corpo);
+            $mail->Body    = $corpo; // Corpo já vem formatado dos templates
             $mail->AltBody = strip_tags($corpo);
             $mail->send();
             return true;
@@ -38,6 +38,35 @@ final class EmailService
             error_log('[EmailService] Falha ao enviar para ' . $para . ': ' . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Renderiza um template de e-mail com o layout base
+     */
+    private static function renderTemplate(string $templateName, array $data): string
+    {
+        $templatePath = dirname(__DIR__, 2) . '/Views/emails/' . $templateName . '.php';
+        if (!file_exists($templatePath)) {
+            error_log('[EmailService] Template não encontrado: ' . $templateName);
+            return '';
+        }
+        
+        // Extrair variáveis para o template
+        extract($data);
+        
+        // Capturar o conteúdo do template específico
+        ob_start();
+        include $templatePath;
+        $bodyContent = ob_get_clean();
+        
+        // Preparar dados para o template base
+        $baseData = array_merge($data, ['bodyContent' => $bodyContent]);
+        extract($baseData);
+        
+        // Renderizar o template base
+        ob_start();
+        include dirname(__DIR__, 2) . '/Views/emails/_base.php';
+        return ob_get_clean();
     }
 
     /** Notifica todos os e-mails de administradores configurados */
@@ -58,15 +87,20 @@ final class EmailService
     /** Confirmação de nova demanda criada (para o cliente) */
     public static function novaDemanda(string $para, string $nomeCliente, string $codigoDemanda, string $tituloDemanda): bool
     {
-        $nome = SistemaConfig::nome();
-        $url  = SistemaConfig::url();
-        $ok = self::enviar($para, "Sua demanda foi recebida — {$codigoDemanda}", "
-            <p>Olá, <strong>{$nomeCliente}</strong>!</p>
-            <p>Recebemos sua demanda <strong>{$codigoDemanda} — {$tituloDemanda}</strong>.</p>
-            <p>Nossa equipe irá analisá-la e em breve você receberá propostas de parceiros qualificados.</p>
-            <p><a href='{$url}/cliente/demandas' style='color:#B8945A'>Acompanhar minha demanda →</a></p>
-            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
-        ");
+        $url = SistemaConfig::url();
+        $html = self::renderTemplate('nova-demanda', [
+            'emailCategory' => 'Nova Demanda',
+            'emailTitleLine1' => 'Sua demanda foi',
+            'emailTitleLine2' => 'recebida com sucesso',
+            'emailSubtitle' => 'Estamos analisando seu projeto e em breve você receberá propostas qualificadas',
+            'recipientFirstName' => explode(' ', $nomeCliente)[0],
+            'nomeCliente' => $nomeCliente,
+            'codigoDemanda' => $codigoDemanda,
+            'tituloDemanda' => $tituloDemanda,
+            'siteUrl' => $url,
+            'documentCode' => $codigoDemanda,
+        ]);
+        $ok = self::enviar($para, "Sua demanda foi recebida — {$codigoDemanda}", $html);
         self::notificarAdmins("Nova demanda — {$codigoDemanda}", "<p><strong>Nova demanda recebida</strong></p><p><strong>Cliente:</strong> {$nomeCliente} ({$para})</p><p><strong>Código:</strong> {$codigoDemanda}</p><p><strong>Título:</strong> {$tituloDemanda}</p><p><a href='{$url}/equipe/demandas' style='color:#B8945A'>Ver no painel →</a></p>");
         return $ok;
     }
@@ -74,32 +108,41 @@ final class EmailService
     /** Notificação de nova oportunidade distribuída (para o parceiro) */
     public static function novaOportunidade(string $para, string $nomeParceiro, string $codigoDemanda, string $tituloDemanda, string $cidade, string $estado): bool
     {
-        $nome = SistemaConfig::nome();
-        $url  = SistemaConfig::url();
-        return self::enviar($para, "Nova oportunidade disponível — {$codigoDemanda}", "
-            <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
-            <p>Uma nova oportunidade compatível com seu perfil está disponível:</p>
-            <table style='border-collapse:collapse;width:100%;margin:16px 0'>
-                <tr><td style='padding:8px;border:1px solid #eee;font-weight:500'>Código</td><td style='padding:8px;border:1px solid #eee'>{$codigoDemanda}</td></tr>
-                <tr><td style='padding:8px;border:1px solid #eee;font-weight:500'>Título</td><td style='padding:8px;border:1px solid #eee'>{$tituloDemanda}</td></tr>
-                <tr><td style='padding:8px;border:1px solid #eee;font-weight:500'>Localização</td><td style='padding:8px;border:1px solid #eee'>{$cidade} / {$estado}</td></tr>
-            </table>
-            <p><a href='{$url}/parceiro/oportunidades' style='color:#B8945A;font-weight:500'>Ver oportunidade →</a></p>
-            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
-        ");
+        $url = SistemaConfig::url();
+        $html = self::renderTemplate('nova-oportunidade', [
+            'emailCategory' => 'Nova Oportunidade',
+            'emailTitleLine1' => 'Nova oportunidade',
+            'emailTitleLine2' => 'disponível',
+            'emailSubtitle' => 'Um projeto compatível com seu perfil está aguardando sua proposta',
+            'recipientFirstName' => explode(' ', $nomeParceiro)[0],
+            'nomeParceiro' => $nomeParceiro,
+            'codigoDemanda' => $codigoDemanda,
+            'tituloDemanda' => $tituloDemanda,
+            'cidade' => $cidade,
+            'estado' => $estado,
+            'siteUrl' => $url,
+            'documentCode' => $codigoDemanda,
+        ]);
+        return self::enviar($para, "Nova oportunidade disponível — {$codigoDemanda}", $html);
     }
 
     /** Notificação de proposta recebida (para o cliente) */
     public static function novaPropostaCliente(string $para, string $nomeCliente, string $codigoDemanda, string $nomeParceiro): bool
     {
-        $nome = SistemaConfig::nome();
-        $url  = SistemaConfig::url();
-        $ok = self::enviar($para, "Nova proposta recebida — {$codigoDemanda}", "
-            <p>Olá, <strong>{$nomeCliente}</strong>!</p>
-            <p>O parceiro <strong>{$nomeParceiro}</strong> enviou uma proposta para sua demanda <strong>{$codigoDemanda}</strong>.</p>
-            <p><a href='{$url}/cliente/propostas' style='color:#B8945A;font-weight:500'>Ver proposta →</a></p>
-            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
-        ");
+        $url = SistemaConfig::url();
+        $html = self::renderTemplate('nova-proposta-cliente', [
+            'emailCategory' => 'Nova Proposta',
+            'emailTitleLine1' => 'Você recebeu',
+            'emailTitleLine2' => 'uma nova proposta',
+            'emailSubtitle' => 'Um parceiro qualificado enviou uma proposta para seu projeto',
+            'recipientFirstName' => explode(' ', $nomeCliente)[0],
+            'nomeCliente' => $nomeCliente,
+            'codigoDemanda' => $codigoDemanda,
+            'nomeParceiro' => $nomeParceiro,
+            'siteUrl' => $url,
+            'documentCode' => $codigoDemanda,
+        ]);
+        $ok = self::enviar($para, "Nova proposta recebida — {$codigoDemanda}", $html);
         self::notificarAdmins("Nova proposta — {$codigoDemanda}", "<p><strong>Nova proposta recebida</strong></p><p><strong>Parceiro:</strong> {$nomeParceiro}</p><p><strong>Demanda:</strong> {$codigoDemanda}</p><p><strong>Cliente:</strong> {$nomeCliente}</p><p><a href='{$url}/equipe/propostas' style='color:#B8945A'>Ver no painel →</a></p>");
         return $ok;
     }
@@ -107,15 +150,19 @@ final class EmailService
     /** Notificação de proposta selecionada (para o parceiro) */
     public static function propostaSelecionada(string $para, string $nomeParceiro, string $codigoDemanda): bool
     {
-        $nome = SistemaConfig::nome();
-        $url  = SistemaConfig::url();
-        $ok = self::enviar($para, "Sua proposta foi selecionada — {$codigoDemanda}", "
-            <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
-            <p>Parabéns! Sua proposta para a demanda <strong>{$codigoDemanda}</strong> foi selecionada.</p>
-            <p>Nossa equipe entrará em contato para os próximos passos.</p>
-            <p><a href='{$url}/parceiro/propostas' style='color:#B8945A;font-weight:500'>Ver minhas propostas →</a></p>
-            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
-        ");
+        $url = SistemaConfig::url();
+        $html = self::renderTemplate('proposta-selecionada', [
+            'emailCategory' => 'Proposta Selecionada',
+            'emailTitleLine1' => 'Parabéns!',
+            'emailTitleLine2' => 'Sua proposta foi selecionada',
+            'emailSubtitle' => 'O cliente escolheu sua proposta para realizar o projeto',
+            'recipientFirstName' => explode(' ', $nomeParceiro)[0],
+            'nomeParceiro' => $nomeParceiro,
+            'codigoDemanda' => $codigoDemanda,
+            'siteUrl' => $url,
+            'documentCode' => $codigoDemanda,
+        ]);
+        $ok = self::enviar($para, "Sua proposta foi selecionada — {$codigoDemanda}", $html);
         self::notificarAdmins("Proposta selecionada — {$codigoDemanda}", "<p><strong>Proposta selecionada</strong></p><p><strong>Parceiro:</strong> {$nomeParceiro}</p><p><strong>Demanda:</strong> {$codigoDemanda}</p>");
         return $ok;
     }
@@ -123,27 +170,38 @@ final class EmailService
     /** Notificação de proposta recusada (para o parceiro) */
     public static function propostaRecusada(string $para, string $nomeParceiro, string $codigoDemanda): bool
     {
-        $nome = SistemaConfig::nome();
-        return self::enviar($para, "Atualização sobre sua proposta — {$codigoDemanda}", "
-            <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
-            <p>Informamos que sua proposta para a demanda <strong>{$codigoDemanda}</strong> não foi selecionada desta vez.</p>
-            <p>Continue acompanhando novas oportunidades em nossa plataforma.</p>
-            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
-        ");
+        $url = SistemaConfig::url();
+        $html = self::renderTemplate('proposta-recusada', [
+            'emailCategory' => 'Atualização de Proposta',
+            'emailTitleLine1' => 'Atualização sobre',
+            'emailTitleLine2' => 'sua proposta',
+            'emailSubtitle' => 'Informações sobre o status da sua proposta',
+            'recipientFirstName' => explode(' ', $nomeParceiro)[0],
+            'nomeParceiro' => $nomeParceiro,
+            'codigoDemanda' => $codigoDemanda,
+            'siteUrl' => $url,
+            'documentCode' => $codigoDemanda,
+        ]);
+        return self::enviar($para, "Atualização sobre sua proposta — {$codigoDemanda}", $html);
     }
 
     /** Notificação de contrato formalizado (para cliente e parceiro) */
     public static function contratoFormalizado(string $para, string $nomeDestinatario, string $codigoDemanda, string $valor): bool
     {
-        $nome = SistemaConfig::nome();
-        $url  = SistemaConfig::url();
-        $ok = self::enviar($para, "Contrato formalizado — {$codigoDemanda}", "
-            <p>Olá, <strong>{$nomeDestinatario}</strong>!</p>
-            <p>O contrato referente à demanda <strong>{$codigoDemanda}</strong> foi formalizado.</p>
-            <p><strong>Valor:</strong> {$valor}</p>
-            <p><a href='{$url}/equipe/contratos' style='color:#B8945A;font-weight:500'>Ver contrato →</a></p>
-            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
-        ");
+        $url = SistemaConfig::url();
+        $html = self::renderTemplate('contrato-formalizado', [
+            'emailCategory' => 'Contrato Formalizado',
+            'emailTitleLine1' => 'Contrato',
+            'emailTitleLine2' => 'formalizado',
+            'emailSubtitle' => 'O contrato foi oficialmente formalizado e o projeto está pronto para iniciar',
+            'recipientFirstName' => explode(' ', $nomeDestinatario)[0],
+            'nomeDestinatario' => $nomeDestinatario,
+            'codigoDemanda' => $codigoDemanda,
+            'valor' => $valor,
+            'siteUrl' => $url,
+            'documentCode' => $codigoDemanda,
+        ]);
+        $ok = self::enviar($para, "Contrato formalizado — {$codigoDemanda}", $html);
         self::notificarAdmins("Contrato formalizado — {$codigoDemanda}", "<p><strong>Contrato formalizado</strong></p><p><strong>Demanda:</strong> {$codigoDemanda}</p><p><strong>Valor:</strong> {$valor}</p><p><a href='{$url}/equipe/contratos' style='color:#B8945A'>Ver no painel →</a></p>");
         return $ok;
     }
@@ -151,21 +209,23 @@ final class EmailService
     /** Resultado de qualificação (para o parceiro) */
     public static function resultadoQualificacao(string $para, string $nomeParceiro, string $status, string $parecer = ''): bool
     {
-        $nome = SistemaConfig::nome();
-        $url  = SistemaConfig::url();
+        $url = SistemaConfig::url();
         $aprovado = in_array($status, ['aprovado', 'vetriks_ativo'], true);
+        $html = self::renderTemplate('resultado-qualificacao', [
+            'emailCategory' => 'Resultado de Qualificação',
+            'emailTitleLine1' => $aprovado ? 'Qualificação' : 'Resultado da',
+            'emailTitleLine2' => $aprovado ? 'aprovada' : 'qualificação',
+            'emailSubtitle' => $aprovado ? 'Você agora faz parte da nossa rede de parceiros qualificados' : 'Resultado da análise do seu perfil profissional',
+            'recipientFirstName' => explode(' ', $nomeParceiro)[0],
+            'nomeParceiro' => $nomeParceiro,
+            'status' => $status,
+            'parecer' => $parecer,
+            'siteUrl' => $url,
+            'documentCode' => '',
+        ]);
         $titulo = $aprovado ? 'Qualificação aprovada' : 'Resultado da qualificação';
-        $msg = $aprovado
-            ? 'Sua qualificação foi <strong>aprovada</strong>! Você já pode receber oportunidades qualificadas.'
-            : 'Sua qualificação foi analisada. Infelizmente não foi possível aprovar neste momento.';
         $parecerHtml = $parecer ? "<p><strong>Parecer:</strong> {$parecer}</p>" : '';
-        $ok = self::enviar($para, "{$titulo} — {$nome}", "
-            <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
-            <p>{$msg}</p>
-            {$parecerHtml}
-            <p><a href='{$url}/parceiro/perfil' style='color:#B8945A;font-weight:500'>Ver meu perfil →</a></p>
-            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
-        ");
+        $ok = self::enviar($para, "{$titulo} — " . SistemaConfig::nome(), $html);
         self::notificarAdmins("Qualificação — {$nomeParceiro}", "<p><strong>Resultado de qualificação</strong></p><p><strong>Parceiro:</strong> {$nomeParceiro}</p><p><strong>Status:</strong> {$status}</p>{$parecerHtml}");
         return $ok;
     }
@@ -173,14 +233,18 @@ final class EmailService
     /** Boas-vindas ao novo parceiro cadastrado */
     public static function boasVindasParceiro(string $para, string $nomeParceiro): bool
     {
-        $nome = SistemaConfig::nome();
-        $url  = SistemaConfig::url();
-        $ok = self::enviar($para, "Bem-vindo à {$nome}!", "
-            <p>Olá, <strong>{$nomeParceiro}</strong>!</p>
-            <p>Seu cadastro foi recebido com sucesso. Nossa equipe irá analisar seu perfil e em breve você receberá o resultado da qualificação.</p>
-            <p><a href='{$url}/parceiro/dashboard' style='color:#B8945A;font-weight:500'>Acessar meu painel →</a></p>
-            <p>Atenciosamente,<br><strong>{$nome}</strong></p>
-        ");
+        $url = SistemaConfig::url();
+        $html = self::renderTemplate('boas-vindas-parceiro', [
+            'emailCategory' => 'Boas-vindas',
+            'emailTitleLine1' => 'Bem-vindo à',
+            'emailTitleLine2' => SistemaConfig::nome(),
+            'emailSubtitle' => 'Seu cadastro foi recebido e está sendo analisado por nossa equipe',
+            'recipientFirstName' => explode(' ', $nomeParceiro)[0],
+            'nomeParceiro' => $nomeParceiro,
+            'siteUrl' => $url,
+            'documentCode' => '',
+        ]);
+        $ok = self::enviar($para, "Bem-vindo à " . SistemaConfig::nome() . "!", $html);
         self::notificarAdmins("Novo parceiro cadastrado", "<p><strong>Novo parceiro</strong></p><p><strong>Nome:</strong> {$nomeParceiro}</p><p><strong>E-mail:</strong> {$para}</p><p><a href='{$url}/equipe/parceiros' style='color:#B8945A'>Ver no painel →</a></p>");
         return $ok;
     }
@@ -188,35 +252,23 @@ final class EmailService
     /** Notificação interna de novo contato recebido (para a equipe) */
     public static function novoContatoEquipe(string $paraEquipe, string $nomeRemetente, string $emailRemetente, string $mensagem): bool
     {
-        $nome = SistemaConfig::nome();
-        $ok = self::enviar($paraEquipe, "Novo contato recebido — {$nome}", "
-            <p><strong>Nome:</strong> {$nomeRemetente}</p>
-            <p><strong>E-mail:</strong> {$emailRemetente}</p>
-            <p><strong>Mensagem:</strong></p>
-            <blockquote style='border-left:3px solid #B8945A;padding:8px 16px;margin:8px 0;color:#555'>{$mensagem}</blockquote>
-        ");
+        $url = SistemaConfig::url();
+        $html = self::renderTemplate('novo-contato', [
+            'emailCategory' => 'Novo Contato',
+            'emailTitleLine1' => 'Novo contato',
+            'emailTitleLine2' => 'recebido',
+            'emailSubtitle' => 'Um novo contato foi enviado através do formulário do site',
+            'recipientFirstName' => 'Equipe',
+            'nomeRemetente' => $nomeRemetente,
+            'emailRemetente' => $emailRemetente,
+            'mensagem' => $mensagem,
+            'siteUrl' => $url,
+            'documentCode' => '',
+        ]);
+        $ok = self::enviar($paraEquipe, "Novo contato recebido — " . SistemaConfig::nome(), $html);
         self::notificarAdmins("Novo contato — {$nomeRemetente}", "<p><strong>Novo contato recebido</strong></p><p><strong>Nome:</strong> {$nomeRemetente}</p><p><strong>E-mail:</strong> {$emailRemetente}</p><p><strong>Mensagem:</strong> {$mensagem}</p>");
         return $ok;
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────
-
-    private static function wrapHtml(string $titulo, string $corpo): string
-    {
-        $nome = SistemaConfig::nome();
-        $gold = '#B8945A';
-        return "<!DOCTYPE html><html><head><meta charset='UTF-8'/></head><body style='font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:0'>
-            <div style='max-width:600px;margin:32px auto;background:#fff;border-radius:4px;overflow:hidden'>
-                <div style='background:#0C0C0A;padding:24px 32px'>
-                    <span style='font-family:Georgia,serif;font-size:1.4rem;color:{$gold};letter-spacing:.08em'>{$nome}</span>
-                </div>
-                <div style='padding:32px;color:#333;line-height:1.7;font-size:.95rem'>
-                    {$corpo}
-                </div>
-                <div style='background:#f9f9f9;padding:16px 32px;font-size:.75rem;color:#999;border-top:1px solid #eee'>
-                    Este é um e-mail automático. Por favor, não responda diretamente.
-                </div>
-            </div>
-        </body></html>";
-    }
 }

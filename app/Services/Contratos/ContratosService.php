@@ -10,7 +10,7 @@ final class ContratosService
     public static function listar(int $page = 1, int $perPage = 20, array $filtros = []): array
     {
         $pdo = BancoDeDados::obter();
-        $where = ['1=1'];
+        $where = ['ct.deleted_at IS NULL'];
         $params = [];
 
         if (!empty($filtros['status'])) {
@@ -83,7 +83,7 @@ final class ContratosService
              JOIN clientes c ON c.id = ct.cliente_id
              JOIN parceiros p ON p.id = ct.parceiro_id
              LEFT JOIN propostas pr ON pr.id = ct.proposta_id
-             WHERE ct.id = :id"
+             WHERE ct.id = :id AND ct.deleted_at IS NULL"
         );
         $stmt->execute(['id' => $id]);
         $row = $stmt->fetch();
@@ -133,7 +133,7 @@ final class ContratosService
             $extra = ', formalized_at = CURDATE()';
         }
 
-        $stmt = $pdo->prepare("UPDATE contratos SET status = :status{$extra} WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE contratos SET status = :status{$extra} WHERE id = :id AND deleted_at IS NULL");
         $stmt->execute($params);
         $updated = $stmt->rowCount() > 0;
 

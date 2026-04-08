@@ -65,11 +65,22 @@ final class ConfigController
                 return Resposta::redirecionar('/equipe/configuracoes/smtp');
             }
             try {
-                $ok = \LEX\App\Services\Email\EmailService::enviar(
-                    $emailDestino,
-                    'Teste de Configuração SMTP',
-                    '<h2>Teste de SMTP</h2><p>Configurações funcionando corretamente!</p><p><strong>Data/Hora:</strong> ' . date('d/m/Y H:i:s') . '</p>'
-                );
+                $siteUrl = \LEX\Core\SistemaConfig::url();
+                $bodyContent = View::renderizar(__DIR__ . '/../../Views/emails/teste-smtp.php', [
+                    'siteUrl' => $siteUrl,
+                ]);
+                $html = View::renderizar(__DIR__ . '/../../Views/emails/_base.php', [
+                    'emailCategory' => 'Teste SMTP',
+                    'emailTitleLine1' => 'Teste de',
+                    'emailTitleLine2' => 'configuração',
+                    'emailSubtitle' => 'Verificação das configurações de envio de e-mail',
+                    'recipientFirstName' => 'Administrador',
+                    'bodyContent' => $bodyContent,
+                    'siteUrl' => $siteUrl,
+                    'documentCode' => '',
+                ]);
+                
+                $ok = \LEX\App\Services\Email\EmailService::enviar($emailDestino, 'Teste de Configuração SMTP', $html);
                 $_SESSION['flash'] = $ok
                     ? ['type' => 'success', 'message' => 'E-mail de teste enviado para ' . $emailDestino]
                     : ['type' => 'error', 'message' => 'Falha ao enviar. Verifique as configurações e o log do servidor.'];
@@ -142,11 +153,22 @@ final class ConfigController
                 return Resposta::json(['success' => false, 'message' => 'Configurações SMTP incompletas. Configure host, usuário e e-mail remetente.']);
             }
 
-            $resultado = \LEX\App\Services\Email\EmailService::enviar(
-                $emailDestino,
-                'Teste de Configuração SMTP',
-                '<h2>Teste de SMTP</h2><p>Este é um e-mail de teste.</p><p>Se você recebeu esta mensagem, suas configurações SMTP estão funcionando corretamente!</p><p><strong>Data/Hora:</strong> ' . date('d/m/Y H:i:s') . '</p>'
-            );
+            $siteUrl = \LEX\Core\SistemaConfig::url();
+            $bodyContent = View::renderizar(__DIR__ . '/../../Views/emails/teste-smtp.php', [
+                'siteUrl' => $siteUrl,
+            ]);
+            $html = View::renderizar(__DIR__ . '/../../Views/emails/_base.php', [
+                'emailCategory' => 'Teste SMTP',
+                'emailTitleLine1' => 'Teste de',
+                'emailTitleLine2' => 'configuração',
+                'emailSubtitle' => 'Verificação das configurações de envio de e-mail',
+                'recipientFirstName' => 'Administrador',
+                'bodyContent' => $bodyContent,
+                'siteUrl' => $siteUrl,
+                'documentCode' => '',
+            ]);
+
+            $resultado = \LEX\App\Services\Email\EmailService::enviar($emailDestino, 'Teste de Configuração SMTP', $html);
 
             if ($resultado) {
                 AuditService::registrar('equipe', Auth::equipeId(), 'config.smtp.teste', 'settings', null, ['email' => $emailDestino]);

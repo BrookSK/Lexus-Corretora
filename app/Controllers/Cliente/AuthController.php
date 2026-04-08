@@ -90,11 +90,26 @@ final class AuthController
                 $pdo->prepare("DELETE FROM password_resets WHERE user_type = 'cliente' AND email = :e")->execute(['e' => $email]);
                 $pdo->prepare("INSERT INTO password_resets (user_type, email, token, expires_at) VALUES ('cliente', :e, :t, :ex)")->execute(['e' => $email, 't' => $token, 'ex' => $expira]);
                 $link = (\LEX\Core\SistemaConfig::url()) . '/cliente/redefinir-senha/' . $token;
-                \LEX\App\Services\Email\EmailService::enviar(
-                    $email,
-                    'Redefinição de senha',
-                    '<p>Olá, ' . htmlspecialchars($cliente['name']) . '!</p><p>Clique no link abaixo para redefinir sua senha (válido por 2 horas):</p><p><a href="' . $link . '">' . $link . '</a></p><p>Se não solicitou, ignore este e-mail.</p>'
-                );
+                
+                // Usar novo template de e-mail
+                $siteUrl = \LEX\Core\SistemaConfig::url();
+                $bodyContent = \LEX\Core\View::renderizar(__DIR__ . '/../../Views/emails/redefinir-senha.php', [
+                    'nome' => $cliente['name'],
+                    'link' => $link,
+                    'siteUrl' => $siteUrl,
+                ]);
+                $html = \LEX\Core\View::renderizar(__DIR__ . '/../../Views/emails/_base.php', [
+                    'emailCategory' => 'Redefinição de Senha',
+                    'emailTitleLine1' => 'Redefinir',
+                    'emailTitleLine2' => 'senha',
+                    'emailSubtitle' => 'Recebemos uma solicitação para redefinir a senha da sua conta',
+                    'recipientFirstName' => explode(' ', $cliente['name'])[0],
+                    'bodyContent' => $bodyContent,
+                    'siteUrl' => $siteUrl,
+                    'documentCode' => '',
+                ]);
+                
+                \LEX\App\Services\Email\EmailService::enviar($email, 'Redefinição de senha', $html);
             }
         }
         // Sempre mostrar a mesma mensagem por segurança

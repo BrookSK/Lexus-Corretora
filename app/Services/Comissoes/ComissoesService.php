@@ -14,7 +14,8 @@ final class ComissoesService
             "UPDATE comissoes
              SET status = 'atrasada'
              WHERE expected_date < CURDATE()
-               AND status NOT IN ('recebida', 'confirmada', 'faturada', 'atrasada', 'cancelada')"
+               AND status NOT IN ('recebida', 'confirmada', 'faturada', 'atrasada', 'cancelada')
+               AND deleted_at IS NULL"
         );
     }
 
@@ -22,7 +23,7 @@ final class ComissoesService
     {
         self::marcarAtrasadas();
         $pdo = BancoDeDados::obter();
-        $where = ['1=1'];
+        $where = ['cm.deleted_at IS NULL'];
         $params = [];
 
         if (!empty($filtros['status'])) {
@@ -85,7 +86,7 @@ final class ComissoesService
             "SELECT cm.*, d.code AS demanda_code, d.title AS demanda_title
              FROM comissoes cm
              JOIN demandas d ON d.id = cm.demanda_id
-             WHERE cm.parceiro_id = :parceiro_id AND cm.tipo = 'pagamento'
+             WHERE cm.parceiro_id = :parceiro_id AND cm.tipo = 'pagamento' AND cm.deleted_at IS NULL
              ORDER BY cm.created_at DESC"
         );
         $stmt->execute(['parceiro_id' => $parceiroId]);
@@ -103,7 +104,7 @@ final class ComissoesService
              JOIN demandas d ON d.id = cm.demanda_id
              LEFT JOIN parceiros p ON p.id = cm.parceiro_id
              LEFT JOIN clientes c ON c.id = cm.cliente_id
-             WHERE cm.id = :id"
+             WHERE cm.id = :id AND cm.deleted_at IS NULL"
         );
         $stmt->execute(['id' => $id]);
         $row = $stmt->fetch();
@@ -158,7 +159,7 @@ final class ComissoesService
             $extra = ', received_date = CURDATE()';
         }
 
-        $stmt = $pdo->prepare("UPDATE comissoes SET status = :status{$extra} WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE comissoes SET status = :status{$extra} WHERE id = :id AND deleted_at IS NULL");
         $stmt->execute($params);
         return $stmt->rowCount() > 0;
     }
@@ -169,6 +170,7 @@ final class ComissoesService
         $stmt = $pdo->query(
             "SELECT status, COUNT(*) AS quantidade, SUM(commission_amount) AS total
              FROM comissoes
+             WHERE deleted_at IS NULL
              GROUP BY status
              ORDER BY total DESC"
         );
