@@ -161,20 +161,38 @@ use LEX\Core\{View, I18n, Csrf};
     </div>
     <?php endif; ?>
 
-    <div id="uploadFields">
-      <div class="upload-field" style="background:#f9f9f9;padding:16px;border-radius:6px;margin-bottom:12px">
-        <div class="form-group">
-          <label style="font-size:.85rem">Arquivo (Foto ou Vídeo)</label>
-          <input type="file" name="new_files[]" accept="image/*,video/*"/>
-        </div>
-        <div class="form-group">
-          <label style="font-size:.85rem">Legenda / Instrução</label>
-          <textarea name="new_captions[]" rows="2" placeholder="Ex: Vista frontal da fachada, Detalhe do acabamento..."></textarea>
+    <!-- NOVO UPLOAD MÚLTIPLO COM PREVIEW E LEGENDAS -->
+    <div style="background:#f9f9f9;padding:20px;border-radius:8px;margin-bottom:24px">
+      <div style="margin-bottom:16px">
+        <input type="file" id="multipleFilesInput" multiple accept="image/*,video/*" style="display:none"/>
+        <button type="button" onclick="document.getElementById('multipleFilesInput').click()" style="width:100%;padding:16px;border:2px dashed #b8945a;background:#fff;color:#b8945a;font-size:.9rem;cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span style="font-weight:600">Selecionar Múltiplas Fotos/Vídeos</span>
+        </button>
+        <small style="display:block;margin-top:8px;color:#666;font-size:.8rem">
+          💡 Você pode selecionar várias fotos de uma vez. Depois adicione legendas para cada uma.
+        </small>
+      </div>
+
+      <!-- PREVIEW COM LEGENDAS -->
+      <div id="filesPreviewContainer" style="display:none">
+        <div style="background:#fff;padding:16px;border-radius:6px;border:1px solid #e0e0e0">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <strong style="color:#333;font-size:.9rem">
+              <span id="selectedCount">0</span> arquivo(s) selecionado(s)
+            </strong>
+            <button type="button" onclick="limparSelecao()" style="padding:6px 12px;background:#dc3545;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:.8rem">
+              Limpar Seleção
+            </button>
+          </div>
+          <div id="filesPreviewGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px"></div>
         </div>
       </div>
     </div>
-
-    <button type="button" onclick="adicionarCampoUpload()" style="padding:8px 16px;background:#28a745;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:.85rem;margin-bottom:24px">+ Adicionar Mais Arquivos</button>
 
     <div style="margin-top:24px">
       <button type="submit" class="btn btn-primary"><?php echo View::e(I18n::t('geral.salvar')); ?></button>
@@ -183,24 +201,131 @@ use LEX\Core\{View, I18n, Csrf};
 </div>
 
 <script>
-function adicionarCampoUpload() {
-  var container = document.getElementById('uploadFields');
-  var field = document.createElement('div');
-  field.className = 'upload-field';
-  field.style.cssText = 'background:#f9f9f9;padding:16px;border-radius:6px;margin-bottom:12px;position:relative';
-  field.innerHTML = `
-    <button type="button" onclick="this.parentElement.remove()" style="position:absolute;top:8px;right:8px;background:#dc3545;color:#fff;border:none;border-radius:3px;padding:4px 8px;cursor:pointer;font-size:.75rem">✕</button>
-    <div class="form-group">
-      <label style="font-size:.85rem">Arquivo (Foto ou Vídeo)</label>
-      <input type="file" name="new_files[]" accept="image/*,video/*"/>
-    </div>
-    <div class="form-group">
-      <label style="font-size:.85rem">Legenda / Instrução</label>
-      <textarea name="new_captions[]" rows="2" placeholder="Ex: Vista frontal da fachada, Detalhe do acabamento..."></textarea>
-    </div>
-  `;
-  container.appendChild(field);
+let selectedFiles = [];
+
+document.getElementById('multipleFilesInput').addEventListener('change', function(e) {
+  const files = Array.from(e.target.files);
+  if (files.length === 0) return;
+  
+  selectedFiles = files;
+  renderFilesPreview();
+});
+
+function renderFilesPreview() {
+  const container = document.getElementById('filesPreviewContainer');
+  const grid = document.getElementById('filesPreviewGrid');
+  const count = document.getElementById('selectedCount');
+  
+  if (selectedFiles.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  
+  container.style.display = 'block';
+  count.textContent = selectedFiles.length;
+  grid.innerHTML = '';
+  
+  selectedFiles.forEach((file, index) => {
+    const item = document.createElement('div');
+    item.style.cssText = 'border:1px solid #e0e0e0;border-radius:6px;overflow:hidden;background:#fafafa';
+    
+    // Preview da imagem/vídeo
+    let preview = '';
+    if (file.type.startsWith('image/')) {
+      const url = URL.createObjectURL(file);
+      preview = `<img src="${url}" style="width:100%;height:150px;object-fit:cover"/>`;
+    } else if (file.type.startsWith('video/')) {
+      const url = URL.createObjectURL(file);
+      preview = `<video src="${url}" style="width:100%;height:150px;object-fit:cover" controls></video>`;
+    } else {
+      preview = `<div style="height:150px;display:flex;align-items:center;justify-content:center;background:#f0f0f0">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2">
+          <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+          <polyline points="13 2 13 9 20 9"/>
+        </svg>
+      </div>`;
+    }
+    
+    item.innerHTML = `
+      ${preview}
+      <div style="padding:12px">
+        <div style="font-size:.75rem;color:#666;margin-bottom:8px;word-break:break-all">
+          ${file.name}
+        </div>
+        <div style="font-size:.7rem;color:#999;margin-bottom:8px">
+          ${(file.size / 1024 / 1024).toFixed(2)} MB
+        </div>
+        <textarea 
+          id="caption_${index}" 
+          placeholder="Adicione uma legenda (opcional)..." 
+          rows="2" 
+          style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;font-size:.8rem;resize:vertical;box-sizing:border-box"
+        ></textarea>
+        <button type="button" onclick="removerArquivoSelecionado(${index})" style="width:100%;margin-top:8px;padding:6px;background:#dc3545;color:#fff;border:none;border-radius:3px;cursor:pointer;font-size:.75rem">
+          Remover
+        </button>
+      </div>
+    `;
+    
+    grid.appendChild(item);
+  });
 }
+
+function removerArquivoSelecionado(index) {
+  selectedFiles.splice(index, 1);
+  renderFilesPreview();
+  
+  // Atualizar input file
+  const input = document.getElementById('multipleFilesInput');
+  const dt = new DataTransfer();
+  selectedFiles.forEach(file => dt.items.add(file));
+  input.files = dt.files;
+}
+
+function limparSelecao() {
+  selectedFiles = [];
+  document.getElementById('multipleFilesInput').value = '';
+  renderFilesPreview();
+}
+
+// Antes de submeter o form, criar inputs hidden com as legendas
+document.querySelector('form').addEventListener('submit', function(e) {
+  // Remover inputs antigos se existirem
+  document.querySelectorAll('.dynamic-caption-input').forEach(el => el.remove());
+  
+  // Criar DataTransfer para os arquivos
+  const dt = new DataTransfer();
+  
+  selectedFiles.forEach((file, index) => {
+    dt.items.add(file);
+    
+    // Pegar a legenda do textarea
+    const captionTextarea = document.getElementById(`caption_${index}`);
+    const caption = captionTextarea ? captionTextarea.value : '';
+    
+    // Criar input hidden para a legenda
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'new_captions[]';
+    input.value = caption;
+    input.className = 'dynamic-caption-input';
+    this.appendChild(input);
+  });
+  
+  // Atualizar o input file com os arquivos na ordem correta
+  const fileInput = document.getElementById('multipleFilesInput');
+  fileInput.files = dt.files;
+  
+  // Criar input file real para envio
+  const realFileInput = document.createElement('input');
+  realFileInput.type = 'file';
+  realFileInput.name = 'new_files[]';
+  realFileInput.multiple = true;
+  realFileInput.style.display = 'none';
+  realFileInput.files = dt.files;
+  realFileInput.className = 'dynamic-caption-input';
+  this.appendChild(realFileInput);
+});
 
 function removerArquivo(id) {
   if (!confirm('Tem certeza que deseja remover este arquivo?')) return;
