@@ -218,23 +218,45 @@ if (!empty($parceiro['service_states'])) {
 
       <?php if (!empty($portfolioExistente)): ?>
       <div style="margin-bottom:12px">
-        <?php foreach ($portfolioExistente as $doc): ?>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem">
-          <span><?php echo View::e($doc['name']); ?></span>
-          <?php if (!empty($doc['is_verified'])): ?>
-            <span class="badge badge-green">Verificado</span>
-          <?php else: ?>
-            <span class="badge badge-gray">Pendente</span>
-          <?php endif; ?>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-bottom:12px">
+          <?php foreach ($portfolioExistente as $doc): ?>
+            <?php 
+            $isImage = in_array(strtolower(pathinfo($doc['name'], PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+            $fileUrl = '/uploads/parceiros/' . $parceiro['id'] . '/' . $doc['name'];
+            ?>
+            <div style="position:relative;border:1px solid var(--border);border-radius:4px;overflow:hidden;aspect-ratio:1;background:var(--bg-surface)">
+              <?php if ($isImage): ?>
+                <img src="<?php echo View::e($fileUrl); ?>" alt="Portfolio" style="width:100%;height:100%;object-fit:cover"/>
+              <?php else: ?>
+                <div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:8px;padding:8px;text-align:center">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                  </svg>
+                  <span style="font-size:.7rem;color:var(--text-muted);word-break:break-all"><?php echo View::e(basename($doc['name'])); ?></span>
+                </div>
+              <?php endif; ?>
+              <?php if (!empty($doc['is_verified'])): ?>
+                <span class="badge badge-green" style="position:absolute;top:4px;right:4px;font-size:.65rem">✓</span>
+              <?php endif; ?>
+            </div>
+          <?php endforeach; ?>
         </div>
-        <?php endforeach; ?>
       </div>
       <?php endif; ?>
 
-      <input type="file" name="portfolio[]" multiple accept=".pdf,.jpg,.jpeg,.png,.webp"/>
-      <small style="color:var(--text-muted);font-size:.75rem">
-        Envie 1 arquivo PDF com seu portfólio <strong>ou</strong> no mínimo 6 fotos de trabalhos realizados (JPG, PNG, WebP).
-      </small>
+      <div style="border:2px dashed var(--border);border-radius:8px;padding:24px;text-align:center;cursor:pointer;transition:all .2s" id="portfolioDropzone" onclick="document.getElementById('portfolioInput').click()">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin:0 auto 12px;opacity:.5">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+        </svg>
+        <p style="margin:0 0 8px;color:var(--text-primary)">Clique ou arraste arquivos aqui</p>
+        <small style="color:var(--text-muted);font-size:.75rem">
+          Envie 1 arquivo PDF com seu portfólio <strong>ou</strong> no mínimo 6 fotos de trabalhos realizados (JPG, PNG, WebP).
+        </small>
+      </div>
+      <input type="file" name="portfolio[]" id="portfolioInput" multiple accept=".pdf,.jpg,.jpeg,.png,.webp" style="display:none"/>
+      
+      <div id="portfolioPreview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:12px"></div>
     </div>
 
     <!-- Certidão de CNPJ ativo -->
@@ -255,14 +277,30 @@ if (!empty($parceiro['service_states'])) {
       <?php if (!empty($certidaoCnpj)): ?>
       <div style="margin-bottom:12px">
         <?php foreach ($certidaoCnpj as $doc): ?>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem">
-          <span><?php echo View::e($doc['name']); ?></span>
-          <?php if (!empty($doc['is_verified'])): ?>
-            <span class="badge badge-green">Verificado</span>
-          <?php else: ?>
-            <span class="badge badge-gray">Pendente</span>
-          <?php endif; ?>
-        </div>
+          <?php 
+          $isImage = in_array(strtolower(pathinfo($doc['name'], PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+          $fileUrl = '/uploads/parceiros/' . $parceiro['id'] . '/' . $doc['name'];
+          ?>
+          <div style="display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--border);border-radius:4px;margin-bottom:8px">
+            <?php if ($isImage): ?>
+              <img src="<?php echo View::e($fileUrl); ?>" alt="Certidão" style="width:80px;height:80px;object-fit:cover;border-radius:4px"/>
+            <?php else: ?>
+              <div style="width:80px;height:80px;display:flex;align-items:center;justify-content:center;background:var(--bg-surface);border-radius:4px">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+              </div>
+            <?php endif; ?>
+            <div style="flex:1">
+              <div style="font-size:.85rem;margin-bottom:4px"><?php echo View::e($doc['name']); ?></div>
+              <?php if (!empty($doc['is_verified'])): ?>
+                <span class="badge badge-green">Verificado</span>
+              <?php else: ?>
+                <span class="badge badge-gray">Pendente</span>
+              <?php endif; ?>
+            </div>
+          </div>
         <?php endforeach; ?>
       </div>
       <?php endif; ?>
@@ -275,8 +313,16 @@ if (!empty($parceiro['service_states'])) {
         <p style="margin-top:8px">Insira seu CNPJ e realize o download do cartão. Anexe em seguida.</p>
       </div>
 
-      <input type="file" name="certidao_cnpj" accept=".pdf,.jpg,.jpeg,.png"/>
-      <small style="color:var(--text-muted);font-size:.75rem">PDF ou imagem da certidão</small>
+      <div style="border:2px dashed var(--border);border-radius:8px;padding:24px;text-align:center;cursor:pointer;transition:all .2s" id="cnpjDropzone" onclick="document.getElementById('cnpjInput').click()">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin:0 auto 12px;opacity:.5">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+        </svg>
+        <p style="margin:0 0 8px;color:var(--text-primary)">Clique ou arraste o arquivo aqui</p>
+        <small style="color:var(--text-muted);font-size:.75rem">PDF ou imagem da certidão</small>
+      </div>
+      <input type="file" name="certidao_cnpj" id="cnpjInput" accept=".pdf,.jpg,.jpeg,.png" style="display:none"/>
+      
+      <div id="cnpjPreview" style="margin-top:12px"></div>
     </div>
 
     <!-- Outros documentos existentes -->
@@ -418,6 +464,112 @@ function adicionarCidadeExtra() {
   div.innerHTML = '<input type="text" name="service_cities_extra[]" placeholder="Nome da cidade" style="flex:1"/>'
     + '<button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:4px" aria-label="Remover cidade">&times;</button>';
   container.appendChild(div);
+}
+
+// Preview de portfólio
+var portfolioInput = document.getElementById('portfolioInput');
+var portfolioPreview = document.getElementById('portfolioPreview');
+var portfolioDropzone = document.getElementById('portfolioDropzone');
+
+portfolioInput.addEventListener('change', function() {
+  previewFiles(this.files, portfolioPreview);
+});
+
+portfolioDropzone.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  this.style.borderColor = 'var(--gold)';
+  this.style.background = 'rgba(184,148,90,.05)';
+});
+
+portfolioDropzone.addEventListener('dragleave', function(e) {
+  e.preventDefault();
+  this.style.borderColor = '';
+  this.style.background = '';
+});
+
+portfolioDropzone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  this.style.borderColor = '';
+  this.style.background = '';
+  portfolioInput.files = e.dataTransfer.files;
+  previewFiles(e.dataTransfer.files, portfolioPreview);
+});
+
+// Preview de CNPJ
+var cnpjInput = document.getElementById('cnpjInput');
+var cnpjPreview = document.getElementById('cnpjPreview');
+var cnpjDropzone = document.getElementById('cnpjDropzone');
+
+cnpjInput.addEventListener('change', function() {
+  previewFiles(this.files, cnpjPreview);
+});
+
+cnpjDropzone.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  this.style.borderColor = 'var(--gold)';
+  this.style.background = 'rgba(184,148,90,.05)';
+});
+
+cnpjDropzone.addEventListener('dragleave', function(e) {
+  e.preventDefault();
+  this.style.borderColor = '';
+  this.style.background = '';
+});
+
+cnpjDropzone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  this.style.borderColor = '';
+  this.style.background = '';
+  cnpjInput.files = e.dataTransfer.files;
+  previewFiles(e.dataTransfer.files, cnpjPreview);
+});
+
+function previewFiles(files, container) {
+  container.innerHTML = '';
+  if (!files || files.length === 0) return;
+  
+  Array.from(files).forEach(function(file, index) {
+    var reader = new FileReader();
+    var div = document.createElement('div');
+    div.style.cssText = 'position:relative;border:1px solid var(--border);border-radius:4px;overflow:hidden;aspect-ratio:1;background:var(--bg-surface)';
+    
+    if (file.type.startsWith('image/')) {
+      reader.onload = function(e) {
+        div.innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover"/>'
+          + '<button type="button" onclick="removePreview(this)" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:16px;line-height:1;padding:0">&times;</button>';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      div.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:8px;padding:8px;text-align:center">'
+        + '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'
+        + '<span style="font-size:.7rem;color:var(--text-muted);word-break:break-all">' + file.name + '</span>'
+        + '</div>'
+        + '<button type="button" onclick="removePreview(this)" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:16px;line-height:1;padding:0">&times;</button>';
+    }
+    
+    div.dataset.index = index;
+    container.appendChild(div);
+  });
+}
+
+function removePreview(btn) {
+  var previewDiv = btn.closest('[data-index]');
+  var container = previewDiv.parentElement;
+  var input = container.id === 'portfolioPreview' ? portfolioInput : cnpjInput;
+  var index = parseInt(previewDiv.dataset.index);
+  
+  var dt = new DataTransfer();
+  Array.from(input.files).forEach(function(file, i) {
+    if (i !== index) dt.items.add(file);
+  });
+  input.files = dt.files;
+  
+  previewDiv.remove();
+  
+  // Reindexar
+  Array.from(container.children).forEach(function(child, i) {
+    child.dataset.index = i;
+  });
 }
 
 document.querySelector('form').addEventListener('submit', function(e) {
