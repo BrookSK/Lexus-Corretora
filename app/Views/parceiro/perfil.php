@@ -156,34 +156,28 @@ if (!empty($parceiro['service_states'])) {
     </div>
 
     <div class="form-row">
-      <div class="form-group">
-        <label>Estado</label>
-        <select name="service_states[]" id="serviceStates" multiple style="min-height:120px">
-          <?php foreach ($estadosBrasileiros as $uf => $nomeEstado): ?>
-          <option value="<?php echo View::e($uf); ?>" <?php echo in_array($uf, $estadosSelecionados) ? 'selected' : ''; ?>><?php echo View::e($uf . ' — ' . $nomeEstado); ?></option>
+      <?php
+      $estadoSelecionado = !empty($estadosSelecionados) ? $estadosSelecionados[0] : '';
+      $cidadeSelecionada = !empty($cidadesSelecionadas) ? $cidadesSelecionadas[0] : '';
+      $obrigatorio = true;
+      include __DIR__ . '/../_partials/campos-estado-cidade.php';
+      ?>
+    </div>
+
+    <div class="form-group">
+      <label><?php echo View::e(I18n::t('parceiro.cidades_atendimento')); ?> (Múltiplas)</label>
+      <div id="cidadesContainer">
+        <?php if (!empty($cidadesSelecionadas) && count($cidadesSelecionadas) > 1): ?>
+          <?php foreach (array_slice($cidadesSelecionadas, 1) as $cidade): ?>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <input type="text" name="service_cities_extra[]" value="<?php echo View::e($cidade); ?>" style="flex:1" placeholder="Nome da cidade"/>
+            <button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:4px" aria-label="Remover cidade">&times;</button>
+          </div>
           <?php endforeach; ?>
-        </select>
-        <small style="color:var(--text-muted);font-size:.75rem">Segure Ctrl para selecionar múltiplos estados</small>
+        <?php endif; ?>
       </div>
-      <div class="form-group">
-        <label><?php echo View::e(I18n::t('parceiro.cidades')); ?></label>
-        <div id="cidadesContainer">
-          <?php if (!empty($cidadesSelecionadas)): ?>
-            <?php foreach ($cidadesSelecionadas as $cidade): ?>
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-              <input type="text" name="service_cities[]" value="<?php echo View::e($cidade); ?>" style="flex:1"/>
-              <button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:4px" aria-label="Remover cidade">&times;</button>
-            </div>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-              <input type="text" name="service_cities[]" placeholder="Ex: São Paulo" style="flex:1"/>
-              <button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:4px" aria-label="Remover cidade">&times;</button>
-            </div>
-          <?php endif; ?>
-        </div>
-        <button type="button" onclick="adicionarCidade()" class="btn btn-secondary btn-sm" style="margin-top:6px">+ Adicionar cidade</button>
-      </div>
+      <button type="button" onclick="adicionarCidadeExtra()" class="btn btn-secondary btn-sm" style="margin-top:6px">+ Adicionar outra cidade</button>
+      <small style="color:var(--text-muted);font-size:.75rem;display:block;margin-top:4px">A primeira cidade é selecionada acima. Aqui você pode adicionar outras cidades que atende.</small>
     </div>
 
     <div class="form-row">
@@ -417,11 +411,11 @@ document.addEventListener('click', function(e) {
   }
 });
 
-function adicionarCidade() {
+function adicionarCidadeExtra() {
   var container = document.getElementById('cidadesContainer');
   var div = document.createElement('div');
   div.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:6px';
-  div.innerHTML = '<input type="text" name="service_cities[]" placeholder="Ex: São Paulo" style="flex:1"/>'
+  div.innerHTML = '<input type="text" name="service_cities_extra[]" placeholder="Nome da cidade" style="flex:1"/>'
     + '<button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:4px" aria-label="Remover cidade">&times;</button>';
   container.appendChild(div);
 }
