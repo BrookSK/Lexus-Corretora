@@ -243,6 +243,10 @@ Roteador::post('/equipe/demandas/arquivo/{id}/remover', [EquipeDemandas::class, 
 Roteador::post('/equipe/demandas/{id}/atribuir-cliente', [EquipeDemandas::class, 'atribuirCliente'], $eqMw);
 Roteador::post('/equipe/demandas/{id}/excluir', [EquipeDemandas::class, 'excluir'], $eqMw);
 Roteador::get('/equipe/demandas/{id}/apresentacao', [EquipeDemandas::class, 'gerarApresentacao'], $eqMw);
+Roteador::post('/equipe/demandas/{id}/pdf/salvar-rascunho', [EquipeDemandas::class, 'salvarRascunhoPdf'], $eqMw);
+Roteador::post('/equipe/demandas/{id}/pdf/regenerar', [EquipeDemandas::class, 'regerarDescricaoPdf'], $eqMw);
+Roteador::get('/equipe/demandas/{id}/pdf/finalizar', [EquipeDemandas::class, 'finalizarPdf'], $eqMw);
+Roteador::get('/equipe/demandas/{id}/pdf/download', [EquipeDemandas::class, 'downloadPdf'], $eqMw);
 
 // Distribuição
 Roteador::get('/equipe/distribuicao/{demandaId}', [DistribuicaoController::class, 'index'], $eqMw);

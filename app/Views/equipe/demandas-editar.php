@@ -130,6 +130,41 @@ use LEX\Core\{View, I18n, Csrf};
       <textarea name="internal_notes" rows="3"><?php echo View::e($demanda['internal_notes'] ?? ''); ?></textarea>
     </div>
 
+    <!-- REQUISITOS DO PROJETO -->
+    <h3 style="font-size:.9rem;margin:32px 0 16px;color:var(--gold)">📋 Requisitos do Projeto</h3>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" name="has_project" value="1" <?php echo !empty($demanda['has_project']) ? 'checked' : ''; ?> style="width:auto;margin:0"/>
+          <span>Possui Projeto?</span>
+        </label>
+        <small style="color:var(--text-muted);font-size:.75rem;display:block;margin-top:4px">
+          Marque se o cliente já possui projeto arquitetônico
+        </small>
+      </div>
+      
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" name="has_architect" value="1" <?php echo !empty($demanda['has_architect']) ? 'checked' : ''; ?> style="width:auto;margin:0"/>
+          <span>Possui Arquiteto?</span>
+        </label>
+        <small style="color:var(--text-muted);font-size:.75rem;display:block;margin-top:4px">
+          Marque se o cliente já possui arquiteto responsável
+        </small>
+      </div>
+      
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" name="wants_multiple_proposals" value="1" <?php echo !empty($demanda['wants_multiple_proposals']) ? 'checked' : ''; ?> style="width:auto;margin:0"/>
+          <span>Aceita Múltiplas Propostas?</span>
+        </label>
+        <small style="color:var(--text-muted);font-size:.75rem;display:block;margin-top:4px">
+          Marque se o cliente aceita receber múltiplas propostas
+        </small>
+      </div>
+    </div>
+
     <!-- UPLOAD DE ARQUIVOS COM LEGENDAS -->
     <h3 style="font-size:.9rem;margin:32px 0 16px;color:var(--gold)">📸 Fotos e Vídeos do Projeto</h3>
     

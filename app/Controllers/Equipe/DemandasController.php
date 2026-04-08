@@ -298,34 +298,186 @@ final class DemandasController
         // Buscar arquivos
         $arquivos = ArquivosService::listarPorDemanda($id);
         
-        // Buscar timeline
-        $timeline = TimelineService::listarPorDemanda($id);
+        // Buscar propostas
+        $propostas = PropostasService::listarPorDemanda($id);
         
         // Buscar logo do sistema
         $logoSistema = \LEX\Core\Settings::obter('sistema.logo', '');
         $nomeSistema = \LEX\Core\Settings::obter('sistema.nome', 'Lexus');
         
-        // Gerar descrição formal com GPT (incluindo legendas das fotos)
-        try {
-            $descricaoFormal = \LEX\App\Services\AI\OpenAIService::gerarDescricaoFormal($demanda, $arquivos);
-        } catch (\Throwable $e) {
-            error_log("Erro ao gerar descrição com GPT: " . $e->getMessage());
-            $descricaoFormal = $demanda['description'] ?? '';
+        // Verificar se existe rascunho salvo
+        $pdo = \LEX\Core\BancoDeDados::obter();
+        $stmt = $pdo->prepare("SELECT pdf_draft_content, pdf_draft_updated_at FROM demandas WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        $draft = $stmt->fetch();
+        
+        $descricaoFormal = '';
+        $usandoRascunho = false;
+        
+        if (!empty($draft['pdf_draft_content'])) {
+            // Usar rascunho existente
+            $draftData = json_decode($draft['pdf_draft_content'], true);
+            $descricaoFormal = $draftData['descricao_formal'] ?? '';
+            $usandoRascunho = true;
+        } else {
+            // Gerar nova descrição com GPT usando dados ATUALIZADOS
+            try {
+                $descricaoFormal = \LEX\App\Services\AI\OpenAIService::gerarDescricaoFormal($demanda, $arquivos);
+            } catch (\Throwable $e) {
+                error_log("Erro ao gerar descrição com GPT: " . $e->getMessage());
+                $descricaoFormal = $demanda['description'] ?? '';
+            }
         }
         
-        // Registrar na timeline
-        TimelineService::registrar($id, 'apresentacao_gerada', 'Apresentação PDF gerada pela equipe', 'equipe', Auth::equipeId());
+        // Renderizar página de edição
+        $conteudo = View::renderizar(__DIR__ . '/../../Views/equipe/demandas-pdf-editor.php', [
+            'demanda' => $demanda,
+            'arquivos' => $arquivos,
+            'propostas' => $propostas,
+            'descricaoFormal' => $descricaoFormal,
+            'logoSistema' => $logoSistema,
+            'nomeSistema' => $nomeSistema,
+            'usandoRascunho' => $usandoRascunho,
+            'rascunhoData' => $draft['pdf_draft_updated_at'] ?? null,
+        ]);
         
-        // Renderizar HTML
+        return Resposta::html(View::renderizar(__DIR__ . '/../../Views/_layouts/painel.php', [
+            'conteudo' => $conteudo, 
+            'painelTipo' => 'equipe',
+            'pageTitle' => 'Editar Apresentação PDF',
+            'breadcrumbs' => [
+                ['label' => I18n::t('sidebar.demandas'), 'url' => '/equipe/demandas'], 
+                ['label' => $demanda['code'], 'url' => '/equipe/demandas/' . $id],
+                ['label' => 'Editar PDF']
+            ],
+        ]));
+    }
+    
+    public function salvarRascunhoPdf(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        $descricaoFormal = $req->post('descricao_formal', '');
+        
+        $draftData = json_encode([
+            'descricao_formal' => $descricaoFormal,
+            'updated_by' => Auth::equipeId(),
+        ], JSON_UNESCAPED_UNICODE);
+        
+        $pdo = \LEX\Core\BancoDeDados::obter();
+        $stmt = $pdo->prepare(
+            "UPDATE demandas 
+             SET pdf_draft_content = :draft, pdf_draft_updated_at = NOW() 
+             WHERE id = :id"
+        );
+        $stmt->execute(['draft' => $draftData, 'id' => $id]);
+        
+        return Resposta::json(['success' => true, 'message' => 'Rascunho salvo com sucesso']);
+    }
+    
+    public function regerarDescricaoPdf(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        $demanda = DemandasService::obterPorId($id);
+        
+        if (!$demanda) {
+            return Resposta::json(['success' => false, 'message' => 'Demanda não encontrada'], 404);
+        }
+        
+        // Buscar arquivos ATUALIZADOS
+        $arquivos = ArquivosService::listarPorDemanda($id);
+        
+        // Gerar nova descrição com dados ATUALIZADOS
+        try {
+            $descricaoFormal = \LEX\App\Services\AI\OpenAIService::gerarDescricaoFormal($demanda, $arquivos);
+            
+            // Salvar como rascunho
+            $draftData = json_encode([
+                'descricao_formal' => $descricaoFormal,
+                'updated_by' => Auth::equipeId(),
+            ], JSON_UNESCAPED_UNICODE);
+            
+            $pdo = \LEX\Core\BancoDeDados::obter();
+            $stmt = $pdo->prepare(
+                "UPDATE demandas 
+                 SET pdf_draft_content = :draft, pdf_draft_updated_at = NOW() 
+                 WHERE id = :id"
+            );
+            $stmt->execute(['draft' => $draftData, 'id' => $id]);
+            
+            TimelineService::registrar($id, 'pdf_regenerado', 'Descrição do PDF regenerada com dados atualizados', 'equipe', Auth::equipeId());
+            
+            return Resposta::json([
+                'success' => true, 
+                'descricao_formal' => $descricaoFormal,
+                'message' => 'Descrição regenerada com sucesso usando dados atualizados'
+            ]);
+        } catch (\Throwable $e) {
+            return Resposta::json([
+                'success' => false, 
+                'message' => 'Erro ao regenerar: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    public function finalizarPdf(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        $demanda = DemandasService::obterPorId($id);
+        
+        if (!$demanda) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Demanda não encontrada'];
+            return Resposta::redirecionar('/equipe/demandas');
+        }
+        
+        // Buscar dados do rascunho
+        $pdo = \LEX\Core\BancoDeDados::obter();
+        $stmt = $pdo->prepare("SELECT pdf_draft_content FROM demandas WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        $draft = $stmt->fetch();
+        
+        $descricaoFormal = '';
+        if (!empty($draft['pdf_draft_content'])) {
+            $draftData = json_decode($draft['pdf_draft_content'], true);
+            $descricaoFormal = $draftData['descricao_formal'] ?? '';
+        }
+        
+        // Buscar arquivos e propostas
+        $arquivos = ArquivosService::listarPorDemanda($id);
+        $propostas = PropostasService::listarPorDemanda($id);
+        
+        // Buscar logo do sistema
+        $logoSistema = \LEX\Core\Settings::obter('sistema.logo', '');
+        $nomeSistema = \LEX\Core\Settings::obter('sistema.nome', 'Lexus');
+        
+        // Registrar na timeline
+        TimelineService::registrar($id, 'pdf_finalizado', 'Apresentação PDF finalizada e disponível para download', 'equipe', Auth::equipeId());
+        
+        // Atualizar registro de finalização
+        $stmt = $pdo->prepare(
+            "UPDATE demandas 
+             SET pdf_finalized_at = NOW(), pdf_finalized_by = :user_id 
+             WHERE id = :id"
+        );
+        $stmt->execute(['user_id' => Auth::equipeId(), 'id' => $id]);
+        
+        // Renderizar HTML final
         $html = View::renderizar(__DIR__ . '/../../Views/equipe/demandas-apresentacao-pdf.php', [
             'demanda' => $demanda,
             'arquivos' => $arquivos,
-            'timeline' => $timeline,
+            'propostas' => $propostas,
             'descricaoFormal' => $descricaoFormal,
             'logoSistema' => $logoSistema,
             'nomeSistema' => $nomeSistema,
         ]);
         
         return Resposta::html($html);
+    }
+    
+    public function downloadPdf(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        
+        // Redirecionar para finalizar PDF (que gera o HTML pronto para impressão)
+        return Resposta::redirecionar('/equipe/demandas/' . $id . '/pdf/finalizar');
     }
 }
