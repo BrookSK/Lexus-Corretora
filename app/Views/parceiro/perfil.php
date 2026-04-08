@@ -166,36 +166,38 @@ if (!empty($parceiro['service_states'])) {
       ?>
     </div>
 
+    <?php if (!empty($cidadesSelecionadas) && count($cidadesSelecionadas) > 1): ?>
     <div class="form-group">
-      <label><?php echo View::e(I18n::t('parceiro.cidades_atendimento')); ?> (Múltiplas)</label>
-      <div id="cidadesContainer">
-        <?php if (!empty($cidadesSelecionadas) && count($cidadesSelecionadas) > 1): ?>
-          <?php foreach (array_slice($cidadesSelecionadas, 1) as $cidade): ?>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-            <input type="text" name="service_cities_extra[]" value="<?php echo View::e($cidade); ?>" style="flex:1" placeholder="Nome da cidade"/>
-            <button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;padding:4px" aria-label="Remover cidade">&times;</button>
-          </div>
-          <?php endforeach; ?>
-        <?php endif; ?>
+      <label>Outras cidades de atendimento</label>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+        <?php foreach (array_slice($cidadesSelecionadas, 1) as $cidade): ?>
+          <span style="background:var(--bg-surface);border:1px solid var(--border);padding:6px 12px;border-radius:4px;font-size:.85rem"><?php echo View::e($cidade); ?></span>
+        <?php endforeach; ?>
       </div>
-      <button type="button" onclick="adicionarCidadeExtra()" class="btn btn-secondary btn-sm" style="margin-top:6px">+ Adicionar outra cidade</button>
-      <small style="color:var(--text-muted);font-size:.75rem;display:block;margin-top:4px">A primeira cidade é selecionada acima. Aqui você pode adicionar outras cidades que atende.</small>
+    </div>
+    <?php endif; ?>
+
+    <div class="form-group">
+      <label>Adicionar mais cidades de atendimento</label>
+      <div id="cidadesContainer"></div>
+      <button type="button" onclick="adicionarCidadeExtra()" class="btn btn-secondary btn-sm" style="margin-top:6px">+ Adicionar cidade</button>
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label><?php echo View::e(I18n::t('parceiro.tempo_mercado')); ?></label>
-        <input type="number" name="years_in_market" min="0" value="<?php echo View::e((string)($parceiro['years_in_market'] ?? '')); ?>"/>
+        <input type="number" name="years_in_market" min="0" value="<?php echo View::e((string)($parceiro['years_in_market'] ?? '')); ?>" placeholder="Anos"/>
       </div>
       <div class="form-group">
         <label>CREA / CAU</label>
-        <input type="text" name="crea_cau" value="<?php echo View::e($parceiro['crea_cau'] ?? ''); ?>"/>
+        <input type="text" name="crea_cau" value="<?php echo View::e($parceiro['crea_cau'] ?? ''); ?>" placeholder="Número do registro"/>
       </div>
     </div>
 
     <div class="form-group">
       <label>Descrição / Bio *</label>
-      <textarea name="description" required placeholder="Descreva sua empresa, experiência e diferenciais..."><?php echo View::e($parceiro['bio'] ?? $parceiro['description'] ?? ''); ?></textarea>
+      <textarea name="description" required rows="5" placeholder="Descreva sua empresa, experiência e diferenciais..."><?php echo View::e($parceiro['bio'] ?? $parceiro['description'] ?? ''); ?></textarea>
+      <small style="color:var(--text-muted);font-size:.75rem;display:block;margin-top:4px">Conte sobre sua empresa, principais trabalhos realizados e o que te diferencia no mercado.</small>
     </div>
   </div>
 
