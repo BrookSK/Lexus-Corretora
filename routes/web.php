@@ -166,7 +166,7 @@ Roteador::get('/parceiro/redefinir-senha/{token}', [ParceiroAuth::class, 'redefi
 Roteador::post('/parceiro/redefinir-senha', [ParceiroAuth::class, 'redefinirSenha']);
 Roteador::get('/parceiro/sair', [ParceiroAuth::class, 'logout']);
 
-$parMw = [Middlewares::exigirLoginParceiro()];
+$parMw = [Middlewares::exigirLoginParceiro(), Middlewares::exigirPerfilCompletoParceiro()];
 Roteador::get('/parceiro/dashboard', [ParceiroDashboard::class, 'index'], $parMw);
 Roteador::get('/parceiro/oportunidades', [ParceiroOportunidades::class, 'index'], $parMw);
 Roteador::get('/parceiro/oportunidades/{id}', [ParceiroOportunidades::class, 'detalhe'], $parMw);
@@ -175,17 +175,20 @@ Roteador::get('/parceiro/propostas', [ParceiroPropostas::class, 'index'], $parMw
 Roteador::get('/parceiro/propostas/nova/{demandaId}', [ParceiroPropostas::class, 'criar'], $parMw);
 Roteador::post('/parceiro/propostas/nova', [ParceiroPropostas::class, 'salvar'], $parMw);
 Roteador::get('/parceiro/comissoes', [ParceiroComissoes::class, 'index'], $parMw);
-Roteador::get('/parceiro/perfil', [ParceiroPerfil::class, 'index'], $parMw);
-Roteador::post('/parceiro/perfil', [ParceiroPerfil::class, 'salvar'], $parMw);
 Roteador::get('/parceiro/mensagens', [ParceiroMensagens::class, 'index'], $parMw);
 Roteador::post('/parceiro/mensagens/enviar', [ParceiroMensagens::class, 'enviar'], $parMw);
 Roteador::get('/parceiro/contratos', [ParceiroContratos::class, 'index'], $parMw);
 Roteador::get('/parceiro/contratos/{id}', [ParceiroContratos::class, 'detalhe'], $parMw);
-Roteador::get('/parceiro/minha-conta', [ParceiroConta::class, 'index'], $parMw);
-Roteador::post('/parceiro/minha-conta', [ParceiroConta::class, 'salvar'], $parMw);
 Roteador::get('/parceiro/repasse', [ParceiroRepasse::class, 'index'], $parMw);
 Roteador::get('/parceiro/repasse/nova', [ParceiroRepasse::class, 'criar'], $parMw);
 Roteador::post('/parceiro/repasse/nova', [ParceiroRepasse::class, 'salvar'], $parMw);
+
+// Rotas de perfil e conta SEM o middleware de perfil completo (para permitir completar)
+$parMwBasico = [Middlewares::exigirLoginParceiro()];
+Roteador::get('/parceiro/perfil', [ParceiroPerfil::class, 'index'], $parMwBasico);
+Roteador::post('/parceiro/perfil', [ParceiroPerfil::class, 'salvar'], $parMwBasico);
+Roteador::get('/parceiro/minha-conta', [ParceiroConta::class, 'index'], $parMwBasico);
+Roteador::post('/parceiro/minha-conta', [ParceiroConta::class, 'salvar'], $parMwBasico);
 
 // ═══════════════════════════════════════════════════════════════
 // ROTAS EQUIPE / ADMIN
