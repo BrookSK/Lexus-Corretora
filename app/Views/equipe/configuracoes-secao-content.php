@@ -278,8 +278,10 @@ try {
     <input type="password" name="gpt.api_key" value="" placeholder="Deixe vazio para manter a chave atual"/>
     <small style="font-size:.75rem;color:var(--text-muted)">
       Sua chave de API do OpenAI (começa com sk-...). 
-      <?php if (!empty($settings['gpt.api_key'])): ?>
-        <span style="color:var(--gold)">✓ Chave configurada</span>
+      <?php 
+      $gptKey = $settings['gpt.api_key'] ?? '';
+      if (!empty($gptKey) && strlen($gptKey) > 10): ?>
+        <span style="color:var(--gold)">✓ Chave configurada (<?php echo substr($gptKey, 0, 7); ?>...<?php echo substr($gptKey, -4); ?>)</span>
       <?php else: ?>
         <span style="color:#ef4444">✗ Nenhuma chave configurada</span>
       <?php endif; ?>

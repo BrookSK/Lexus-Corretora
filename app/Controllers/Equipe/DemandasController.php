@@ -301,6 +301,10 @@ final class DemandasController
         // Buscar timeline
         $timeline = TimelineService::listarPorDemanda($id);
         
+        // Buscar logo do sistema
+        $logoSistema = \LEX\Core\Settings::obter('sistema.logo', '');
+        $nomeSistema = \LEX\Core\Settings::obter('sistema.nome', 'Lexus');
+        
         // Gerar descrição formal com GPT (incluindo legendas das fotos)
         try {
             $descricaoFormal = \LEX\App\Services\AI\OpenAIService::gerarDescricaoFormal($demanda, $arquivos);
@@ -318,6 +322,8 @@ final class DemandasController
             'arquivos' => $arquivos,
             'timeline' => $timeline,
             'descricaoFormal' => $descricaoFormal,
+            'logoSistema' => $logoSistema,
+            'nomeSistema' => $nomeSistema,
         ]);
         
         return Resposta::html($html);

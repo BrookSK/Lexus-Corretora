@@ -99,7 +99,14 @@ final class ConfigController
         $uploadFields = array_keys($uploadMap);
 
         // Salvar campos de texto (ignorar campos vazios de senha/chave)
-        $camposSensiveis = ['smtp.senha', 'stripe.test_secret_key', 'stripe.test_webhook_secret', 'stripe.live_secret_key', 'stripe.live_webhook_secret', 'asaas.sandbox_api_key', 'asaas.sandbox_webhook_token', 'asaas.production_api_key', 'asaas.production_webhook_token'];
+        $camposSensiveis = [
+            'smtp.senha', 
+            'stripe.test_secret_key', 'stripe.test_webhook_secret', 
+            'stripe.live_secret_key', 'stripe.live_webhook_secret', 
+            'asaas.sandbox_api_key', 'asaas.sandbox_webhook_token', 
+            'asaas.production_api_key', 'asaas.production_webhook_token',
+            'gpt.api_key'
+        ];
         foreach ($dados as $chave => $valor) {
             if (in_array($chave, $uploadFields, true)) continue;
             // PHP converte pontos em underscores em nomes de campos multipart — reverter
@@ -210,6 +217,8 @@ final class ConfigController
             'trello_api_key' => 'trello.api_key', 'trello_api_token' => 'trello.api_token',
             'trello_list_id' => 'trello.list_id', 'trello_list_contato' => 'trello.list_contato',
             'trello_list_demanda' => 'trello.list_demanda', 'trello_list_parceiro' => 'trello.list_parceiro',
+            'gpt_api_key' => 'gpt.api_key', 'gpt_model' => 'gpt.model',
+            'gpt_temperature' => 'gpt.temperature', 'gpt_max_tokens' => 'gpt.max_tokens',
             'comissao_empresa_pct' => 'comissao.empresa_pct',
             'comissao_parceiro_origem_pct' => 'comissao.parceiro_origem_pct',
         ];
@@ -228,6 +237,7 @@ final class ConfigController
             'geral' => ['sistema.idioma_padrao', 'sistema.moeda_padrao', 'sistema.timezone'],
             'legal' => ['legal.termos', 'legal.privacidade'],
             'trello' => ['trello.api_key', 'trello.api_token', 'trello.list_id', 'trello.list_contato', 'trello.list_demanda', 'trello.list_parceiro'],
+            'gpt' => ['gpt.api_key', 'gpt.model', 'gpt.temperature', 'gpt.max_tokens'],
             'comissoes' => ['comissao.empresa_pct', 'comissao.parceiro_origem_pct'],
         ];
         $keys = $map[$secao] ?? [];
