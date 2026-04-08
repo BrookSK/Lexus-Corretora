@@ -147,8 +147,18 @@ final class InicialController
         $dadosDemanda['cliente_id'] = $clienteId;
         $dadosDemanda['origin']     = 'lead';
         $dadosDemanda['status']     = 'novo';
+        
+        \LEX\Core\AppLogger::info('salvarDemanda antes de criar demanda', ['dadosDemanda' => $dadosDemanda]);
+        
         $demandaId = DemandasService::criar($dadosDemanda);
-        \LEX\Core\AppLogger::info('salvarDemanda demanda criada', ['demandaId'=>$demandaId]);
+        \LEX\Core\AppLogger::info('salvarDemanda demanda criada', ['demandaId'=>$demandaId, 'clienteId'=>$clienteId]);
+        
+        // Verificar se o vínculo foi salvo
+        $verificacao = $pdo->prepare("SELECT cliente_id FROM demandas WHERE id = :id");
+        $verificacao->execute(['id' => $demandaId]);
+        $clienteIdSalvo = $verificacao->fetchColumn();
+        \LEX\Core\AppLogger::info('salvarDemanda verificacao vinculo', ['demandaId'=>$demandaId, 'clienteIdSalvo'=>$clienteIdSalvo, 'clienteIdEsperado'=>$clienteId]);
+        
         TimelineService::registrar($demandaId, 'demanda_criada', 'Demanda criada via formulário público', 'cliente', $clienteId);
 
         // Processar arquivos enviados

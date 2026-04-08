@@ -374,4 +374,18 @@ final class DemandasService
 
         return ['items' => $stmt->fetchAll(), 'total' => $total];
     }
+
+    public static function obterParceirosVinculados(int $demandaId): array
+    {
+        $pdo = BancoDeDados::obter();
+        $stmt = $pdo->prepare(
+            "SELECT DISTINCT p.id, p.name, p.email
+             FROM propostas pr
+             INNER JOIN parceiros p ON p.id = pr.parceiro_id
+             WHERE pr.demanda_id = :demanda_id
+             AND p.is_active = 1"
+        );
+        $stmt->execute(['demanda_id' => $demandaId]);
+        return $stmt->fetchAll();
+    }
 }

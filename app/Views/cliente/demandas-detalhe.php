@@ -29,9 +29,15 @@ $urgenciaBadge = [
       <span class="badge <?php echo $urgenciaBadge[$demanda['urgency'] ?? 'media'] ?? 'badge-gray'; ?>" style="margin-left:8px">
         <?php echo View::e(ucfirst($demanda['urgency'] ?? 'media')); ?>
       </span>
+      <?php if (!empty($demanda['pending_review'])): ?>
+      <span class="badge badge-gold" style="margin-left:8px">⏳ Aguardando Revisão</span>
+      <?php endif; ?>
     </p>
   </div>
-  <a href="/cliente/demandas" class="btn btn-secondary"><?php echo View::e(I18n::t('geral.voltar')); ?></a>
+  <div style="display:flex;gap:8px">
+    <a href="/cliente/demandas/<?php echo (int)$demanda['id']; ?>/editar" class="btn btn-primary">Editar Demanda</a>
+    <a href="/cliente/demandas" class="btn btn-secondary"><?php echo View::e(I18n::t('geral.voltar')); ?></a>
+  </div>
 </div>
 
 <!-- Informações Gerais -->
@@ -68,6 +74,133 @@ $urgenciaBadge = [
   <h3 class="card-title"><?php echo View::e(I18n::t('demanda.descricao')); ?></h3>
   <p style="margin-top:12px;font-size:.88rem;line-height:1.6;white-space:pre-wrap"><?php echo View::e($demanda['description']); ?></p>
 </div>
+<?php endif; ?>
+
+<!-- Fotos e Vídeos do Projeto -->
+<?php if (!empty($arquivos)): ?>
+<div style="margin-bottom:32px">
+  <h2 class="section-title" style="margin-bottom:16px">📸 Fotos e Vídeos do Projeto</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px">
+    <?php foreach ($arquivos as $index => $arq): ?>
+    <div style="border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.05)">
+      <?php if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $arq['file_path'])): ?>
+        <div onclick="abrirLightbox(<?php echo $index; ?>)" style="cursor:pointer;position:relative;overflow:hidden">
+          <img src="<?php echo View::e($arq['file_path']); ?>" style="width:100%;height:200px;object-fit:cover;transition:transform .3s" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+          <div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;padding:4px 8px;border-radius:4px;font-size:.7rem">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle">
+              <polyline points="15 3 21 3 21 9"/>
+              <polyline points="9 21 3 21 3 15"/>
+              <line x1="21" y1="3" x2="14" y2="10"/>
+              <line x1="3" y1="21" x2="10" y2="14"/>
+            </svg>
+          </div>
+        </div>
+      <?php elseif (preg_match('/\.(mp4|webm|mov)$/i', $arq['file_path'])): ?>
+        <div onclick="abrirLightbox(<?php echo $index; ?>)" style="cursor:pointer;position:relative">
+          <video src="<?php echo View::e($arq['file_path']); ?>" style="width:100%;height:200px;object-fit:cover"></video>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.7);color:#fff;padding:12px;border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+          </div>
+        </div>
+      <?php endif; ?>
+      <div style="padding:12px">
+        <div style="font-size:.8rem;color:#666;margin-bottom:6px;word-break:break-all">
+          <?php echo View::e(basename($arq['file_path'])); ?>
+        </div>
+        <?php if (!empty($arq['caption'])): ?>
+        <div style="font-size:.85rem;color:#333;background:#f9f9f9;padding:8px;border-radius:4px;border-left:3px solid var(--gold);line-height:1.5">
+          <?php echo nl2br(View::e($arq['caption'])); ?>
+        </div>
+        <?php endif; ?>
+      </div>
+    </div>
+    <?php endforeach; ?>
+  </div>
+</div>
+
+<!-- Lightbox Modal -->
+<div id="lightboxModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:9999;overflow:hidden">
+  <button onclick="fecharLightbox()" style="position:absolute;top:20px;right:20px;background:rgba(255,255,255,.1);border:2px solid #fff;color:#fff;width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;z-index:10001;transition:all .2s">✕</button>
+  <button onclick="navegarLightbox(-1)" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:2px solid #fff;color:#fff;width:56px;height:56px;border-radius:50%;cursor:pointer;font-size:28px;display:flex;align-items:center;justify-content:center;z-index:10001;transition:all .2s">‹</button>
+  <button onclick="navegarLightbox(1)" style="position:absolute;right:20px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:2px solid #fff;color:#fff;width:56px;height:56px;border-radius:50%;cursor:pointer;font-size:28px;display:flex;align-items:center;justify-content:center;z-index:10001;transition:all .2s">›</button>
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:90%;max-height:90%;width:auto;height:auto;display:flex;flex-direction:column;align-items:center">
+    <div id="lightboxContent" style="max-width:100%;max-height:calc(90vh - 100px);display:flex;align-items:center;justify-content:center"></div>
+    <div id="lightboxCaption" style="color:#fff;margin-top:20px;text-align:center;max-width:800px;font-size:1rem;line-height:1.6;padding:0 20px"></div>
+  </div>
+  <div style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:#fff;font-size:.9rem;background:rgba(0,0,0,.5);padding:8px 16px;border-radius:20px">
+    <span id="lightboxCounter"></span>
+  </div>
+</div>
+
+<script>
+const arquivosData = <?php echo json_encode(array_values($arquivos)); ?>;
+let currentIndex = 0;
+
+function abrirLightbox(index) {
+  currentIndex = index;
+  mostrarArquivo();
+  document.getElementById('lightboxModal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharLightbox() {
+  document.getElementById('lightboxModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+  const video = document.querySelector('#lightboxContent video');
+  if (video) video.pause();
+}
+
+function navegarLightbox(direcao) {
+  currentIndex += direcao;
+  if (currentIndex < 0) currentIndex = arquivosData.length - 1;
+  if (currentIndex >= arquivosData.length) currentIndex = 0;
+  mostrarArquivo();
+}
+
+function mostrarArquivo() {
+  const arquivo = arquivosData[currentIndex];
+  const content = document.getElementById('lightboxContent');
+  const caption = document.getElementById('lightboxCaption');
+  const counter = document.getElementById('lightboxCounter');
+  
+  content.innerHTML = '';
+  
+  const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(arquivo.file_path);
+  const isVideo = /\.(mp4|webm|mov)$/i.test(arquivo.file_path);
+  
+  if (isImage) {
+    const img = document.createElement('img');
+    img.src = arquivo.file_path;
+    img.style.cssText = 'max-width:100%;max-height:calc(90vh - 100px);object-fit:contain;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.5)';
+    content.appendChild(img);
+  } else if (isVideo) {
+    const video = document.createElement('video');
+    video.src = arquivo.file_path;
+    video.controls = true;
+    video.autoplay = true;
+    video.style.cssText = 'max-width:100%;max-height:calc(90vh - 100px);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.5)';
+    content.appendChild(video);
+  }
+  
+  caption.textContent = arquivo.caption || '';
+  counter.textContent = (currentIndex + 1) + ' / ' + arquivosData.length;
+}
+
+document.addEventListener('keydown', function(e) {
+  const modal = document.getElementById('lightboxModal');
+  if (modal.style.display === 'block') {
+    if (e.key === 'Escape') fecharLightbox();
+    if (e.key === 'ArrowLeft') navegarLightbox(-1);
+    if (e.key === 'ArrowRight') navegarLightbox(1);
+  }
+});
+
+document.getElementById('lightboxModal').addEventListener('click', function(e) {
+  if (e.target === this) fecharLightbox();
+});
+</script>
 <?php endif; ?>
 
 <!-- Observações -->

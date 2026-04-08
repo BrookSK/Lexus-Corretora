@@ -142,6 +142,8 @@ Roteador::get('/cliente/demandas', [ClienteDemandas::class, 'index'], $cliMw);
 Roteador::get('/cliente/demandas/nova', [ClienteDemandas::class, 'criar'], $cliMw);
 Roteador::post('/cliente/demandas/nova', [ClienteDemandas::class, 'salvar'], $cliMw);
 Roteador::get('/cliente/demandas/{id}', [ClienteDemandas::class, 'detalhe'], $cliMw);
+Roteador::get('/cliente/demandas/{id}/editar', [ClienteDemandas::class, 'editar'], $cliMw);
+Roteador::post('/cliente/demandas/{id}/editar', [ClienteDemandas::class, 'atualizar'], $cliMw);
 Roteador::get('/cliente/propostas', [ClientePropostas::class, 'index'], $cliMw);
 Roteador::get('/cliente/mensagens', [ClienteMensagens::class, 'index'], $cliMw);
 Roteador::post('/cliente/mensagens/enviar', [ClienteMensagens::class, 'enviar'], $cliMw);

@@ -96,6 +96,28 @@ final class EventosService
         }
     }
 
+    public static function criarEventoSeNaoExiste(string $slug, string $nome, string $descricao, array $destinatarios, string $template): void
+    {
+        $pdo = BancoDeDados::obter();
+        $stmt = $pdo->prepare("SELECT id FROM notificacao_eventos WHERE slug = :slug");
+        $stmt->execute(['slug' => $slug]);
+        
+        if (!$stmt->fetch()) {
+            $stmt = $pdo->prepare(
+                "INSERT INTO notificacao_eventos (slug, name, description, is_active, destinatarios, template_message, available_variables)
+                 VALUES (:slug, :name, :description, 1, :destinatarios, :template, :variables)"
+            );
+            $stmt->execute([
+                'slug' => $slug,
+                'name' => $nome,
+                'description' => $descricao,
+                'destinatarios' => json_encode($destinatarios, JSON_UNESCAPED_UNICODE),
+                'template' => $template,
+                'variables' => json_encode(['demanda_codigo', 'demanda_titulo', 'cliente_nome'], JSON_UNESCAPED_UNICODE)
+            ]);
+        }
+    }
+
     private static function processarTemplate(string $template, array $variaveis): string
     {
         $mensagem = $template;
