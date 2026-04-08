@@ -284,4 +284,42 @@ final class DemandasController
             return Resposta::json(['success' => false, 'message' => 'Erro ao excluir demanda: ' . $e->getMessage()], 500);
         }
     }
+
+    public function gerarApresentacao(Requisicao $req): Resposta
+    {
+        $id = (int)$req->param('id');
+        $demanda = DemandasService::obterPorId($id);
+        
+        if (!$demanda) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Demanda não encontrada'];
+            return Resposta::redirecionar('/equipe/demandas');
+        }
+        
+        // Buscar arquivos
+        $arquivos = ArquivosService::listarPorDemanda($id);
+        
+        // Buscar timeline
+        $timeline = TimelineService::listarPorDemanda($id);
+        
+        // Gerar descrição formal com GPT
+        try {
+            $descricaoFormal = \LEX\App\Services\AI\OpenAIService::gerarDescricaoFormal($demanda);
+        } catch (\Throwable $e) {
+            error_log("Erro ao gerar descrição com GPT: " . $e->getMessage());
+            $descricaoFormal = $demanda['description'] ?? '';
+        }
+        
+        // Registrar na timeline
+        TimelineService::registrar($id, 'apresentacao_gerada', 'Apresentação PDF gerada pela equipe', 'equipe', Auth::equipeId());
+        
+        // Renderizar HTML
+        $html = View::renderizar(__DIR__ . '/../../Views/equipe/demandas-apresentacao-pdf.php', [
+            'demanda' => $demanda,
+            'arquivos' => $arquivos,
+            'timeline' => $timeline,
+            'descricaoFormal' => $descricaoFormal,
+        ]);
+        
+        return Resposta::html($html);
+    }
 }

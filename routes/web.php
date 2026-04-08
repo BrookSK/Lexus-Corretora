@@ -239,6 +239,7 @@ Roteador::post('/equipe/demandas/{id}/aprovar-repasse', [EquipeDemandas::class, 
 Roteador::post('/equipe/demandas/arquivo/{id}/remover', [EquipeDemandas::class, 'removerArquivo'], $eqMw);
 Roteador::post('/equipe/demandas/{id}/atribuir-cliente', [EquipeDemandas::class, 'atribuirCliente'], $eqMw);
 Roteador::post('/equipe/demandas/{id}/excluir', [EquipeDemandas::class, 'excluir'], $eqMw);
+Roteador::get('/equipe/demandas/{id}/apresentacao', [EquipeDemandas::class, 'gerarApresentacao'], $eqMw);
 
 // Distribuição
 Roteador::get('/equipe/distribuicao/{demandaId}', [DistribuicaoController::class, 'index'], $eqMw);
