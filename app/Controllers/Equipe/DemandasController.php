@@ -215,4 +215,47 @@ final class DemandasController
         $_SESSION['flash'] = ['type' => 'success', 'message' => 'Repasse aprovado com sucesso!'];
         return Resposta::redirecionar('/equipe/demandas/' . $id);
     }
+
+    public function atribuirCliente(Requisicao $req): Resposta
+    {
+        $demandaId = (int)$req->param('id');
+        $clienteId = (int)$req->post('cliente_id', '0');
+        
+        if ($clienteId <= 0) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Selecione um cliente válido'];
+            return Resposta::redirecionar('/equipe/demandas/' . $demandaId);
+        }
+        
+        // Verificar se cliente existe
+        $pdo = \LEX\Core\BancoDeDados::obter();
+        $stmt = $pdo->prepare("SELECT id, name FROM clientes WHERE id = :id AND is_active = 1");
+        $stmt->execute(['id' => $clienteId]);
+        $cliente = $stmt->fetch();
+        
+        if (!$cliente) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => 'Cliente não encontrado'];
+            return Resposta::redirecionar('/equipe/demandas/' . $demandaId);
+        }
+        
+        // Atualizar demanda
+        DemandasService::atualizar($demandaId, ['cliente_id' => $clienteId]);
+        
+        // Registrar na timeline
+        TimelineService::registrar(
+            $demandaId, 
+            'cliente_atribuido', 
+            "Cliente vinculado: {$cliente['name']}", 
+            'equipe', 
+            Auth::equipeId()
+        );
+        
+        // Registrar no audit
+        AuditService::registrar('equipe', Auth::equipeId(), 'demanda.atribuir_cliente', 'demandas', $demandaId, [
+            'cliente_id' => $clienteId,
+            'cliente_nome' => $cliente['name']
+        ]);
+        
+        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Cliente vinculado com sucesso!'];
+        return Resposta::redirecionar('/equipe/demandas/' . $demandaId);
+    }
 }

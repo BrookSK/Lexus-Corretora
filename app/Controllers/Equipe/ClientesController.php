@@ -88,6 +88,38 @@ final class ClientesController
         return Resposta::redirecionar('/equipe/clientes/' . $id);
     }
 
+    public function buscar(Requisicao $req): Resposta
+    {
+        $termo = trim($req->get('q', ''));
+        
+        if (strlen($termo) < 2) {
+            return Resposta::json([]);
+        }
+        
+        $pdo = \LEX\Core\BancoDeDados::obter();
+        $stmt = $pdo->prepare(
+            "SELECT id, name, email, phone, company 
+             FROM clientes 
+             WHERE (name LIKE :termo OR email LIKE :termo OR phone LIKE :termo)
+             AND is_active = 1
+             ORDER BY name ASC 
+             LIMIT 20"
+        );
+        $stmt->execute(['termo' => "%{$termo}%"]);
+        $clientes = $stmt->fetchAll();
+        
+        return Resposta::json($clientes);
+    }
+    {
+        $id = (int)$req->param('id');
+        $dados = $req->todosPost();
+        unset($dados['_csrf_token']);
+        ClientesService::atualizar($id, $dados);
+        AuditService::registrar('equipe', Auth::equipeId(), 'cliente.atualizar', 'clientes', $id);
+        $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
+        return Resposta::redirecionar('/equipe/clientes/' . $id);
+    }
+
     public function loginAs(Requisicao $req): Resposta
     {
         $id = (int)$req->param('id');

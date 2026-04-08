@@ -102,7 +102,10 @@ final class DemandasService
     {
         $pdo = BancoDeDados::obter();
         $stmt = $pdo->prepare(
-            "SELECT d.*, c.name AS cliente_nome, c.email AS cliente_email,
+            "SELECT d.*, 
+                    c.name AS cliente_nome, 
+                    c.email AS cliente_email,
+                    c.phone AS cliente_phone,
                     u.name AS responsavel_nome
              FROM demandas d
              LEFT JOIN clientes c ON c.id = d.cliente_id
