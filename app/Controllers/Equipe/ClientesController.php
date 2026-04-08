@@ -110,15 +110,6 @@ final class ClientesController
         
         return Resposta::json($clientes);
     }
-    {
-        $id = (int)$req->param('id');
-        $dados = $req->todosPost();
-        unset($dados['_csrf_token']);
-        ClientesService::atualizar($id, $dados);
-        AuditService::registrar('equipe', Auth::equipeId(), 'cliente.atualizar', 'clientes', $id);
-        $_SESSION['flash'] = ['type' => 'success', 'message' => I18n::t('geral.sucesso')];
-        return Resposta::redirecionar('/equipe/clientes/' . $id);
-    }
 
     public function loginAs(Requisicao $req): Resposta
     {

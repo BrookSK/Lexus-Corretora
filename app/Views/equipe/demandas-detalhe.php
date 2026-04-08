@@ -446,20 +446,35 @@ let timeoutBusca = null;
 function buscarClientes(termo) {
   clearTimeout(timeoutBusca);
   
+  const lista = document.getElementById('listaClientes');
+  
   if (termo.length < 2 && termo.length > 0) {
-    document.getElementById('listaClientes').innerHTML = '<div style="padding:20px;text-align:center;color:#999;font-size:.85rem">Digite pelo menos 2 caracteres...</div>';
+    lista.innerHTML = '<div style="padding:20px;text-align:center;color:#999;font-size:.85rem">Digite pelo menos 2 caracteres...</div>';
     return;
   }
   
+  if (termo.length === 0) {
+    lista.innerHTML = '<div style="padding:40px;text-align:center;color:#999;font-size:.9rem">Digite para buscar clientes...</div>';
+    return;
+  }
+  
+  // Mostrar loading
+  lista.innerHTML = '<div style="padding:20px;text-align:center;color:#666;font-size:.85rem">🔍 Buscando...</div>';
+  
   timeoutBusca = setTimeout(() => {
     fetch('/equipe/clientes/buscar?q=' + encodeURIComponent(termo))
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error('Erro na requisição');
+        return r.json();
+      })
       .then(data => {
+        console.log('Clientes encontrados:', data);
         clientesBusca = data;
         renderizarClientes();
       })
-      .catch(() => {
-        document.getElementById('listaClientes').innerHTML = '<div style="padding:20px;text-align:center;color:#dc3545;font-size:.85rem">Erro ao buscar clientes</div>';
+      .catch(err => {
+        console.error('Erro ao buscar clientes:', err);
+        lista.innerHTML = '<div style="padding:20px;text-align:center;color:#dc3545;font-size:.85rem">❌ Erro ao buscar clientes. Tente novamente.</div>';
       });
   }, 300);
 }
@@ -467,18 +482,20 @@ function buscarClientes(termo) {
 function renderizarClientes() {
   const lista = document.getElementById('listaClientes');
   
-  if (clientesBusca.length === 0) {
+  console.log('Renderizando clientes:', clientesBusca);
+  
+  if (!clientesBusca || clientesBusca.length === 0) {
     lista.innerHTML = '<div style="padding:20px;text-align:center;color:#999;font-size:.85rem">Nenhum cliente encontrado</div>';
     return;
   }
   
   lista.innerHTML = clientesBusca.map(cliente => {
-    const selecionado = cliente.id === clienteSelecionado;
+    const selecionado = parseInt(cliente.id) === parseInt(clienteSelecionado);
     return `
-      <div onclick="selecionarCliente(${cliente.id})" style="padding:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;transition:background .2s;${selecionado ? 'background:#f0f8ff;border-left:3px solid var(--gold)' : ''}" onmouseover="this.style.background='#f9f9f9'" onmouseout="this.style.background='${selecionado ? '#f0f8ff' : '#fff'}'">
+      <div onclick="selecionarCliente(${cliente.id})" style="padding:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;transition:background .2s;${selecionado ? 'background:#f0f8ff;border-left:3px solid var(--gold)' : ''}" onmouseover="if(!${selecionado})this.style.background='#f9f9f9'" onmouseout="if(!${selecionado})this.style.background='#fff'">
         <div style="display:flex;align-items:center;justify-content:space-between">
           <div>
-            <div style="font-weight:600;color:#333;margin-bottom:4px">${cliente.name}</div>
+            <div style="font-weight:600;color:#333;margin-bottom:4px">${cliente.name || 'Sem nome'}</div>
             <div style="font-size:.8rem;color:#666">
               ${cliente.email || ''}
               ${cliente.phone ? ' • ' + cliente.phone : ''}
