@@ -23,7 +23,7 @@ use LEX\Core\{View, I18n, Csrf};
       <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:20px">Dados da Empresa</h3>
       <div class="form-row">
         <div class="form-group"><label>Nome / Razão Social *</label><input type="text" name="name" required/></div>
-        <div class="form-group"><label>Nome Fantasia</label><input type="text" name="trade_name"/></div>
+        <div class="form-group"><label>Nome Fantasia *</label><input type="text" name="trade_name" required/></div>
       </div>
       <div class="form-row">
         <div class="form-group">
@@ -45,14 +45,14 @@ use LEX\Core\{View, I18n, Csrf};
         <div class="form-group"><label>WhatsApp *</label><input type="tel" name="whatsapp" required/></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Telefone Fixo</label><input type="tel" name="phone"/></div>
-        <div class="form-group"><label>CREA/CAU</label><input type="text" name="crea_cau" placeholder="Ex: CREA-SP 123456"/></div>
+        <div class="form-group"><label>Telefone Fixo *</label><input type="tel" name="phone" required/></div>
+        <div class="form-group"><label>CREA/CAU *</label><input type="text" name="crea_cau" placeholder="Ex: CREA-SP 123456" required/></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Site</label><input type="text" name="website" placeholder="www.suaempresa.com.br"/></div>
-        <div class="form-group"><label>Instagram</label><input type="text" name="instagram" placeholder="@suaempresa"/></div>
+        <div class="form-group"><label>Site *</label><input type="text" name="website" placeholder="www.suaempresa.com.br" required/></div>
+        <div class="form-group"><label>Instagram *</label><input type="text" name="instagram" placeholder="@suaempresa" required/></div>
       </div>
-      <div class="form-group"><label>LinkedIn</label><input type="text" name="linkedin" placeholder="linkedin.com/company/suaempresa"/></div>
+      <div class="form-group"><label>LinkedIn *</label><input type="text" name="linkedin" placeholder="linkedin.com/company/suaempresa" required/></div>
       
       <div class="form-row">
         <div class="form-group"><label>Senha de acesso <small style="font-weight:400;color:rgba(12,12,10,.4)">(mín. 8 caracteres)</small></label><input type="password" name="password" required minlength="8"/></div>
@@ -69,7 +69,7 @@ use LEX\Core\{View, I18n, Csrf};
         include __DIR__ . '/../_partials/campos-estado-cidade.php';
         ?>
       </div>
-      <div class="form-group"><label>Endereço Completo</label><input type="text" name="address" placeholder="Rua, número, bairro, CEP"/></div>
+      <div class="form-group"><label>Endereço Completo *</label><input type="text" name="address" placeholder="Rua, número, bairro, CEP" required/></div>
 
       <!-- ESPECIALIDADES E SERVIÇOS -->
       <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:32px 0 20px">Especialidades e Serviços</h3>
@@ -99,8 +99,8 @@ use LEX\Core\{View, I18n, Csrf};
       <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:32px 0 20px">Capacidade e Estrutura</h3>
       <div class="form-row">
         <div class="form-group">
-          <label>Tamanho da Equipe</label>
-          <select name="team_size">
+          <label>Tamanho da Equipe *</label>
+          <select name="team_size" required>
             <option value="">— Selecione —</option>
             <option value="1-5">1 a 5 pessoas</option>
             <option value="6-10">6 a 10 pessoas</option>
@@ -110,8 +110,8 @@ use LEX\Core\{View, I18n, Csrf};
           </select>
         </div>
         <div class="form-group">
-          <label>Tempo de Mercado (anos)</label>
-          <input type="number" name="years_in_market" min="0" placeholder="Ex: 10"/>
+          <label>Tempo de Mercado (anos) *</label>
+          <input type="number" name="years_in_market" min="0" placeholder="Ex: 10" required/>
         </div>
       </div>
 
@@ -124,15 +124,15 @@ use LEX\Core\{View, I18n, Csrf};
 
       <div class="form-row">
         <div class="form-group">
-          <label>Ticket Médio Mínimo (R$)</label>
+          <label>Ticket Médio Mínimo (R$) *</label>
           <input type="text" id="ticket_min_display" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"
-                 oninput="mascaraBRL(this,'average_ticket_min')"/>
+                 oninput="mascaraBRL(this,'average_ticket_min')" required/>
           <input type="hidden" name="average_ticket_min" id="average_ticket_min"/>
         </div>
         <div class="form-group">
-          <label>Ticket Médio Máximo (R$)</label>
+          <label>Ticket Médio Máximo (R$) *</label>
           <input type="text" id="ticket_max_display" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"
-                 oninput="mascaraBRL(this,'average_ticket_max')"/>
+                 oninput="mascaraBRL(this,'average_ticket_max')" required/>
           <input type="hidden" name="average_ticket_max" id="average_ticket_max"/>
         </div>
       </div>
@@ -161,18 +161,25 @@ use LEX\Core\{View, I18n, Csrf};
         </small>
       </div>
 
-      <div class="form-group"><label>Link do Portfólio Online</label><input type="text" name="portfolio_url" placeholder="https://..."/></div>
+      <div class="form-group"><label>Link do Portfólio Online *</label><input type="text" name="portfolio_url" placeholder="https://..." required/></div>
 
       <!-- DOCUMENTAÇÃO -->
-      <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:32px 0 20px">Documentação</h3>
+      <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:32px 0 20px">Documentação *</h3>
+      
+      <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);padding:16px;margin-bottom:16px;border-radius:6px">
+        <strong style="color:#dc2626;font-size:.9rem">⚠️ DOCUMENTAÇÃO OBRIGATÓRIA</strong>
+        <p style="margin:8px 0 0;font-size:.85rem;line-height:1.6;color:rgba(12,12,10,.7)">
+          Para garantir a qualidade e segurança da rede, é obrigatório o envio da Certidão de CNPJ Ativo ou documento equivalente.
+        </p>
+      </div>
       
       <div class="form-group">
-        <label>Certidão de CNPJ Ativo</label>
+        <label>Certidão de CNPJ Ativo *</label>
         <div style="background:rgba(184,148,90,.06);border:1px solid rgba(184,148,90,.15);padding:12px;margin-bottom:8px;font-size:.82rem;line-height:1.5">
           Para emitir, acesse: <a href="https://solucoes.receita.fazenda.gov.br/servicos/cnpjreva/cnpjreva_solicitacao.asp" target="_blank" rel="noopener" style="color:var(--gold)">Receita Federal</a>. 
           Insira seu CNPJ, faça o download do cartão e anexe abaixo.
         </div>
-        <input type="file" name="certidao_cnpj" accept=".pdf,.jpg,.jpeg,.png"/>
+        <input type="file" name="certidao_cnpj" accept=".pdf,.jpg,.jpeg,.png" required/>
       </div>
 
       <div class="form-group">
@@ -194,8 +201,8 @@ use LEX\Core\{View, I18n, Csrf};
       </div>
 
       <div class="form-group">
-        <label>Comissão de Repasse (%)</label>
-        <input type="number" name="referral_commission_pct" min="0" max="100" step="0.1" placeholder="Ex: 10" value="10"/>
+        <label>Comissão de Repasse (%) *</label>
+        <input type="number" name="referral_commission_pct" min="0" max="100" step="0.1" placeholder="Ex: 10" value="10" required/>
         <small style="font-size:.75rem;color:rgba(12,12,10,.4);display:block;margin-top:4px">
           Percentual que você está disposto a pagar em comissão por demandas repassadas
         </small>
@@ -245,14 +252,25 @@ function mascaraBRL(input, hiddenId) {
   var f = document.querySelector('form[action="/seja-parceiro"]');
   if(!f) return;
   f.addEventListener('submit', function(e){
+    // Validar senhas
     var p = f.querySelector('[name="password"]');
     var c = f.querySelector('[name="password_confirm"]');
     if(p && c && p.value !== c.value){ 
       e.preventDefault(); 
       c.setCustomValidity('As senhas não coincidem.'); 
       c.reportValidity(); 
+      return;
     } else if(c) { 
       c.setCustomValidity(''); 
+    }
+    
+    // Validar especialidades (pelo menos uma)
+    var specs = f.querySelectorAll('[name="specialties[]"]:checked');
+    if(specs.length === 0){
+      e.preventDefault();
+      alert('Por favor, selecione pelo menos uma especialidade.');
+      document.getElementById('mc-esp-sp').scrollIntoView({behavior: 'smooth', block: 'center'});
+      return;
     }
   });
 })();

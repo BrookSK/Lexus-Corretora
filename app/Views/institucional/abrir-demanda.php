@@ -27,7 +27,7 @@ use LEX\Core\{View, I18n, Csrf};
       </div>
       <div class="form-row">
         <div class="form-group"><label>Telefone / WhatsApp *</label><input type="tel" name="phone" required/></div>
-        <div class="form-group"><label>Empresa (opcional)</label><input type="text" name="company"/></div>
+        <div class="form-group"><label>Empresa *</label><input type="text" name="company" required/></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>Senha de acesso <small style="font-weight:400;color:rgba(12,12,10,.4)">(mín. 8 caracteres)</small></label><input type="password" name="password" required minlength="8"/></div>
@@ -89,14 +89,14 @@ use LEX\Core\{View, I18n, Csrf};
       <!-- DETALHAMENTO TÉCNICO -->
       <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:32px 0 20px">Detalhamento Técnico</h3>
       <div class="form-row">
-        <div class="form-group"><label>Área Aproximada (m²)</label><input type="number" name="area_sqm" step="0.01" placeholder="Ex: 150.00"/></div>
-        <div class="form-group"><label>Quantidade de Ambientes</label><input type="number" name="rooms_count" placeholder="Ex: 5"/></div>
+        <div class="form-group"><label>Área Aproximada (m²) *</label><input type="number" name="area_sqm" step="0.01" placeholder="Ex: 150.00" required/></div>
+        <div class="form-group"><label>Quantidade de Ambientes *</label><input type="number" name="rooms_count" placeholder="Ex: 5" required/></div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label>Idade do Imóvel</label>
-          <select name="property_age">
+          <label>Idade do Imóvel *</label>
+          <select name="property_age" required>
             <option value="">— Selecione —</option>
             <option value="novo">Novo (até 5 anos)</option>
             <option value="medio">Médio (5-15 anos)</option>
@@ -105,8 +105,8 @@ use LEX\Core\{View, I18n, Csrf};
           </select>
         </div>
         <div class="form-group">
-          <label>Situação Atual</label>
-          <select name="current_situation">
+          <label>Situação Atual *</label>
+          <select name="current_situation" required>
             <option value="">— Selecione —</option>
             <option value="vazio">Vazio</option>
             <option value="habitado">Habitado</option>
@@ -117,8 +117,9 @@ use LEX\Core\{View, I18n, Csrf};
 
       <div class="form-row">
         <div class="form-group">
-          <label>Existe Projeto?</label>
-          <select name="has_project">
+          <label>Existe Projeto? *</label>
+          <select name="has_project" required>
+            <option value="">— Selecione —</option>
             <option value="nao">Não</option>
             <option value="arquitetonico">Arquitetônico</option>
             <option value="estrutural">Estrutural</option>
@@ -126,8 +127,9 @@ use LEX\Core\{View, I18n, Csrf};
           </select>
         </div>
         <div class="form-group">
-          <label>Necessita Demolição?</label>
-          <select name="needs_demolition">
+          <label>Necessita Demolição? *</label>
+          <select name="needs_demolition" required>
+            <option value="">— Selecione —</option>
             <option value="0">Não</option>
             <option value="1">Sim</option>
           </select>
@@ -151,15 +153,16 @@ use LEX\Core\{View, I18n, Csrf};
       <!-- PRAZO E URGÊNCIA -->
       <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:32px 0 20px">Prazo e Urgência</h3>
       <div class="form-row">
-        <div class="form-group"><label>Quando quer iniciar?</label><input type="date" name="desired_start_date"/></div>
-        <div class="form-group"><label>Prazo Desejado</label><input type="date" name="desired_deadline"/></div>
+        <div class="form-group"><label>Quando quer iniciar? *</label><input type="date" name="desired_start_date" required/></div>
+        <div class="form-group"><label>Prazo Desejado *</label><input type="date" name="desired_deadline" required/></div>
       </div>
 
       <div class="form-group">
-        <label>Nível de Urgência</label>
-        <select name="urgency">
+        <label>Nível de Urgência *</label>
+        <select name="urgency" required>
+          <option value="">— Selecione —</option>
           <option value="baixa">Baixa - Posso aguardar</option>
-          <option value="media" selected>Média - Algumas semanas</option>
+          <option value="media">Média - Algumas semanas</option>
           <option value="alta">Alta - Preciso em breve</option>
           <option value="critica">Crítica - Urgente</option>
         </select>
@@ -169,15 +172,15 @@ use LEX\Core\{View, I18n, Csrf};
       <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:32px 0 20px">Expectativa Financeira</h3>
       <div class="form-row">
         <div class="form-group">
-          <label>Faixa de Orçamento (mínimo)</label>
+          <label>Faixa de Orçamento (mínimo) *</label>
           <input type="text" id="bmin_display" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"
-                 oninput="mascaraBRL(this,'budget_min')"/>
+                 oninput="mascaraBRL(this,'budget_min')" required/>
           <input type="hidden" name="budget_min" id="budget_min"/>
         </div>
         <div class="form-group">
-          <label>Faixa de Orçamento (máximo)</label>
+          <label>Faixa de Orçamento (máximo) *</label>
           <input type="text" id="bmax_display" placeholder="R$ 0,00" inputmode="numeric" autocomplete="off"
-                 oninput="mascaraBRL(this,'budget_max')"/>
+                 oninput="mascaraBRL(this,'budget_max')" required/>
           <input type="hidden" name="budget_max" id="budget_max"/>
         </div>
       </div>
@@ -200,15 +203,16 @@ use LEX\Core\{View, I18n, Csrf};
       </div>
 
       <div class="form-group">
-        <label>Preferência de Contratação</label>
-        <select name="hiring_preference">
+        <label>Preferência de Contratação *</label>
+        <select name="hiring_preference" required>
+          <option value="">— Selecione —</option>
           <option value="menor_preco">Menor Preço</option>
           <option value="melhor_qualidade">Melhor Qualidade</option>
-          <option value="equilibrio" selected>Equilíbrio Preço/Qualidade</option>
+          <option value="equilibrio">Equilíbrio Preço/Qualidade</option>
         </select>
       </div>
 
-      <div class="form-group"><label>Observações Adicionais</label><textarea name="notes" rows="3" placeholder="Informações adicionais, restrições, preferências..."></textarea></div>
+      <div class="form-group"><label>Observações Adicionais *</label><textarea name="notes" rows="3" placeholder="Informações adicionais, restrições, preferências..." required></textarea></div>
 
       <!-- EVIDÊNCIAS VISUAIS -->
       <h3 style="font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:32px 0 20px">Evidências Visuais</h3>
@@ -313,14 +317,24 @@ function mascaraBRL(input, hiddenId) {
   var f = document.querySelector('form[action="/abrir-demanda"]');
   if(!f) return;
   f.addEventListener('submit', function(e){
+    // Validar senhas
     var p = f.querySelector('[name="password"]');
     var c = f.querySelector('[name="password_confirm"]');
     if(p && c && p.value !== c.value){ 
       e.preventDefault(); 
       c.setCustomValidity('As senhas não coincidem.'); 
       c.reportValidity(); 
+      return;
     } else if(c) { 
       c.setCustomValidity(''); 
+    }
+    
+    // Validar serviços (pelo menos um)
+    var services = f.querySelectorAll('[name="services[]"]:checked');
+    if(services.length === 0){
+      e.preventDefault();
+      alert('Por favor, selecione pelo menos um tipo de serviço.');
+      return;
     }
   });
 })();
