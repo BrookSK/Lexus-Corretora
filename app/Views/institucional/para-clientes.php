@@ -665,27 +665,32 @@ $CATEGORIAS_NICHO = [
     submitBtn.addEventListener('click', (e) => {
       e.preventDefault();
       
-      // Validar TODOS os steps antes de submeter
-      for (let i = 0; i < TOTAL_STEPS; i++) {
-        if (!validateStep(i)) {
-          // Navegar para o step com erro
-          currentStep = i;
-          updateUI();
-          return;
-        }
-      }
-      
-      // Remover required de campos não visíveis para permitir submit
+      // Apenas remover required dos campos não visíveis
       slides.forEach((slide, idx) => {
-        if (idx !== currentStep) {
-          slide.querySelectorAll('[required]').forEach(el => {
-            el.setAttribute('data-was-required', 'true');
+        slide.querySelectorAll('[required]').forEach(el => {
+          if (idx !== currentStep) {
             el.removeAttribute('required');
-          });
-        }
+          }
+        });
       });
       
-      // Submeter formulário
+      // Tentar submeter - se houver campo vazio no step atual, o HTML5 vai avisar
+      const isValid = form.checkValidity();
+      if (!isValid) {
+        form.reportValidity();
+        return;
+      }
+      
+      // Validação especial: serviços
+      const servicesInput = document.getElementById('servicesInput');
+      if (!servicesInput || !servicesInput.value) {
+        showError('Selecione pelo menos um serviço na Etapa 3.');
+        currentStep = 2;
+        updateUI();
+        return;
+      }
+      
+      // Tudo OK, submeter
       form.submit();
     });
   }

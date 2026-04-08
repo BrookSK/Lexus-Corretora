@@ -546,27 +546,50 @@ $CATEGORIAS_NICHO = [
     submitBtn.addEventListener('click', (e) => {
       e.preventDefault();
       
-      // Validar TODOS os steps antes de submeter
-      for (let i = 0; i < TOTAL_STEPS; i++) {
-        if (!validateStep(i)) {
-          // Navegar para o step com erro
-          currentStep = i;
-          updateUI();
-          return;
-        }
-      }
-      
-      // Remover required de campos não visíveis para permitir submit
+      // Apenas remover required dos campos não visíveis
       slides.forEach((slide, idx) => {
-        if (idx !== currentStep) {
-          slide.querySelectorAll('[required]').forEach(el => {
-            el.setAttribute('data-was-required', 'true');
+        slide.querySelectorAll('[required]').forEach(el => {
+          if (idx !== currentStep) {
             el.removeAttribute('required');
-          });
-        }
+          }
+        });
       });
       
-      // Submeter formulário
+      // Tentar submeter - se houver campo vazio no step atual, o HTML5 vai avisar
+      const isValid = form.checkValidity();
+      if (!isValid) {
+        form.reportValidity();
+        return;
+      }
+      
+      // Validação especial: especialidades
+      const specialtiesInput = document.getElementById('specialtiesInput');
+      if (!specialtiesInput || !specialtiesInput.value) {
+        showError('Selecione pelo menos uma especialidade na Etapa 3.');
+        currentStep = 2;
+        updateUI();
+        return;
+      }
+      
+      // Validação especial: arquivo CNPJ
+      const cnpjFile = form.querySelector('[name="certidao_cnpj"]');
+      if (cnpjFile && (!cnpjFile.files || cnpjFile.files.length === 0)) {
+        showError('Envie a Certidão CNPJ na Etapa 5.');
+        currentStep = 4;
+        updateUI();
+        return;
+      }
+      
+      // Validação especial: portfolio
+      const portfolioFiles = form.querySelector('[name="portfolio[]"]');
+      if (portfolioFiles && (!portfolioFiles.files || portfolioFiles.files.length === 0)) {
+        showError('Envie pelo menos uma foto do portfólio na Etapa 6.');
+        currentStep = 5;
+        updateUI();
+        return;
+      }
+      
+      // Tudo OK, submeter
       form.submit();
     });
   }
