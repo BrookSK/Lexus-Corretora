@@ -384,19 +384,24 @@ $CATEGORIAS_NICHO = [
     const slide = slides[step];
     const required = slide.querySelectorAll('[required]');
     for (let inp of required) {
+      let isEmpty = false;
+      
       if (inp.type === 'file') {
-        if (!inp.files || inp.files.length === 0) {
-          inp.style.borderColor = '#ff4444';
-          const label = slide.querySelector(`label[for="${inp.id}"]`) || inp.previousElementSibling;
-          const fieldName = label ? label.textContent.replace('*', '').trim() : 'Este arquivo';
-          showError(`${fieldName} é obrigatório.`);
-          setTimeout(() => { inp.style.borderColor = ''; }, 3000);
-          return false;
-        }
-      } else if (!inp.value.trim()) {
+        isEmpty = !inp.files || inp.files.length === 0;
+      } else if (inp.tagName === 'SELECT') {
+        isEmpty = !inp.value || inp.value === '';
+      } else if (inp.type === 'number') {
+        isEmpty = !inp.value || inp.value === '';
+      } else if (inp.tagName === 'TEXTAREA') {
+        isEmpty = !inp.value || !inp.value.trim();
+      } else {
+        isEmpty = !inp.value || !inp.value.trim();
+      }
+      
+      if (isEmpty) {
         inp.style.borderColor = '#ff4444';
-        inp.focus();
-        const label = slide.querySelector(`label[for="${inp.id}"]`) || inp.previousElementSibling;
+        if (inp.type !== 'file') inp.focus();
+        const label = inp.closest('.form-group')?.querySelector('label');
         const fieldName = label ? label.textContent.replace('*', '').trim() : 'Este campo';
         showError(`${fieldName} é obrigatório.`);
         setTimeout(() => { inp.style.borderColor = ''; }, 3000);
@@ -408,7 +413,7 @@ $CATEGORIAS_NICHO = [
     if (step === 0) {
       const pwd = slide.querySelector('[name="password"]');
       const conf = slide.querySelector('[name="password_confirm"]');
-      if (pwd.value !== conf.value) {
+      if (pwd && conf && pwd.value !== conf.value) {
         conf.style.borderColor = '#ff4444';
         showError('As senhas não coincidem.');
         conf.focus();
@@ -420,7 +425,7 @@ $CATEGORIAS_NICHO = [
     // Validação especial: especialidades
     if (step === 2) {
       const specialtiesInput = document.getElementById('specialtiesInput');
-      if (!specialtiesInput.value) {
+      if (!specialtiesInput || !specialtiesInput.value) {
         showError('Selecione pelo menos uma especialidade.');
         return false;
       }
