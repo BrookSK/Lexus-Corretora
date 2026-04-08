@@ -32,22 +32,22 @@ final class ArquivosService
 
         $pdo = BancoDeDados::obter();
         $stmt = $pdo->prepare(
-            "INSERT INTO demanda_arquivos (demanda_id, file_name, file_path, caption, file_type, uploaded_by, uploaded_by_id, created_at)
-             VALUES (:demanda_id, :file_name, :file_path, :caption, :file_type, :uploaded_by, :uploaded_by_id, NOW())"
+            "INSERT INTO demanda_arquivos (demanda_id, name, file_path, caption, type, uploaded_by_type, uploaded_by_id, created_at)
+             VALUES (:demanda_id, :name, :file_path, :caption, :type, :uploaded_by_type, :uploaded_by_id, NOW())"
         );
         $stmt->execute([
             'demanda_id' => $demandaId,
-            'file_name' => $arquivo['name'],
+            'name' => $arquivo['name'],
             'file_path' => $relativePath,
             'caption' => $caption,
-            'file_type' => $tipo,
-            'uploaded_by' => $uploadedBy,
+            'type' => $tipo,
+            'uploaded_by_type' => $uploadedBy,
             'uploaded_by_id' => $uploadedById,
         ]);
 
         return [
             'id' => (int)$pdo->lastInsertId(),
-            'file_name' => $arquivo['name'],
+            'name' => $arquivo['name'],
             'file_path' => $relativePath,
             'caption' => $caption,
         ];
@@ -57,7 +57,7 @@ final class ArquivosService
     {
         $pdo = BancoDeDados::obter();
         $stmt = $pdo->prepare(
-            "SELECT id, file_name, file_path, caption, file_type, uploaded_by, created_at
+            "SELECT id, name, file_path, caption, type, uploaded_by_type, created_at
              FROM demanda_arquivos
              WHERE demanda_id = :demanda_id
              ORDER BY created_at DESC"
