@@ -175,3 +175,37 @@ function toggleGroup(id, btn) {
   if (icon) icon.style.transform = open ? '' : 'rotate(180deg)';
 }
 </script>
+
+<?php echo Csrf::campo(); ?>
+
+<script src="/assets/js/crud-actions.js"></script>
+<script>
+function excluirProposta(id) {
+  excluirRegistro(`/equipe/propostas/${id}/excluir`, 'proposta');
+}
+
+// Adicionar botões de exclusão nas propostas
+document.addEventListener('DOMContentLoaded', function() {
+  const linhas = document.querySelectorAll('.table-wrap tbody tr');
+  linhas.forEach(linha => {
+    const link = linha.querySelector('a[href*="/equipe/propostas/"]');
+    if (!link) return;
+    
+    const id = link.href.match(/\/(\d+)$/)?.[1];
+    if (!id) return;
+    
+    linha.dataset.id = id;
+    const acoesCell = linha.querySelector('td:last-child');
+    if (!acoesCell || acoesCell.querySelector('.btn-excluir')) return;
+    
+    const btnExcluir = document.createElement('button');
+    btnExcluir.type = 'button';
+    btnExcluir.className = 'btn btn-danger btn-sm btn-excluir';
+    btnExcluir.innerHTML = '🗑️ Excluir';
+    btnExcluir.style.marginLeft = '8px';
+    btnExcluir.onclick = () => excluirProposta(id);
+    
+    acoesCell.appendChild(btnExcluir);
+  });
+});
+</script>

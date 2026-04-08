@@ -122,3 +122,34 @@ $currentTab = $_GET['tab'] ?? 'todas';
     </tbody>
   </table>
 </div>
+
+<?php echo Csrf::campo(); ?>
+
+<script src="/assets/js/crud-actions.js"></script>
+<script>
+function excluirDemanda(id) {
+  excluirRegistro(`/equipe/demandas/${id}/excluir`, 'demanda');
+}
+
+// Adicionar botões de exclusão nas linhas
+document.addEventListener('DOMContentLoaded', function() {
+  const linhas = document.querySelectorAll('.table-wrap tbody tr');
+  linhas.forEach(linha => {
+    const id = linha.querySelector('a[href*="/equipe/demandas/"]')?.href.match(/\/(\d+)$/)?.[1];
+    if (!id) return;
+    
+    linha.dataset.id = id;
+    const acoesCell = linha.querySelector('td:last-child');
+    if (!acoesCell || acoesCell.querySelector('.btn-excluir')) return;
+    
+    const btnExcluir = document.createElement('button');
+    btnExcluir.type = 'button';
+    btnExcluir.className = 'btn btn-danger btn-sm btn-excluir';
+    btnExcluir.innerHTML = '🗑️ Excluir';
+    btnExcluir.style.marginLeft = '8px';
+    btnExcluir.onclick = () => excluirDemanda(id);
+    
+    acoesCell.appendChild(btnExcluir);
+  });
+});
+</script>

@@ -62,3 +62,37 @@ use LEX\Core\{View, I18n, Csrf};
     </tbody>
   </table>
 </div>
+
+<?php echo Csrf::campo(); ?>
+
+<script src="/assets/js/crud-actions.js"></script>
+<script>
+function excluirComissao(id) {
+  excluirRegistro(`/equipe/comissoes/${id}/excluir`, 'comissão');
+}
+
+// Adicionar botões de exclusão nas linhas
+document.addEventListener('DOMContentLoaded', function() {
+  const linhas = document.querySelectorAll('.table-wrap tbody tr');
+  linhas.forEach(linha => {
+    const link = linha.querySelector('a[href*="/equipe/comissoes/"]');
+    if (!link) return;
+    
+    const id = link.href.match(/\/(\d+)$/)?.[1];
+    if (!id) return;
+    
+    linha.dataset.id = id;
+    const acoesCell = linha.querySelector('td:last-child');
+    if (!acoesCell || acoesCell.querySelector('.btn-excluir')) return;
+    
+    const btnExcluir = document.createElement('button');
+    btnExcluir.type = 'button';
+    btnExcluir.className = 'btn btn-danger btn-sm btn-excluir';
+    btnExcluir.innerHTML = '🗑️ Excluir';
+    btnExcluir.style.marginLeft = '8px';
+    btnExcluir.onclick = () => excluirComissao(id);
+    
+    acoesCell.appendChild(btnExcluir);
+  });
+});
+</script>
