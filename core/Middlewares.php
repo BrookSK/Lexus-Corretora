@@ -46,14 +46,20 @@ final class Middlewares
             
             // Verificar se o perfil está completo
             $parceiroId = Auth::parceiroId();
-            $db = Db::instancia();
-            $parceiro = $db->query(
+            $pdo = BancoDeDados::obter();
+            $stmt = $pdo->prepare(
                 "SELECT type, fantasy_name, state_registration, estado, cidade, address, 
                         specialties, experience_years, team_size, monthly_capacity, description,
                         certifications, references, website
-                 FROM parceiros WHERE id = ?",
-                [$parceiroId]
-            )->fetch();
+                 FROM parceiros WHERE id = ?"
+            );
+            $stmt->execute([$parceiroId]);
+            $parceiro = $stmt->fetch();
+            
+            if (!$parceiro) {
+                Resposta::redirecionar('/login')->enviar();
+                exit;
+            }
             
             // Verificar se campos essenciais estão preenchidos
             $camposObrigatorios = [
