@@ -13,7 +13,7 @@ use LEX\Core\{View, I18n, Csrf};
       </div>
     </div>
     
-    <form method="POST" action="/cliente/registro" id="clienteForm">
+    <form method="POST" action="/cliente/criar-conta" id="clienteForm">
       <?php echo Csrf::campo(); ?>
       <div class="slide">
         <div class="slide-title">Crie sua conta<br>gratuitamente.</div>
