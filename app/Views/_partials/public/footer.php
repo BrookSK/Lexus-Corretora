@@ -21,6 +21,7 @@ $copyrightText = SistemaConfig::copyright();
     </div>
     <div class="footer-col">
       <h4 class="footer-heading">Institucional</h4>
+      <a href="/">Início</a>
       <a href="/sobre"><?php echo View::e(I18n::t('nav.sobre')); ?></a>
       <a href="/como-funciona"><?php echo View::e(I18n::t('nav.como_funciona')); ?></a>
       <a href="/vetriks"><?php echo View::e(I18n::t('nav.vetriks')); ?></a>

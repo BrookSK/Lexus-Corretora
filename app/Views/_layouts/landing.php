@@ -363,6 +363,7 @@ nav{padding:0 20px;height:56px}
 <nav>
   <a href="/" class="logo"><img src="<?php echo View::e(SistemaConfig::logo()); ?>" alt="<?php echo View::e(SistemaConfig::nome()); ?>"/></a>
   <div class="nav-links">
+    <a href="/">Início</a>
     <a href="/sobre">Sobre</a>
     <a href="/como-funciona">Como Funciona</a>
     <a href="/para-clientes">Para Clientes</a>
@@ -378,6 +379,7 @@ nav{padding:0 20px;height:56px}
   </button>
 </nav>
 <div class="nav-drawer" id="navDrawer">
+  <a href="/">Início</a>
   <a href="/sobre">Sobre</a>
   <a href="/como-funciona">Como Funciona</a>
   <a href="/para-clientes">Para Clientes</a>

@@ -74,7 +74,8 @@ use LEX\Core\{View, I18n};
 .valor-card:hover{background:rgba(26,23,16,.95)}
 .valor-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold);transform:scaleY(0);transform-origin:bottom;transition:transform .4s cubic-bezier(.4,0,.2,1)}
 .valor-card:hover::after{transform:scaleY(1)}
-.valor-icon{width:44px;height:44px;border:1px solid rgba(184,148,90,.22);display:flex;align-items:center;justify-content:center;margin-bottom:24px;transition:border-color .3s;font-size:1.3rem}
+.valor-icon{width:44px;height:44px;border:1px solid rgba(184,148,90,.22);display:flex;align-items:center;justify-content:center;margin-bottom:24px;transition:border-color .3s;color:var(--gold)}
+.valor-icon svg{stroke:var(--gold)}
 .valor-card:hover .valor-icon{border-color:var(--gold)}
 .valor-title{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:400;color:var(--white);margin-bottom:12px}
 .valor-desc{font-size:.82rem;color:rgba(245,242,237,.5);line-height:1.8}
@@ -204,37 +205,37 @@ use LEX\Core\{View, I18n};
   
   <div class="valores-grid">
     <div class="valor-card reveal">
-      <div class="valor-icon">🛡️</div>
+      <div class="valor-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
       <div class="valor-title">Transparência total</div>
       <p class="valor-desc">Cada etapa do processo é documentada e comunicada. Nenhuma decisão ocorre sem o cliente estar plenamente informado e no controle.</p>
       <div class="valor-num">01</div>
     </div>
     <div class="valor-card reveal" style="transition-delay:.1s">
-      <div class="valor-icon">📊</div>
+      <div class="valor-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
       <div class="valor-title">Método e rigor</div>
       <p class="valor-desc">Estruturamos cada demanda com critério técnico. O match entre cliente e parceiro segue um processo padronizado que garante qualidade e consistência.</p>
       <div class="valor-num">02</div>
     </div>
     <div class="valor-card reveal" style="transition-delay:.2s">
-      <div class="valor-icon">👥</div>
+      <div class="valor-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
       <div class="valor-title">Autonomia do cliente</div>
       <p class="valor-desc">Você recebe todas as propostas, toda a análise e toma a decisão final. Nunca pressionamos — nosso papel é facilitar, não decidir por você.</p>
       <div class="valor-num">03</div>
     </div>
     <div class="valor-card reveal" style="transition-delay:.05s">
-      <div class="valor-icon">⭐</div>
+      <div class="valor-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
       <div class="valor-title">Qualidade sobre quantidade</div>
       <p class="valor-desc">Parceiros passam por processo seletivo rigoroso. Preferimos uma rede menor e altamente qualificada a uma grande e imprecisa.</p>
       <div class="valor-num">04</div>
     </div>
     <div class="valor-card reveal" style="transition-delay:.15s">
-      <div class="valor-icon">💡</div>
+      <div class="valor-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
       <div class="valor-title">Inovação contínua</div>
       <p class="valor-desc">Aprimoramos constantemente nossa plataforma, processos e rede de parceiros. Tecnologia a serviço de obras mais inteligentes e bem-sucedidas.</p>
       <div class="valor-num">05</div>
     </div>
     <div class="valor-card reveal" style="transition-delay:.25s">
-      <div class="valor-icon">❤️</div>
+      <div class="valor-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg></div>
       <div class="valor-title">Relações de longo prazo</div>
       <p class="valor-desc">Construímos conexões duradouras com clientes e parceiros. Confiança não se impõe — se conquista, entrega a entrega, obra a obra.</p>
       <div class="valor-num">06</div>

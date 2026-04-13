@@ -10,6 +10,7 @@ $logoUrl = SistemaConfig::logo();
   <div class="nav-row">
     <a href="/" class="logo"><img src="<?php echo View::e($logoUrl); ?>" alt="<?php echo View::e(SistemaConfig::nome()); ?>" style="height:32px"/></a>
     <div class="nav-links">
+      <a href="/">Início</a>
       <a href="/sobre"><?php echo View::e(I18n::t('nav.sobre')); ?></a>
       <a href="/como-funciona"><?php echo View::e(I18n::t('nav.como_funciona')); ?></a>
       <a href="/para-clientes"><?php echo View::e(I18n::t('nav.para_clientes')); ?></a>
@@ -26,6 +27,7 @@ $logoUrl = SistemaConfig::logo();
     </button>
   </div>
   <div class="drawer" id="drawer">
+    <a href="/">Início</a>
     <a href="/sobre"><?php echo View::e(I18n::t('nav.sobre')); ?></a>
     <a href="/como-funciona"><?php echo View::e(I18n::t('nav.como_funciona')); ?></a>
     <a href="/para-clientes"><?php echo View::e(I18n::t('nav.para_clientes')); ?></a>
