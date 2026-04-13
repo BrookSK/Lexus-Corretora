@@ -298,10 +298,12 @@ return [
     'chatbot.titulo'           => 'Olá! Como posso ajudar?',
     'chatbot.opcao1'           => 'O que é a Lexus?',
     'chatbot.opcao2'           => 'Como funciona?',
-    'chatbot.opcao3'           => 'Como abrir uma demanda?',
-    'chatbot.opcao4'           => 'Como ser parceiro?',
-    'chatbot.opcao5'           => 'O que é o Selo Vetriks?',
-    'chatbot.opcao6'           => 'Falar com atendimento',
+    'chatbot.opcao3'           => 'Quanto custa para o cliente?',
+    'chatbot.opcao4'           => 'Quanto custa para o parceiro?',
+    'chatbot.opcao5'           => 'Como abrir uma demanda?',
+    'chatbot.opcao6'           => 'Como ser parceiro?',
+    'chatbot.opcao7'           => 'O que é o Selo Vetriks?',
+    'chatbot.opcao8'           => 'Falar com atendimento',
     'chatbot.voltar'           => 'Voltar ao menu',
 
     // Dashboard

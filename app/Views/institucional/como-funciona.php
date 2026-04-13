@@ -42,7 +42,8 @@ use LEX\Core\{View, I18n};
 .cf-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:#B8945A;transform:scaleX(0);transform-origin:left;transition:transform .4s}
 .cf-card:hover::before{transform:scaleX(1)}
 .cf-card:hover{background:rgba(184,148,90,.04)}
-.cf-card-icon{width:48px;height:48px;border-radius:50%;border:1px solid rgba(184,148,90,.35);display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:1.3rem}
+.cf-card-icon{width:48px;height:48px;border-radius:50%;border:1px solid rgba(184,148,90,.35);display:flex;align-items:center;justify-content:center;margin-bottom:24px;color:#B8945A}
+.cf-card-icon svg{stroke:#B8945A}
 .cf-card-title{font-size:1.05rem;font-weight:500;color:#F5F2ED;margin-bottom:12px}
 .cf-card-desc{font-size:.9rem;line-height:1.75;color:rgba(245,242,237,.5)}
 
@@ -124,6 +125,43 @@ use LEX\Core\{View, I18n};
   </div>
 </section>
 
+<!-- Modelo de Remuneração -->
+<section style="background:#F5F2ED;padding:100px 64px;border-top:1px solid rgba(184,148,90,.15)">
+  <div style="max-width:1100px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:64px">
+      <span class="lbl reveal" style="color:#B8945A;justify-content:center;margin-bottom:16px">Modelo de remuneração</span>
+      <h2 class="reveal d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,4vw,3.6rem);font-weight:300;color:#0C0C0A;line-height:1.12">Como funciona o <em style="font-style:italic;color:#B8945A">investimento</em></h2>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px" class="reveal d1">
+      <!-- Para Clientes -->
+      <div style="background:#fff;padding:48px 40px;border:1px solid rgba(184,148,90,.12)">
+        <div style="font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:#B8945A;margin-bottom:16px">Para clientes</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:3.2rem;font-weight:300;color:#0C0C0A;margin-bottom:8px">Gratuito</div>
+        <p style="font-size:.92rem;line-height:1.75;color:rgba(12,12,10,.6);margin-bottom:24px">Você não paga nada à Lexus. Nosso modelo é baseado em uma taxa cobrada do parceiro que executa a obra. Você recebe propostas, compara e escolhe — sem custo adicional.</p>
+        <ul style="list-style:none;padding:0;margin:0">
+          <li style="display:flex;align-items:center;gap:10px;font-size:.85rem;color:rgba(12,12,10,.65);margin-bottom:10px"><svg viewBox="0 0 24 24" fill="none" stroke="#B8945A" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg> Cadastro e abertura de demanda gratuitos</li>
+          <li style="display:flex;align-items:center;gap:10px;font-size:.85rem;color:rgba(12,12,10,.65);margin-bottom:10px"><svg viewBox="0 0 24 24" fill="none" stroke="#B8945A" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg> Receba múltiplas propostas sem compromisso</li>
+          <li style="display:flex;align-items:center;gap:10px;font-size:.85rem;color:rgba(12,12,10,.65)"><svg viewBox="0 0 24 24" fill="none" stroke="#B8945A" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg> Contrato direto com o parceiro escolhido</li>
+        </ul>
+      </div>
+
+      <!-- Para Parceiros -->
+      <div style="background:#0C0C0A;padding:48px 40px;border:1px solid rgba(184,148,90,.2)">
+        <div style="font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:#B8945A;margin-bottom:16px">Para parceiros</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:3.2rem;font-weight:300;color:#F5F2ED;margin-bottom:8px">10% <span style="font-size:1rem;color:rgba(245,242,237,.4)">sobre o contrato</span></div>
+        <p style="font-size:.92rem;line-height:1.75;color:rgba(245,242,237,.5);margin-bottom:24px">Taxa de intermediação cobrada apenas quando o contrato é formalizado. Sem mensalidade, sem taxa de cadastro, sem surpresas. Você só paga quando fecha negócio.</p>
+        <ul style="list-style:none;padding:0;margin:0">
+          <li style="display:flex;align-items:center;gap:10px;font-size:.85rem;color:rgba(245,242,237,.55);margin-bottom:10px"><svg viewBox="0 0 24 24" fill="none" stroke="#B8945A" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg> Cadastro e qualificação gratuitos</li>
+          <li style="display:flex;align-items:center;gap:10px;font-size:.85rem;color:rgba(245,242,237,.55);margin-bottom:10px"><svg viewBox="0 0 24 24" fill="none" stroke="#B8945A" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg> Receba oportunidades sem custo</li>
+          <li style="display:flex;align-items:center;gap:10px;font-size:.85rem;color:rgba(245,242,237,.55);margin-bottom:10px"><svg viewBox="0 0 24 24" fill="none" stroke="#B8945A" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg> Indicou o cliente? Ganhe 5% de comissão</li>
+          <li style="display:flex;align-items:center;gap:10px;font-size:.85rem;color:rgba(245,242,237,.55)"><svg viewBox="0 0 24 24" fill="none" stroke="#B8945A" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg> Pague apenas quando fechar contrato</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Why Lexus is Different -->
 <section class="cf-why">
   <div class="cf-why-inner">
@@ -134,37 +172,37 @@ use LEX\Core\{View, I18n};
 
     <div class="cf-cards">
       <div class="cf-card reveal">
-        <div class="cf-card-icon">🎯</div>
+        <div class="cf-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
         <h3 class="cf-card-title">Curadoria Especializada</h3>
         <p class="cf-card-desc">Selecionamos apenas os melhores parceiros para cada tipo de projeto, garantindo qualidade e expertise.</p>
       </div>
 
       <div class="cf-card reveal d1">
-        <div class="cf-card-icon">⚡</div>
+        <div class="cf-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
         <h3 class="cf-card-title">Processo Ágil</h3>
         <p class="cf-card-desc">Tecnologia e automação para conectar clientes e parceiros de forma rápida e eficiente.</p>
       </div>
 
       <div class="cf-card reveal d2">
-        <div class="cf-card-icon">🔒</div>
+        <div class="cf-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
         <h3 class="cf-card-title">Transparência Total</h3>
         <p class="cf-card-desc">Sem intermediação financeira. Contratos diretos entre cliente e parceiro, com total clareza.</p>
       </div>
 
       <div class="cf-card reveal">
-        <div class="cf-card-icon">📊</div>
+        <div class="cf-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
         <h3 class="cf-card-title">Análise Comparativa</h3>
         <p class="cf-card-desc">Organizamos e comparamos propostas lado a lado para facilitar sua decisão.</p>
       </div>
 
       <div class="cf-card reveal d1">
-        <div class="cf-card-icon">🤝</div>
+        <div class="cf-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
         <h3 class="cf-card-title">Suporte Contínuo</h3>
         <p class="cf-card-desc">Acompanhamento em todas as etapas, desde a demanda inicial até a formalização.</p>
       </div>
 
       <div class="cf-card reveal d2">
-        <div class="cf-card-icon">✨</div>
+        <div class="cf-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
         <h3 class="cf-card-title">Rede Qualificada</h3>
         <p class="cf-card-desc">Parceiros verificados e avaliados continuamente para garantir excelência.</p>
       </div>
