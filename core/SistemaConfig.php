@@ -78,7 +78,7 @@ final class SistemaConfig
     public static function contato(): array
     {
         return [
-            'email'    => Settings::obter('contato.email', 'contato@lexuscorretora.com.br'),
+            'email'    => Settings::obter('contato.email', 'contato@lexuscorretora.com'),
             'telefone' => Settings::obter('contato.telefone', ''),
             'whatsapp' => Settings::obter('contato.whatsapp', ''),
         ];

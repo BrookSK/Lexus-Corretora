@@ -11,7 +11,7 @@ return [
         'charset' => 'utf8mb4',
     ],
     'app' => [
-        'url'       => 'https://lexuscorretora.com.br',
+        'url'       => 'https://lexuscorretora.com',
         'ambiente'  => 'producao', // 'desenvolvimento' | 'producao'
         'debug'     => false,
         'timezone'  => 'America/Sao_Paulo',
@@ -22,7 +22,7 @@ return [
         'porta'    => 587,
         'usuario'  => '',
         'senha'    => '',
-        'de_email' => 'noreply@lexuscorretora.com.br',
+        'de_email' => 'noreply@lexuscorretora.com',
         'de_nome'  => 'Lexus Corretora',
     ],
 ];

@@ -34,7 +34,7 @@ use LEX\Core\{View, I18n};
     q3:'Acesse <a href="/abrir-demanda">Abrir Demanda</a> e preencha o formulário com os detalhes do seu projeto. Nossa equipe entrará em contato.',
     q4:'Acesse <a href="/seja-parceiro">Seja Parceiro</a> e cadastre sua empresa. Após análise, você poderá receber oportunidades qualificadas.',
     q5:'O Selo Vetriks certifica parceiros que passaram por nosso processo rigoroso de qualificação em experiência, capacidade e confiabilidade.',
-    q6:'Entre em contato pelo <a href="/contato">formulário</a> ou envie um e-mail para contato@lexuscorretora.com.br.'
+    q6:'Entre em contato pelo <a href="/contato">formulário</a> ou envie um e-mail para contato@lexuscorretora.com.'
   };
   toggle.addEventListener('click',()=>{panel.style.display=panel.style.display==='none'?'flex':'none'});
   close.addEventListener('click',()=>{panel.style.display='none'});

@@ -122,7 +122,7 @@ final class InicializadorSistema
             'sistema.copyright'      => '© ' . date('Y') . ' Lexus — Estruturação Estratégica de Obras',
             'seo.meta_title'         => 'Lexus Corretora — Estruturação Estratégica de Obras',
             'seo.meta_description'   => 'Conectamos clientes a uma rede qualificada de parceiros para obras e reformas.',
-            'contato.email'          => 'contato@lexuscorretora.com.br',
+            'contato.email'          => 'contato@lexuscorretora.com',
             'billing.ativo'          => '0',
             'billing.taxa_conversao_usd' => '5.0',
             'stripe.mode'            => 'sandbox',
@@ -205,7 +205,7 @@ final class InicializadorSistema
 <p>Estes Termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da comarca de São Paulo/SP para dirimir quaisquer controvérsias.</p>
 
 <h3 style="font-size:1rem;font-weight:500;margin:32px 0 12px">11. Contato</h3>
-<p>Para dúvidas sobre estes Termos, entre em contato pelo e-mail: <a href="mailto:contato@lexuscorretora.com.br" style="color:#B8945A">contato@lexuscorretora.com.br</a></p>
+<p>Para dúvidas sobre estes Termos, entre em contato pelo e-mail: <a href="mailto:contato@lexuscorretora.com" style="color:#B8945A">contato@lexuscorretora.com</a></p>
 HTML;
     }
 
@@ -252,7 +252,7 @@ HTML;
 
 <h3 style="font-size:1rem;font-weight:500;margin:32px 0 12px">10. Contato do Encarregado (DPO)</h3>
 <p>Para exercer seus direitos ou esclarecer dúvidas sobre esta política, entre em contato:</p>
-<p>E-mail: <a href="mailto:privacidade@lexuscorretora.com.br" style="color:#B8945A">privacidade@lexuscorretora.com.br</a></p>
+<p>E-mail: <a href="mailto:privacidade@lexuscorretora.com" style="color:#B8945A">privacidade@lexuscorretora.com</a></p>
 
 <h3 style="font-size:1rem;font-weight:500;margin:32px 0 12px">11. Alterações</h3>
 <p>Esta política pode ser atualizada periodicamente. Recomendamos a consulta regular desta página. Alterações significativas serão comunicadas por e-mail ou notificação na plataforma.</p>

@@ -211,7 +211,7 @@ $propostasEnviadas = array_filter($propostas, fn($p) => ($p['status'] ?? '') ===
 <footer class="footer">
 <div><div class="footer-brand"><?php echo View::e($nomeSistema); ?></div><div style="font-size:5.5px;margin-top:2px;letter-spacing:1.5px">Estruturação Estratégica de Obras</div></div>
 <div style="text-align:center;opacity:0.5">Documento Confidencial · Uso Interno</div>
-<div style="text-align:right"><?php echo View::e($demanda['code']); ?> · Gerado em <?php echo date('d/m/Y H:i'); ?><br><span style="color:var(--gold-dark)">lexuscorretora.com.br</span></div>
+<div style="text-align:right"><?php echo View::e($demanda['code']); ?> · Gerado em <?php echo date('d/m/Y H:i'); ?><br><span style="color:var(--gold-dark)">lexuscorretora.com</span></div>
 </footer>
 
 </div><!-- .page-wrapper -->

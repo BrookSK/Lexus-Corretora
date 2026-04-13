@@ -72,7 +72,7 @@ use LEX\Core\{View, I18n, Csrf};
         
         <div>
           <div style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:500">WhatsApp</div>
-          <a href="https://wa.me/5511999999999" target="_blank" style="font-size:.88rem;color:var(--black);text-decoration:none">(11) 99999-9999</a>
+          <a href="https://wa.me/5511972243329" target="_blank" style="font-size:.88rem;color:var(--black);text-decoration:none">+55 11 97224-3329</a>
         </div>
         
         <div>
