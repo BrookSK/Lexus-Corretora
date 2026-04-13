@@ -34,7 +34,7 @@ final class InicialController
     public function paraClientes(Requisicao $req): Resposta
     {
         $conteudo = View::renderizar(__DIR__ . '/../Views/institucional/para-clientes.php');
-        $html = View::renderizar(__DIR__ . '/../Views/_layouts/landing.php', [
+        $html = View::renderizar(__DIR__ . '/../Views/_layouts/public.php', [
             'conteudo'  => $conteudo,
             'pageTitle' => 'Para Clientes — Lexus',
         ]);
@@ -44,7 +44,7 @@ final class InicialController
     public function paraParceiros(Requisicao $req): Resposta
     {
         $conteudo = View::renderizar(__DIR__ . '/../Views/institucional/para-parceiros.php');
-        $html = View::renderizar(__DIR__ . '/../Views/_layouts/landing.php', [
+        $html = View::renderizar(__DIR__ . '/../Views/_layouts/public.php', [
             'conteudo'  => $conteudo,
             'pageTitle' => 'Para Parceiros — Lexus',
         ]);
