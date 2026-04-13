@@ -25,7 +25,7 @@ use LEX\Core\{View, I18n};
 .cf-timeline{display:flex;flex-direction:column;gap:100px}
 .cf-step{opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s}
 .cf-step.in{opacity:1;transform:translateY(0)}
-.cf-step-num{font-family:'Cormorant Garamond',serif;font-size:5rem;font-weight:300;color:rgba(184,148,90,.15);line-height:1;margin-bottom:16px}
+.cf-step-num{font-family:'Cormorant Garamond',serif;font-size:5rem;font-weight:300;color:rgba(184,148,90,.35);line-height:1;margin-bottom:16px}
 .cf-step-title{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;color:#0C0C0A;margin-bottom:20px;line-height:1.15}
 .cf-step-title em{font-style:italic;color:#B8945A}
 .cf-step-desc{font-size:1rem;line-height:1.82;color:rgba(12,12,10,.65);max-width:680px}
