@@ -195,7 +195,7 @@ final class DemandasService
                     'desired_deadline', 'budget_min', 'budget_max', 'currency_code',
                     'urgency', 'complexity', 'has_project', 'has_architect',
                     'wants_multiple_proposals', 'hiring_type', 'notes', 'internal_notes',
-                    'priority', 'score', 'ideal_partner_profile'];
+                    'status', 'priority', 'score', 'ideal_partner_profile'];
         $set = [];
         $params = ['id' => $id];
 
