@@ -57,8 +57,8 @@ require __DIR__ . '/../_partials/categorias.php';
 
     <div class="form-row">
       <div class="form-group">
-        <label><?php echo View::e(I18n::t('geral.documento')); ?></label>
-        <input type="text" name="document"/>
+        <label>CNPJ *</label>
+        <input type="text" name="document" class="cnpj-input" placeholder="00.000.000/0000-00" required/>
       </div>
       <div class="form-group">
         <label>CREA/CAU</label>
@@ -108,3 +108,5 @@ require __DIR__ . '/../_partials/categorias.php';
 </div>
 
 <?php require __DIR__ . '/../_partials/mc-dropdown.js.php'; ?>
+
+<script src="/assets/js/cnpj.js"></script>

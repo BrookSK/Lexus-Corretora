@@ -34,8 +34,8 @@ use LEX\Core\{View, I18n, Csrf};
             <input type="tel" name="whatsapp" required placeholder="(11) 00000-0000"/>
           </div>
           <div class="form-group">
-            <label>CPF / CNPJ <span class="req">*</span></label>
-            <input type="text" name="document" required placeholder="000.000.000-00"/>
+            <label>CNPJ <span class="req">*</span></label>
+            <input type="text" name="document" class="cnpj-input" required placeholder="00.000.000/0000-00"/>
           </div>
         </div>
         <div class="form-row">
@@ -206,3 +206,5 @@ use LEX\Core\{View, I18n, Csrf};
   });
 })();
 </script>
+
+<script src="/assets/js/cnpj.js"></script>

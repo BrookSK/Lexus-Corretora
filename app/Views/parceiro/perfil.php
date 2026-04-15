@@ -88,8 +88,8 @@ if (!empty($parceiro['service_states'])) {
 
     <div class="form-row">
       <div class="form-group">
-        <label>CNPJ / CPF *</label>
-        <input type="text" name="document" value="<?php echo View::e($parceiro['document'] ?? ''); ?>" required/>
+        <label>CNPJ *</label>
+        <input type="text" name="document" class="cnpj-input" value="<?php echo View::e($parceiro['document'] ?? ''); ?>" placeholder="00.000.000/0000-00" required/>
       </div>
       <div class="form-group">
         <label><?php echo View::e(I18n::t('auth.email')); ?></label>
@@ -636,3 +636,5 @@ function removePreview(btn) {
   });
 }
 </script>
+
+<script src="/assets/js/cnpj.js"></script>

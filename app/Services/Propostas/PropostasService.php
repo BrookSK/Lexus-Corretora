@@ -93,7 +93,8 @@ final class PropostasService
         $pdo = BancoDeDados::obter();
         $stmt = $pdo->prepare(
             "SELECT pr.*, p.name AS parceiro_nome, p.type AS parceiro_type,
-                    p.score AS parceiro_score, p.is_vetriks AS parceiro_vetriks
+                    p.score AS parceiro_score, p.is_vetriks AS parceiro_vetriks,
+                    p.document AS parceiro_document
              FROM propostas pr
              JOIN parceiros p ON p.id = pr.parceiro_id
              WHERE pr.demanda_id = :demanda_id
@@ -233,7 +234,7 @@ final class PropostasService
                     p.id AS parceiro_id, p.name AS parceiro_nome, p.type AS parceiro_type,
                     p.score AS parceiro_score, p.is_vetriks AS parceiro_vetriks,
                     p.response_rate AS parceiro_response_rate, p.close_rate AS parceiro_close_rate,
-                    ep.nome_fantasia AS empresa_nome
+                    p.document AS parceiro_document, ep.nome_fantasia AS empresa_nome
              FROM propostas pr
              JOIN parceiros p ON p.id = pr.parceiro_id
              LEFT JOIN empresas_parceiras ep ON ep.id = p.empresa_id

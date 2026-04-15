@@ -239,6 +239,7 @@ document.getElementById('lightboxModal').addEventListener('click', function(e) {
       <thead>
         <tr>
           <th>Parceiro</th>
+          <th>CNPJ</th>
           <th>Valor</th>
           <th>Prazo</th>
           <th>Status</th>
@@ -250,6 +251,7 @@ document.getElementById('lightboxModal').addEventListener('click', function(e) {
           <?php if (!empty($p['presented_to_client'])): ?>
           <tr>
             <td><?php echo View::e($p['parceiro_nome'] ?? '—'); ?></td>
+            <td><?php echo View::e($p['parceiro_document'] ?? '—'); ?></td>
             <td>R$ <?php echo View::e(number_format((float)$p['amount'], 2, ',', '.')); ?></td>
             <td><?php echo $p['deadline_days'] ? View::e($p['deadline_days']) . ' dias' : '—'; ?></td>
             <td>

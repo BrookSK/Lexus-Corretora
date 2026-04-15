@@ -38,6 +38,10 @@ use LEX\Core\{View, I18n, Csrf};
     <div class="card-title"><?php echo View::e($parceiro['phone'] ?? '—'); ?></div>
   </div>
   <div class="card">
+    <div class="card-label">CNPJ</div>
+    <div class="card-title"><?php echo View::e($parceiro['document'] ?? '—'); ?></div>
+  </div>
+  <div class="card">
     <div class="card-label">Score</div>
     <div class="card-value"><?php echo (int)($parceiro['score'] ?? 0); ?></div>
   </div>

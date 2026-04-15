@@ -38,7 +38,7 @@ use LEX\Core\{View, I18n, Csrf};
             <option value="fornecedor">Fornecedor</option>
           </select>
         </div>
-        <div class="form-group"><label>CPF/CNPJ *</label><input type="text" name="document" required/></div>
+        <div class="form-group"><label>CNPJ *</label><input type="text" name="document" class="cnpj-input" placeholder="00.000.000/0000-00" required/></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>E-mail *</label><input type="email" name="email" required/></div>
@@ -335,3 +335,5 @@ function mascaraBRL(input, hiddenId) {
   });
 })();
 </script>
+
+<script src="/assets/js/cnpj.js"></script>
